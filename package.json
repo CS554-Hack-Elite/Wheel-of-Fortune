@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "concurrently \"nodemon app.js\" \"cd client && npm start\""
+    "start": "concurrently \"nodemon app.js\" \"cd client && npm start\"",
+    "install-client": "cd client && npm install",
+    "install-all": "npm install && npm run install-client"
   },
   "repository": {
     "type": "git",

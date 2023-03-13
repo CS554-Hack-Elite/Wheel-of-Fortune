@@ -1,0 +1,30 @@
+{
+  "name": "wheel-of-fortune",
+  "version": "1.0.0",
+  "description": "Webapp to generate coupons based on points that user collects",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"nodemon app.js\" \"cd client && npm start\"",
+    "install-client": "cd client && npm install",
+    "install-all": "npm install && npm run install-client"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CS554-Hack-Elite/Wheel-of-Fortune.git"
+  },
+  "author": "Hack Elite",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CS554-Hack-Elite/Wheel-of-Fortune/issues"
+  },
+  "homepage": "https://github.com/CS554-Hack-Elite/Wheel-of-Fortune#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0",
+    "nodemon": "^2.0.21"
+  }
+}

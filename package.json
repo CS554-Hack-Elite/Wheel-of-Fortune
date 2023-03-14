@@ -6,9 +6,10 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "concurrently \"nodemon app.js\" \"cd client && npm start\"",
+    "start": "concurrently \"nodemon -r dotenv/config app.js\" \"cd client && npm start\"",
     "install-client": "cd client && npm install",
-    "install-all": "npm install && npm run install-client"
+    "install-all": "npm install && npm run install-client",
+    "seed": "node -r dotenv/config seed.js"
   },
   "repository": {
     "type": "git",
@@ -21,7 +22,9 @@
   },
   "homepage": "https://github.com/CS554-Hack-Elite/Wheel-of-Fortune#readme",
   "dependencies": {
-    "express": "^4.18.2"
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongodb": "^5.1.0"
   },
   "devDependencies": {
     "concurrently": "^7.6.0",

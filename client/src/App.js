@@ -1,22 +1,23 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
-import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
-
-// import { UserDetails } from "./components/UserDetails";
-import { Homepage } from "./components/Homepage";
-import { NotFound } from "./components/NotFound";
+import { AdminLogin } from "./components/AdminComponents/AdminLogin";
+import { UserDetails } from "./components/UserDetails";
+import { CreateBusinessAdmin } from "./components/AdminComponents/CreateBusinessAdmin";
+import { AdminDashboard } from "./components/AdminComponents/AdminDashboard";
 
 function App() {
-	return (
-		<Router>
-			<div className="routes-body">
-				<Routes>
-					<Route path="/" element={<Homepage />} />
-					<Route path="/notfound" element={<NotFound />} />
-					<Route path="*" element={<NotFound />} />
-				</Routes>
-			</div>
-		</Router>
-	);
+  return (
+    <div className="h-screen bg-indigo-200">
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<UserDetails />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/admin-create" element={<CreateBusinessAdmin />} />
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
+  );
 }
 
 export default App;

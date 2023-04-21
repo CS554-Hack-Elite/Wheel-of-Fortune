@@ -9,7 +9,7 @@ const exportedMethods = {
    */
   async getUserDetails() {
     return {
-      name: "user1",
+      name: "user1 ",
     };
   },
 };

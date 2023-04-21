@@ -1,3 +1,3 @@
-import userDataFunctions from "./user.js";
+import customerDataFunctions from "./customer.js";
 
-export const userData = userDataFunctions;
+export const customerData = customerDataFunctions;

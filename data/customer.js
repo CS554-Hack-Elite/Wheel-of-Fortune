@@ -7,9 +7,9 @@ const exportedMethods = {
    * Sample function to get user details
    * @returns User Jsom
    */
-  async getUserDetails() {
+  async getCustomerDetails() {
     return {
-      name: "user1",
+      name: "customer1",
     };
   },
 };

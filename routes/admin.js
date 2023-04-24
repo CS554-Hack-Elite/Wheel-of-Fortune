@@ -1,6 +1,6 @@
 import { Router } from "express";
 const router = Router();
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 router.route("/login").post(async (req, res) => {
   console.log("admin login");

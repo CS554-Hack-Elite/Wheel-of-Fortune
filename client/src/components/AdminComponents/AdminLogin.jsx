@@ -3,18 +3,27 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../Reusables/Button";
 import { FormInput } from "../Reusables/FormInput";
 
+import axios from "axios";
+
 export const AdminLogin = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
 
-  const checkCredentialsAndLogin = () => {
+  const checkCredentialsAndLogin = async () => {
     //TODO: validate creds
 
-    // redirect
+    const adminCreds = { username: username, password: password };
 
-    navigate("/admin-dashboard");
+    try {
+      const { data } = await axios.post("/admin/login", adminCreds);
+
+      localStorage.setItem("adminToken", JSON.stringify(data));
+      navigate("/admin-dashboard");
+    } catch (e) {
+      console.log("error");
+    }
   };
 
   return (

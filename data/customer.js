@@ -2,11 +2,11 @@
 // const collections = require("../mongoCollections");
 // const usersCollection = collections.users;
 
-import * as mongoCollections from "../config/mongoCollection.js";
+import mongoCollections from "../config/mongoCollection.js";
 const customers = mongoCollections.customers;
-import * as bcrypt from "bcryptjs";
+import bcrypt from "bcryptjs";
 const saltRounds = 10;
-import * as helpers from "../helpers/customerHelper.js";
+import helpers from "../helpers/customerHelper.js";
 
 const exportedMethods = {
   /**

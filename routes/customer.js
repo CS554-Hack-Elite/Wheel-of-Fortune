@@ -1,9 +1,18 @@
 import { Router } from "express";
 const router = Router();
 
-import * as customerData from "../data/customer.js";
-import * as  helpers from "../helpers/customerHelper.js";
+import customerData from "../data/customer.js";
+import helpers from "../helpers/customerHelper.js";
 
+router.route("/").get(async (req, res) => {
+  try {
+    const user = await customerData.getCustomerDetails();
+    res.status(200).json(user);
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ errorMessage: e });
+  }
+});
 router.route("/register").post(async (req, res) => {
   try {
     const errorObject = {

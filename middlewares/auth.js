@@ -14,7 +14,7 @@ export const VerifyToken = async (req, res, next) => {
     const decodeValue = await auth.verifyIdToken(token);
     if (decodeValue) {
       req.user = decodeValue;
-      console.log("authenticated");
+      // console.log("authenticated");
       return next();
     }
   } catch (e) {

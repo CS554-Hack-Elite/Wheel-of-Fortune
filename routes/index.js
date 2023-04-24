@@ -1,4 +1,4 @@
-import userRoutes from "./users.js";
+import userRoutes from "./customer.js";
 import authRoutes from "./auth.js";
 import adminRoutes from "./admin.js";
 

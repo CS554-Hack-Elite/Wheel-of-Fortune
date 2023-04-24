@@ -1,6 +1,5 @@
 import { Router } from "express";
 const router = Router();
-import { userData } from "../data/index.js";
 
 import auth from "../config/firebaseConfig.js";
 

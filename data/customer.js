@@ -1,8 +1,5 @@
-// TODO: Add Mongo connection
-// const collections = require("../mongoCollections");
-// const usersCollection = collections.users;
-
 import { customers } from "../config/mongoCollection.js";
+
 import bcrypt from "bcryptjs";
 const saltRounds = 10;
 import helpers from "../helpers/customerHelper.js";

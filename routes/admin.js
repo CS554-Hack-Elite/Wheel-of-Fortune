@@ -1,13 +1,16 @@
 import { Router } from "express";
 const router = Router();
+
 import bcrypt from "bcryptjs";
+import * as mongoCollections from "../config/mongoCollection.js";
+const admins = mongoCollections.admins;
 
 router.route("/login").post(async (req, res) => {
   console.log("admin login");
 
   try {
     const { password } = req.body;
-    const { username } = req.body;
+    const { email } = req.body;
 
     // const hash = await bcrypt.hash("IAMADMIN", 1);
 
@@ -23,7 +26,7 @@ router.route("/login").post(async (req, res) => {
       process.env.ADMIN_LOGIN
     );
 
-    if (username !== "SuperAdmin" || !passwordCompare) throw "Error";
+    if (email !== "SuperAdmin" || !passwordCompare) throw "Error";
 
     res.status(200).json({ adminAccessKey: "Key1" });
   } catch (e) {
@@ -32,25 +35,30 @@ router.route("/login").post(async (req, res) => {
 });
 
 router.route("/business-login").post(async (req, res) => {
-  console.log("admin login");
+  console.log("business admin login");
 
   try {
     const { password } = req.body;
     const { email } = req.body;
 
-    //TODO: Mogog db call to get the requested busineed admin from mongo
-    // .findOne(email: email)
+    console.log(password);
+    console.log(email);
+    const adminCollection = await admins();
+    const adminData = await adminCollection.findOne({
+      email: email,
+    });
 
-    const busineddAdmin = { password: "qweqwe" };
+    if (!adminData) throw "No Admin Found";
 
-    const passwordCompare = await bcrypt.compare(
-      password,
-      busineddAdmin.password
-    );
+    console.log(adminData);
+
+    const passwordCompare = await bcrypt.compare(password, adminData.password);
 
     if (!passwordCompare) throw "Error Unautherized";
 
-    res.status(200).json({ adminAccessKey: "Key1" });
+    res
+      .status(200)
+      .json({ businessAdminKey: "Key1", businessAdminEmail: email });
   } catch (e) {
     res.status(400).json({ errorMessage: e });
   }

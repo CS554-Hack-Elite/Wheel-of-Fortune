@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import { AdminLogin } from "./components/AdminComponents/AdminLogin";
 import { UserDetails } from "./components/UserDetails";
@@ -9,12 +9,11 @@ import { Signup } from "./components/Signup";
 import { Login } from "./components/Login";
 import { Logout } from "./components/Logout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { BusinessAdminDashboard } from "./components/AdminComponents/BusinessAdminDashboard";
 
 function App() {
-  console.log("qwewqe");
-  console.log(process.env.REACT_APP_API_KEY);
   return (
-    <div className="h-screen bg-indigo-200">
+    <div className="h-screen bg-indigo-600">
       <AuthProvider>
         <BrowserRouter>
           <Routes>
@@ -29,8 +28,13 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
             <Route path="/logout" element={<Logout />} />
-            <Route path="/admin-login" element={<AdminLogin />} />>
+            <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route
+              path="/admin-business-dashboard"
+              element={<BusinessAdminDashboard />}
+            />
+            <Route path="*" element={<Navigate to="/login"></Navigate>} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { StastisticsCard } from "../Reusables/StastisticsCard";
 import { Link, useNavigate } from "react-router-dom";
-import { CreateBusinessModal } from "./CreateBusinessModal";
+import { CreateModal } from "./CreateModal";
 import { CreateBusinessAdmin } from "./CreateBusinessAdmin";
+import { clearLocalTokens } from "../../auth/localTokenHandler";
 
 export const AdminDashboard = () => {
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
 
   const logoutAdmin = () => {
-    localStorage.removeItem("adminToken");
+    clearLocalTokens();
     navigate("/admin-login");
   };
 
@@ -19,9 +20,9 @@ export const AdminDashboard = () => {
 
   return (
     <div class="flex">
-      <CreateBusinessModal openModal={openModal} setOpenModal={setOpenModal}>
+      <CreateModal openModal={openModal} setOpenModal={setOpenModal}>
         <CreateBusinessAdmin />{" "}
-      </CreateBusinessModal>
+      </CreateModal>
 
       <div class="fixed w-32 h-screen p-4 bg-white flex flex-col justify-between">
         <div class="flex flex-col items-center">
@@ -49,7 +50,7 @@ export const AdminDashboard = () => {
         </div>
       </div>
       <main class=" ml-32 w-full">
-        <div class="grid lg:grid-cols-3 gap-5 p-4 bg-blue-400">
+        <div class="grid lg:grid-cols-3 gap-5 p-4">
           <StastisticsCard
             value="50"
             title="Number of Coupons"
@@ -64,7 +65,7 @@ export const AdminDashboard = () => {
           ></StastisticsCard>
         </div>
 
-        <div class="p-4 grid md:grid-cols-4 grid-cols-1 gap-4 bg-red-500">
+        <div class="p-4 grid md:grid-cols-4 grid-cols-1 gap-4">
           <div class="md:col-span-2 p-4 lg:h-[80vh] h-[50vh] rounded-lg bg-white overflow-y-auto">
             <h1 class="text-3xl font-medium text-teal-600 p-2">
               Top 10 Coupons

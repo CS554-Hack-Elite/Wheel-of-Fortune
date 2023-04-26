@@ -56,7 +56,10 @@ export const Signup = () => {
 
         <div className="grid lg:grid-row-3 gap-2 mt-4">
           <Button title="Signup" clickAction={signupCustomer} />
-          <Button title="Login" clickAction={redirectToLogin} />
+          <Button
+            title="Already have an Account"
+            clickAction={redirectToLogin}
+          />
         </div>
       </div>
     </div>

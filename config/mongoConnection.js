@@ -4,17 +4,21 @@ let _connection = undefined;
 let _db = undefined;
 
 const dbConnection = async () => {
-	if (!_connection) {
-		const mongoClient = new MongoClient(process.env.ATLAS_URI, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-		_connection = await mongoClient.connect();
-		_db = await _connection.db(process.env.DATABASE);
-	}
+  if (!_connection) {
+    const mongoClient = new MongoClient(process.env.ATLAS_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverApi: ServerApiVersion.v1,
+    });
+    _connection = await mongoClient.connect();
+    _db = await _connection.db(process.env.DATABASE);
+  }
 
-	return _db;
+  return _db;
 };
 
 const closeConnection = () => {
-	_connection.close();
+  _connection.close();
 };
 
 export { dbConnection, closeConnection };

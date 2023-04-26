@@ -19,7 +19,12 @@ router.route("/register").post(async (req, res) => {
       status: 400,
     };
     let result = req.body;
-    let objKeys = ["email", "password", "name", "age"];
+    let objKeys = [];
+    if (result.google_authenticated && result.google_authenticated == 1) {
+      objKeys = ["email", "name"];
+    } else {
+      objKeys = ["email", "password", "name", "age"];
+    }
     objKeys.forEach((element) => {
       helpers.checkInput(
         element,

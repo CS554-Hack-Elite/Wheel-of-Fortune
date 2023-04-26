@@ -22,6 +22,27 @@ export const CreateCoupon = () => {
           changeAction={setCouponName}
         />
 
+        <FormInput
+          title="Coupon Description"
+          type="text"
+          changeAction={setCouponName}
+        />
+
+        <div className="relative mb-4 w-4/5">
+          <label for="file" className="leading-7 text-sm text-gray-600">
+            Coupon Image
+          </label>
+          <input
+            type="file"
+            id="file"
+            name="file"
+            className="w-full bg-white rounded border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 leading-8 transition-colors duration-200 ease-in-out"
+            // onChange={(e) => {
+            //   changeAction(e.target.value);
+            // }}
+          />
+        </div>
+
         <Button title="Create Coupon" clickAction={createCoupon} />
       </div>
     </div>

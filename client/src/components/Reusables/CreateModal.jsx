@@ -3,7 +3,7 @@ import React from "react";
 export const CreateModal = ({ openModal, setOpenModal, children }) => {
   return (
     <div
-      className={`fixed inset-0 bg-gray-500 bg-opacity-75 ${
+      className={` z-10 fixed inset-0 bg-gray-500 bg-opacity-75 ${
         openModal ? "" : "hidden"
       }`}
     >

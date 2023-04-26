@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "./Reusables/Button";
 import { FormInput } from "./Reusables/FormInput";
 import { useAuth } from "../contexts/AuthContext";
+import { CreateModal } from "./Reusables/CreateModal";
+import { Error } from "./Reusables/Error";
+import { Loading } from "./Reusables/Loading";
 
 export const Login = () => {
   const [email, setEmail] = useState("");
@@ -10,7 +13,9 @@ export const Login = () => {
 
   const { currentUser, login, googleLogin } = useAuth();
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [errorModal, setErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate();
 
@@ -24,34 +29,40 @@ export const Login = () => {
     try {
       setLoading(true);
       await login(email, password);
-      console.log(currentUser);
+      setLoading(false);
       navigate("/customer/dashboard");
     } catch (e) {
-      alert("Failed to register");
+      setLoading(false);
+      setErrorModal(true);
+      setErrorMessage(e.toString());
     }
-
-    setLoading(false);
   };
 
   const loginCutomerByGoogle = async () => {
     try {
       setLoading(true);
       await googleLogin(email, password);
-      console.log(currentUser);
+      setLoading(false);
       navigate("/customer/dashboard");
     } catch (e) {
-      alert("Failed to register");
+      setLoading(false);
+      setErrorModal(true);
+      setErrorMessage(e.toString());
     }
-
-    setLoading(false);
   };
 
   const redirectToSignup = () => {
     navigate("/signup");
   };
 
+  if (loading) return <Loading />;
+
   return (
     <div className="flex justify-center h-full">
+      <CreateModal openModal={errorModal} setOpenModal={setErrorModal}>
+        <Error message={errorMessage} />
+      </CreateModal>
+
       <div className="lg:w-1/3 md:w-1/2 bg-white flex flex-col w-full my-auto md:py-8 items-center rounded shadow-2xl ">
         <div className="text-gray-900 text-lg mb-1 font-medium title-font">
           Login

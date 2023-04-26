@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StastisticsCard } from "../Reusables/StastisticsCard";
 import { useNavigate } from "react-router-dom";
-import { CreateModal } from "./CreateModal";
+import { CreateModal } from "../Reusables/CreateModal";
 import { CreateCoupon } from "./CreateCoupon";
 
 export const BusinessAdminDashboard = () => {

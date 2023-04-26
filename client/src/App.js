@@ -1,5 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
+import { Homepage } from "./components/Homepage";
+import { CustomerDashboard } from "./components/CustomerComponents/CustomerDashboard";
 import { AdminLogin } from "./components/AdminComponents/AdminLogin";
 import { UserDetails } from "./components/UserDetails";
 import { CreateBusinessAdmin } from "./components/AdminComponents/CreateBusinessAdmin";
@@ -29,8 +31,13 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
             <Route path="/logout" element={<Logout />} />
-            <Route path="/admin-login" element={<AdminLogin />} />>
+            <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
+			<Route path="/home" element={<Homepage />} />
+			<Route path="/customer/dashboard" element={<CustomerDashboard />} />
+			<Route path="/admin-login" element={<AdminLogin />} />
+			<Route path="/admin-create" element={<CreateBusinessAdmin />} />
+			<Route path="/admin-dashboard" element={<AdminDashboard />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

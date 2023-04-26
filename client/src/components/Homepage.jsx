@@ -1,6 +1,6 @@
 import React from "react";
 import { IoHomeOutline } from "react-icons/io5";
-import { FaFacebook, FaInstagram, FaInstagramSquare, FaLinkedin, FaLinkedinIn } from "react-icons/fa";
+// import { FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa";
 
 export const Homepage = () => {
 	return (
@@ -21,7 +21,7 @@ export const Homepage = () => {
 				</a>
 			</nav>
 			<main className="h-screen">
-				<div>
+				<div className="px-12">
 					<div className="flex justify-center mt-4 mb-4 font-semibold xl:text-5xl lg:text-4xl md:text-3xl sm:text-2xl">
 						Welcome to Wheel of Fortune!
 					</div>
@@ -39,15 +39,15 @@ export const Homepage = () => {
 			</main>
 			<footer className="h-32 flex justify-center py-5 bg-indigo-950 text-white mt-4">
 				<div className="flex flex-row">
-					<div className="facebook px-2 hover:text-gray-200 hover:cursor-pointer">
-						<FaFacebook size={20} />
-					</div>
-					<div className="github px-2 hover:text-gray-200 hover:cursor-pointer">
-						<FaInstagram size={20} />
-					</div>
-					<div className="github px-2 hover:text-gray-200 hover:cursor-pointer">
-						<FaLinkedin size={20} />
-					</div>
+					<a href="/" className="facebook px-2 hover:text-gray-200 hover:cursor-pointer">
+						{/* <FaFacebook size={20} /> */}
+					</a>
+					<a href="/" className="github px-2 hover:text-gray-200 hover:cursor-pointer">
+						{/* <FaInstagram size={20} /> */}
+					</a>
+					<a href="/" className="github px-2 hover:text-gray-200 hover:cursor-pointer">
+						{/* <FaLinkedin size={20} /> */}
+					</a>
 				</div>
 			</footer>
 		</div>

@@ -1,5 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
+import { Homepage } from "./components/Homepage";
+import { CustomerDashboard } from "./components/CustomerComponents/CustomerDashboard";
 import { AdminLogin } from "./components/AdminComponents/AdminLogin";
 import { UserDetails } from "./components/UserDetails";
 import { CreateBusinessAdmin } from "./components/AdminComponents/CreateBusinessAdmin";
@@ -35,6 +37,9 @@ function App() {
               element={<BusinessAdminDashboard />}
             />
             <Route path="*" element={<Navigate to="/login"></Navigate>} />
+            <Route path="/home" element={<Homepage />} />
+            <Route path="/customer/dashboard" element={<CustomerDashboard />} />
+            <Route path="/admin-create" element={<CreateBusinessAdmin />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

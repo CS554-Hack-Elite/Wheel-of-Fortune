@@ -2,7 +2,6 @@ import { Router } from "express";
 const router = Router();
 
 import bcrypt from "bcryptjs";
-import * as connection from "../config/mongoCollection.js";
 import * as mongoCollections from "../config/mongoCollection.js";
 const admins = mongoCollections.admins;
 

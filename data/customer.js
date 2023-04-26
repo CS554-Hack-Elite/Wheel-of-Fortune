@@ -29,7 +29,7 @@ const exportedMethods = {
       helpers.checkInput(
         element,
         result[element],
-        element + " of the customer",
+        element + " of the customer"
       );
     });
     if (result.google_authenticated && result.google_authenticated == 2) {

@@ -8,5 +8,5 @@ export const ProtectedRoute = ({ children }) => {
 
   if (currentUser) return children;
 
-  return <Navigate to="/login" />;
+  return <Navigate to="/home" />;
 };

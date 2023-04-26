@@ -3,9 +3,7 @@ import React from "react";
 export const FormInput = ({ title, type, changeAction }) => {
   return (
     <div className="relative mb-4 w-4/5">
-      <label for={type} className="leading-7 text-sm text-gray-600">
-        {title}
-      </label>
+      <label className="leading-7 text-sm text-gray-600">{title}</label>
       <input
         type={type}
         id={type}

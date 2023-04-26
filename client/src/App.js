@@ -36,9 +36,16 @@ function App() {
               path="/admin-business-dashboard"
               element={<BusinessAdminDashboard />}
             />
-            <Route path="*" element={<Navigate to="/login"></Navigate>} />
+            <Route path="*" element={<Navigate to="/home"></Navigate>} />
             <Route path="/home" element={<Homepage />} />
-            <Route path="/customer/dashboard" element={<CustomerDashboard />} />
+            <Route
+              path="customer/dashboard"
+              element={
+                <ProtectedRoute>
+                  <CustomerDashboard />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/admin-create" element={<CreateBusinessAdmin />} />
           </Routes>
         </BrowserRouter>

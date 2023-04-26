@@ -24,7 +24,7 @@ export const Signup = () => {
     try {
       setLoading(true);
       await register(email, password);
-      navigate("/");
+      navigate("/customer/dashboard");
     } catch (e) {
       //TODO: delete user from db
       alert("Failed to register");

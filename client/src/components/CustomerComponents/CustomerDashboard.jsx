@@ -12,8 +12,8 @@ export const CustomerDashboard = () => {
 	// axios call to fetch coupons from /api/coupons route using useEffect hook
 	useEffect(() => {
 		// async function fetchCoupons() {
-		// 	const { data } = await axios.get("/getallcoupons");
-		// 	setCoupons(data);
+		//   const { data } = await axios.get("/getallcoupons");
+		//   setCoupons(data);
 		// }
 		// fetchCoupons();
 	});

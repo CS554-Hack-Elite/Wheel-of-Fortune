@@ -25,7 +25,7 @@ export const Login = () => {
       setLoading(true);
       await login(email, password);
       console.log(currentUser);
-      navigate("/");
+      navigate("/customer/dashboard");
     } catch (e) {
       alert("Failed to register");
     }
@@ -38,7 +38,7 @@ export const Login = () => {
       setLoading(true);
       await googleLogin(email, password);
       console.log(currentUser);
-      navigate("/");
+      navigate("/customer/dashboard");
     } catch (e) {
       alert("Failed to register");
     }

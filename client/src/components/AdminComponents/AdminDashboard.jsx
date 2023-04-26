@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StastisticsCard } from "../Reusables/StastisticsCard";
 import { Link, useNavigate } from "react-router-dom";
-import { CreateModal } from "./CreateModal";
+import { CreateModal } from "../Reusables/CreateModal";
 import { CreateBusinessAdmin } from "./CreateBusinessAdmin";
 import { clearLocalTokens } from "../../auth/localTokenHandler";
 

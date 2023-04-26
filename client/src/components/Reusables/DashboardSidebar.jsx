@@ -9,7 +9,7 @@ export const DashboardSidebar = ({ buttons }) => {
 		});
 	}
 	return (
-		<div className="fixed w-32 h-screen p-4 bg-indigo-950 flex flex-col justify-between">
+		<div className="fixed w-32 h-screen p-4 bg-gradient-to-b from-blue-800 to-indigo-800 drop-shadow-md flex flex-col justify-between">
 			<div className="flex flex-col items-center">
 				{handleButtons(buttons)}
 				<span className="border-b-2 border-indigo-200 w-full p-2"></span>

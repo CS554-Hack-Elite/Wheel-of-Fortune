@@ -16,7 +16,7 @@ import { BusinessAdminDashboard } from "./components/AdminComponents/BusinessAdm
 
 function App() {
 	return (
-		<div className="h-screen bg-indigo-600">
+		<div className="h-screen bg-gradient-to-r from-blue-500 via-indigo-300 to-sky-200">
 			<AuthProvider>
 				<BrowserRouter>
 					<Routes>

@@ -14,7 +14,7 @@ export const DashboardSidebar = ({ buttons }) => {
 				{handleButtons(buttons)}
 				<span className="border-b-2 border-indigo-200 w-full p-2"></span>
 				<Link to="/logout">
-					<div className="bg-indigo-50 hover:bg-indigo-100 cursor-pointer my-4 p-3 rounded-lg inline-block">Logout</div>
+					<div className="w-24 text-center bg-indigo-50 hover:bg-indigo-100 cursor-pointer my-4 p-3 rounded-lg inline-block">Logout</div>
 				</Link>
 			</div>
 		</div>

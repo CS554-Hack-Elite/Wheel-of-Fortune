@@ -48,11 +48,16 @@ export const CustomerDashboard = () => {
 				</div>
 			);
 		} else {
-			return <div></div>;
+			return (
+				<div className="grid grid-cols-1">
+					<div className="w-full col-span-1 border-indigo-600 border-2 text-gray-800 rounded-lg p-4 mt-8 text-2xl">No Coupons Available</div>
+				</div>
+			);
 		}
 	};
 
-	const data = [{ option: "0" }, { option: "1" }, { option: "2" }, { option: "4" }];
+	const data = [{ option: "100% OFF" }, { option: "20% OFF" }, { option: "Buy 1 Get 1 Free" }, { option: "Try Again" }];
+	// const data = [];
 	return (
 		<div className="max-h-fit flex">
 			<DashboardSidebar buttons={[{ title: "Coupons", linkTo: "/customer/coupons" }]} />
@@ -62,7 +67,7 @@ export const CustomerDashboard = () => {
 					<StastisticsCard value="50" title="Total Coupons Won"></StastisticsCard>
 				</div>
 
-				<div className="pt-4 px-4 pb-0 grid grid-cols-1 gap-4">
+				<div className="h-[85vh] pt-4 px-4 pb-0 grid grid-cols-1 gap-4">
 					<div className="max-w-full col-span-1 p-4 h-full rounded-lg bg-white">
 						<div className="flex justify-center text-3xl font-medium text-indigo-600 p-2">Spin the Wheel</div>
 						<div className="wheel flex justify-center mt-10">{handleWheel(data)}</div>

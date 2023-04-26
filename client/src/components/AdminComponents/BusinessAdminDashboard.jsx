@@ -72,18 +72,25 @@ export const BusinessAdminDashboard = () => {
                 Available Coupons
               </h1>
               <ul>
-                {/* {{#each newInquiryList}}
-							<li className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
-								<div className="bg-teal-100 rounded-lg p-5">
-									<img src="../public/img/solar.svg" className="text-purple-800 w-[40px]" />
-								</div>
-								<div className="pl-4">
-									<p className="text-gray-800 font-bold">{{subject}}</p>
-									<p className="text-gray-400 text-sm">{{message}}</p>
-								</div>
-								<span className="lg:flex md:hidden absolute right-6 text-md font-medium"><a href="/sales/generateaccount/{{_id}}"><button className="px-3 py-2 bg-emerald-600 text-white text-lg rounded-lg hover:bg-emerald-700 active:bg-emerald-500">Claim</button></a></span>
-							</li>
-						{{/each}} */}
+                <li className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
+                  <div className="bg-teal-100 rounded-lg p-5">
+                    <img
+                      src="../public/img/solar.svg"
+                      className="text-purple-800 w-[40px]"
+                    />
+                  </div>
+                  <div className="pl-4">
+                    <p className="text-gray-800 font-bold">qweeqw</p>
+                    <p className="text-gray-400 text-sm">qweqew</p>
+                  </div>
+                  <span className="lg:flex md:hidden ml-auto right-6 text-md font-medium">
+                    <a href="/sales/generateaccount/{{_id}}">
+                      <button className="px-3 py-2 bg-emerald-600 text-white text-lg rounded-lg hover:bg-emerald-700 active:bg-emerald-500">
+                        Claim
+                      </button>
+                    </a>
+                  </span>
+                </li>
               </ul>
             </div>
             <div className="md:col-span-2 p-4 lg:h-[90vh] h-[50vh] rounded-lg bg-white overflow-y-auto">
@@ -91,18 +98,25 @@ export const BusinessAdminDashboard = () => {
                 Customer Requests
               </h1>
               <ul>
-                {/* {{#each ongoingInquiryList}}
-							<li className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
-								<div className="bg-yellow-100 rounded-lg p-5">
-									<img src="../public/img/solar-panel.svg" className="text-purple-800 w-[40px]" />
-								</div>
-								<div className="pl-4">
-									<p className="text-gray-800 font-bold">{{subject}}</p>
-									<p className="text-gray-400 text-sm">{{message}}</p>
-								</div>
-								<p className="lg:flex md:hidden absolute right-6 text-md font-medium"><a href="/sales/inquirydetails/{{_id}}"><button className="px-3 py-2 bg-emerald-600 text-white text-lg rounded-lg hover:bg-emerald-700 active:bg-emerald-500">Details</button></a></p>
-							</li>
-						{{/each}} */}
+                <li className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
+                  <div className="bg-yellow-100 rounded-lg p-5">
+                    <img
+                      src="../public/img/solar-panel.svg"
+                      className="text-purple-800 w-[40px]"
+                    />
+                  </div>
+                  <div className="pl-4">
+                    <p className="text-gray-800 font-bold">qwqeewq</p>
+                    <p className="text-gray-400 text-sm">qweew</p>
+                  </div>
+                  <p className="lg:flex md:hidden absolute right-6 text-md font-medium">
+                    <a href="/sales/inquirydetails/{{_id}}">
+                      <button className="px-3 py-2 bg-emerald-600 text-white text-lg rounded-lg hover:bg-emerald-700 active:bg-emerald-500">
+                        Details
+                      </button>
+                    </a>
+                  </p>
+                </li>
               </ul>
             </div>
           </div>

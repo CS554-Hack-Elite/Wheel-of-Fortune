@@ -87,20 +87,6 @@ const exportedMethods = {
 
       case "age":
         if (routeFlag) {
-          if (typeof val !== "string") {
-            errorObject.error = `${
-              variableName || "Provided variable"
-            } must be a string.`;
-            throw errorObject;
-          }
-          val = val.trim();
-          if (!val) {
-            errorObject.error = `${
-              variableName || "Provided variable"
-            } must not be empty.`;
-            throw errorObject;
-          }
-
           inputRegExp = /^[0-9]+$/;
           valid = inputRegExp.test(val);
           if (!valid) {

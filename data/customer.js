@@ -2,8 +2,7 @@
 // const collections = require("../mongoCollections");
 // const usersCollection = collections.users;
 
-import mongoCollections from "../config/mongoCollection.js";
-const customers = mongoCollections.customers;
+import { customers } from "../config/mongoCollection.js";
 import bcrypt from "bcryptjs";
 const saltRounds = 10;
 import helpers from "../helpers/customerHelper.js";
@@ -23,6 +22,7 @@ const exportedMethods = {
       status: 400,
     };
     let objKeys = [];
+
     if (result.google_authenticated && result.google_authenticated == 1) {
       objKeys = ["email", "name"];
     } else {
@@ -33,10 +33,9 @@ const exportedMethods = {
         element,
         result[element],
         element + " of the customer",
-        true
       );
     });
-    if (result.google_authenticated && result.google_authenticated == 1) {
+    if (result.google_authenticated && result.google_authenticated == 2) {
       let hashedPass = await bcrypt.hash(result.password.trim(), saltRounds);
       result.password = hashedPass;
     } else {
@@ -44,7 +43,6 @@ const exportedMethods = {
       result.age = 13;
     }
     const customerCollection = await customers();
-
     if (result.google_authenticated && result.google_authenticated == 2) {
       let duplicateUser = await customerCollection.findOne({
         email: result.email,
@@ -54,10 +52,8 @@ const exportedMethods = {
         throw errorObject;
       }
     }
-
     result.coupons = [];
     result.created_at = new Date().toLocaleString();
-
     const insertInfo = await customerCollection.insertOne(result);
     if (!insertInfo.acknowledged || insertInfo.insertedCount === 0) {
       errorObject.status = 500;
@@ -65,7 +61,7 @@ const exportedMethods = {
       throw errorObject;
     }
     const newId = insertInfo.insertedId;
-    const newCustomer = await customerCollection.findOne(newId);
+    let newCustomer = await customerCollection.findOne(newId);
     newCustomer._id = newCustomer._id.toString();
     newCustomer = (({ password, ...o }) => o)(newCustomer);
     return newCustomer;

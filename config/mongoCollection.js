@@ -18,4 +18,4 @@ let getCollectionFn = (collection) => {
 const customers = getCollectionFn("customers");
 
 /* Now, you can list your collections here: */
-export { customers };
+export  { customers };

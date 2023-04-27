@@ -3,6 +3,7 @@ import "./App.css";
 import { Homepage } from "./components/Homepage";
 import { CustomerDashboard } from "./components/CustomerComponents/CustomerDashboard";
 import { CustomerCoupons } from "./components/CustomerComponents/CustomerCoupons";
+import { CustomerProof } from "./components/CustomerComponents/CustomerProof";
 import { AdminLogin } from "./components/AdminComponents/AdminLogin";
 import { UserDetails } from "./components/UserDetails";
 import { CreateBusinessAdmin } from "./components/AdminComponents/CreateBusinessAdmin";
@@ -44,7 +45,22 @@ function App() {
 								</ProtectedRoute>
 							}
 						/>
-						<Route path="/customer/coupons" element={<CustomerCoupons />} />
+						<Route
+							path="customer/proof"
+							element={
+								<ProtectedRoute>
+									<CustomerProof />
+								</ProtectedRoute>
+							}
+						/>
+						<Route
+							path="customer/coupons"
+							element={
+								<ProtectedRoute>
+									<CustomerCoupons />
+								</ProtectedRoute>
+							}
+						/>
 						<Route path="/admin-create" element={<CreateBusinessAdmin />} />
 					</Routes>
 				</BrowserRouter>

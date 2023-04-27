@@ -5,7 +5,13 @@ import auth from "../config/firebaseConfig.js";
 export const VerifyToken = async (req, res, next) => {
   console.log("middleware");
 
+  // Special accesss for admin login
   if (req.originalUrl.startsWith("/admin")) {
+    return next();
+  }
+
+  // Special access for the register route
+  if (req.originalUrl.startsWith("/users/register")) {
     return next();
   }
 
@@ -14,7 +20,6 @@ export const VerifyToken = async (req, res, next) => {
     const decodeValue = await auth.verifyIdToken(token);
     if (decodeValue) {
       req.user = decodeValue;
-      // console.log("authenticated");
       return next();
     }
   } catch (e) {

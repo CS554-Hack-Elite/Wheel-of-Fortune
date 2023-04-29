@@ -1,41 +1,36 @@
 import React, { useState } from "react";
-import { Button } from "../Reusables/Button";
 import { FormInput } from "../Reusables/FormInput";
+import { Button } from "../Reusables/Button";
 
-export const CreateBusinessAdmin = () => {
-  const [username, setUsername] = useState("");
-  const [businessName, setBusinessName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+export const CreateCoupon = () => {
+  const [couponName, setCouponName] = useState("");
 
-  const createBusinessAdmin = () => {
-    console.log("created");
+  const createCoupon = () => {
+    console.log("creating coupon");
   };
 
   return (
     <div className="flex justify-center h-full">
       <div className="bg-white flex flex-col w-full md:py-8 my-auto justify-center items-center rounded">
         <div className="text-gray-900 text-lg mb-1 font-medium title-font">
-          Create a Business Admin
+          Generate A Coupon
         </div>
 
-        <FormInput title="Username" type="name" changeAction={setUsername} />
-
-        <FormInput title="Email" type="email" changeAction={setEmail} />
         <FormInput
-          title="Password"
-          type="password"
-          changeAction={setPassword}
+          title="Coupon Name"
+          type="name"
+          changeAction={setCouponName}
         />
+
         <FormInput
-          title="Business"
+          title="Coupon Description"
           type="text"
-          changeAction={setBusinessName}
+          changeAction={setCouponName}
         />
 
         <div className="relative mb-4 w-4/5">
           <label for="file" className="leading-7 text-sm text-gray-600">
-            Business Logo
+            Coupon Image
           </label>
           <input
             type="file"
@@ -48,7 +43,7 @@ export const CreateBusinessAdmin = () => {
           />
         </div>
 
-        <Button title="Create Admin" clickAction={createBusinessAdmin} />
+        <Button title="Create Coupon" clickAction={createCoupon} />
       </div>
     </div>
   );

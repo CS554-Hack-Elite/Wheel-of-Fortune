@@ -16,11 +16,11 @@ let getCollectionFn = (collection) => {
 };
 
 const customers = getCollectionFn("customers");
-const admin = getCollectionFn("admin");
+const admins = getCollectionFn("admins");
 const coupons = getCollectionFn("coupons");
 
 /* Now, you can list your collections here: */
 export { 
   customers,
-  admin
+  admins
  };

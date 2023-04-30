@@ -3,7 +3,6 @@ import authRoutes from "./auth.js";
 import adminRoutes from "./admin.js";
 
 const constructorMethod = (app) => {
-
   app.use("/users/", userRoutes);
   app.use("/auth/", authRoutes);
   app.use("/admin/", adminRoutes);

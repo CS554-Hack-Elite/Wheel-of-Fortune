@@ -165,50 +165,6 @@ router.route('/account')
       }
   });
 
- */
-
-
-  router.route('/business/list')
-  .get(async (req, res) => {
-    try {
-      
-      const allBusinesses = await adminData.getAllBusinesses();
-      let allBusinessesList = [];
-      for (i = 0; i < allBusinesses.length; i++) {
-        allBusinessesList.push({ _id: allBusinesses[i]._id, name: allBusinesses[i].name, logo: allBusinesses[i].logo });
-      }
-      res.json(allBusinessesList);
-    } catch (e) {
-      res.status(500).json({ error: 'Businesses not found' });
-    }
-  })
-  .delete('/business/delete', async (req, res) => {
-    try {
-      const id = req.body.id;
-      const deletedBusiness = await req.allBusinessesList.findOneAndDelete({ _id: ObjectId(id) });
-      if (!deletedBusiness) {
-        return res.status(404).json({ error: 'Business not found' });
-      }
-      res.json(deletedBusiness);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Server error' });
-    }
-  });
-
-  router.route('/customer/list')
-  .get(async (req, res) => {
-    try {
-      const allCustomers = await adminData.getAllCustomers();
-      let allCustomersList = [];
-      for (i = 0; i < allCustomers.length; i++) {
-        allCustomersList.push({ name: allCustomers[i].name, email: allCustomers[i].email, points: allCustomers[i].points, totalCoupons: allCustomers[i].coupons.length});
-      }
-      res.json(allCustomersList);
-    } catch (e) {
-      res.status(500).json({ error: 'Customers not found' });
-    }
-  })
-  
+ */  
 
 export default router;

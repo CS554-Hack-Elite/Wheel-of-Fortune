@@ -1,15 +1,73 @@
 import { Router } from "express";
 const router = Router();
-const AdminData = require("../data/Admin.js/index.js");
 
-router.route("/dashboard")
-    .get(async (req, res) => {
+import bcrypt from "bcryptjs";
+import * as mongoCollections from "../config/mongoCollection.js";
 
-      
-        
+const admins = mongoCollections.admins;
+const adminData = require("../data/admin.js");
 
+router.route("/login").post(async (req, res) => {
+  console.log("admin login");
+
+  try {
+    const { password } = req.body;
+    const { email } = req.body;
+
+    // const hash = await bcrypt.hash("IAMADMIN", 1);
+
+    //TODO: Put it in .env file
+    //TODO: Check mongo
+    //TODO: qweqw
+    //TODO: Error Handling
+    //TODO: Get info on the new page
+    //TODO: Put firebase stuff in .env
+
+    const passwordCompare = await bcrypt.compare(
+      password,
+      process.env.ADMIN_LOGIN
+    );
+
+    if (email !== "SuperAdmin" || !passwordCompare) throw "Error";
+
+    res.status(200).json({ adminAccessKey: "Key1" });
+  } catch (e) {
+    res.status(400).json({ errorMessage: e });
+  }
 });
 
+router.route("/business-login").post(async (req, res) => {
+  console.log("business admin login");
+
+  try {
+    const { password } = req.body;
+    const { email } = req.body;
+
+    console.log(password);
+    console.log(email);
+    const adminCollection = await admins();
+    const adminData = await adminCollection.findOne({
+      email: email,
+    });
+
+    if (!adminData) throw "No Admin Found";
+
+    console.log(adminData);
+
+    const passwordCompare = await bcrypt.compare(password, adminData.password);
+
+    if (!passwordCompare) throw "Error Unautherized";
+
+    res
+      .status(200)
+      .json({ businessAdminKey: "Key1", businessAdminEmail: email });
+  } catch (e) {
+    res.status(400).json({ errorMessage: e });
+  }
+});
+
+//Master admin account edit feature removed later 
+/* 
 router.route('/account')
   .get(async (req, res) => {
     try{
@@ -20,7 +78,7 @@ router.route('/account')
             errorObject.status = 401;
             errorObject.error = "Unauthorized Access";
         }
-    const accountData = await AdminData.getAdminById(req.session.admin._id)
+    const accountData = await adminData.getAdminById(req.session.admin._id)
     res.status(200).json(accountData);
     } catch (e) {
         if (
@@ -52,7 +110,7 @@ router.route('/account')
             errorObject.status = 401;
             errorObject.error = "Unauthorized Access";
         }
-        admin = await AdminData.getAdminById(req.session.admin._id)
+        admin = await adminData.getAdminById(req.session.admin._id)
         if(!admin){
             errorObject.status = 401;
             errorObject.error = "No Admin with this id";
@@ -81,7 +139,7 @@ router.route('/account')
         errorObject.error = "No fields were updated";
       }
 
-      const updatedAdmin = await AdminData.updateAdminAccount(req.session.admin._id, updatedFields, { new: true });
+      const updatedAdmin = await adminData.updateAdminAccount(req.session.admin._id, updatedFields, { new: true });
   
       res.status(200).json(updatedAdmin);
 
@@ -107,11 +165,14 @@ router.route('/account')
       }
   });
 
- 
+ */
+
+
   router.route('/business/list')
   .get(async (req, res) => {
     try {
-      const allBusinesses = await AdminData.getAllBusinesses();
+      
+      const allBusinesses = await adminData.getAllBusinesses();
       let allBusinessesList = [];
       for (i = 0; i < allBusinesses.length; i++) {
         allBusinessesList.push({ _id: allBusinesses[i]._id, name: allBusinesses[i].name, logo: allBusinesses[i].logo });
@@ -138,7 +199,7 @@ router.route('/account')
   router.route('/customer/list')
   .get(async (req, res) => {
     try {
-      const allCustomers = await AdminData.getAllCustomers();
+      const allCustomers = await adminData.getAllCustomers();
       let allCustomersList = [];
       for (i = 0; i < allCustomers.length; i++) {
         allCustomersList.push({ name: allCustomers[i].name, email: allCustomers[i].email, points: allCustomers[i].points, totalCoupons: allCustomers[i].coupons.length});
@@ -149,6 +210,5 @@ router.route('/account')
     }
   })
   
-  
 
-module.exports = router;
+export default router;

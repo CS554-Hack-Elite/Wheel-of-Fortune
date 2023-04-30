@@ -1,10 +1,9 @@
-const mongoCollection = require('../config/mongoCollection');
-const coupons = mongoCollection.coupons;
+import { coupons } from "../config/mongoCollection.js";
 
 
 const exportedMethods = {
 
-    async generateCoupon(info) {
+    async generateCoupons(info) {
         try {
           const errorObject = {
                 status: 400
@@ -35,8 +34,8 @@ const exportedMethods = {
           }
           // will have to check if business id is present in business data (in route file/here also?)
           if (!info.business_id || typeof info.business_id !== 'string') {
-            error.status = 400;
-            error.error = 'Invalid business ID';
+            errorObject.status = 400;
+            errorObject.error = 'Invalid business ID';
           }
           const date = date();
           const codes = [];
@@ -60,6 +59,7 @@ const exportedMethods = {
         }
           
           const coupon = {
+            _id: ObjectId(),
             name: info.name,
             description: info.description,
             image: info.image,

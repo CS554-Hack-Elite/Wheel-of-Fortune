@@ -4,7 +4,8 @@ const couponsData = require('./coupons.js');
 
 module.exports = {
     coupons: couponsData,
-    customer: customerData
+    customer: customerData,
+    business: businessData
   };
 
 

@@ -3,12 +3,18 @@ import { Button } from "../Reusables/Button";
 import { FormInput } from "../Reusables/FormInput";
 
 export const CreateBusinessAdmin = () => {
-  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
+  const [age, setAge] = useState(13);
   const [businessName, setBusinessName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // const [password, setPassword] = useState("");
 
   const createBusinessAdmin = () => {
+    try {
+      // TODO: Validate Credentials
+      //TODO: Axios Request
+    } catch (e) {}
+
     console.log("created");
   };
 
@@ -19,17 +25,31 @@ export const CreateBusinessAdmin = () => {
           Create a Business Admin
         </div>
 
-        <FormInput title="Username" type="name" changeAction={setUsername} />
-
-        <FormInput title="Email" type="email" changeAction={setEmail} />
         <FormInput
-          title="Password"
-          type="password"
-          changeAction={setPassword}
-        />
-        <FormInput
-          title="Business"
+          title="Admin Name"
           type="text"
+          value={name}
+          changeAction={setName}
+        />
+
+        <FormInput
+          title="Email"
+          type="email"
+          value={email}
+          changeAction={setEmail}
+        />
+
+        <FormInput
+          title="Age"
+          type="number"
+          value={age}
+          changeAction={setAge}
+        />
+
+        <FormInput
+          title="Business Name"
+          type="text"
+          value={businessName}
           changeAction={setBusinessName}
         />
 

@@ -12,15 +12,6 @@ router.route("/login").post(async (req, res) => {
     const { password } = req.body;
     const { email } = req.body;
 
-    // const hash = await bcrypt.hash("IAMADMIN", 1);
-
-    //TODO: Put it in .env file
-    //TODO: Check mongo
-    //TODO: qweqw
-    //TODO: Error Handling
-    //TODO: Get info on the new page
-    //TODO: Put firebase stuff in .env
-
     const passwordCompare = await bcrypt.compare(
       password,
       process.env.ADMIN_LOGIN

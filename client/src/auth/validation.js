@@ -1,6 +1,5 @@
-import ObjectId from "mongodb";
-
 //common function to check all input parameters for both route and data
+
 const exportedMethods = {
   checkInput(input, val, variableName, routeFlag = false, required = true) {
     const errorObject = {
@@ -115,24 +114,24 @@ const exportedMethods = {
         }
         break;
 
-      case "id":
-        if (typeof val !== "string") {
-          errorObject.error = `${
-            variableName || "Provided variable"
-          } must be a string.`;
-          throw errorObject;
-        }
-        val = val.trim();
-        if (!val) {
-          errorObject.error = `${
-            variableName || "Provided variable"
-          } must not be empty.`;
-          throw errorObject;
-        }
-        if (!ObjectId.isValid(val)) {
-          throw "Invalid Customer.";
-        }
-        break;
+      //   case "id":
+      //     if (typeof val !== "string") {
+      //       errorObject.error = `${
+      //         variableName || "Provided variable"
+      //       } must be a string.`;
+      //       throw errorObject;
+      //     }
+      //     val = val.trim();
+      //     if (!val) {
+      //       errorObject.error = `${
+      //         variableName || "Provided variable"
+      //       } must not be empty.`;
+      //       throw errorObject;
+      //     }
+      //     if (!ObjectId.isValid(val)) {
+      //       throw "Invalid Customer.";
+      //     }
+      //     break;
 
       default:
         errorObject.error = "Invalid Data encountered";

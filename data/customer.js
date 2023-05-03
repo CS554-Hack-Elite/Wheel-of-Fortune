@@ -1,6 +1,6 @@
 import { customers } from "../config/mongoCollection.js";
 
-import bcrypt from "bcryptjs";
+import bcrypt from "bcryptjs"; 
 const saltRounds = 10;
 import helpers from "../helpers/customerHelper.js";
 
@@ -26,10 +26,10 @@ const exportedMethods = {
       objKeys = ["email", "password", "name", "age"];
     }
     objKeys.forEach((element) => {
-      helpers.checkInput(
+      result[element] = helpers.checkInput(
         element,
         result[element],
-        element + " of the customer",
+        element + " of the customer"
       );
     });
     if (result.google_authenticated && result.google_authenticated == 2) {
@@ -76,6 +76,8 @@ const exportedMethods = {
     }
     return customerList;
   },
+
+  
 };
 
 export default exportedMethods;

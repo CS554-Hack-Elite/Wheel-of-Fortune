@@ -1,11 +1,14 @@
 import { Router } from "express";
 const router = Router();
-
+import helpers from "../helpers/customerHelper.js";
+import multer from "multer";
 import bcrypt from "bcryptjs";
 import * as mongoCollections from "../config/mongoCollection.js";
 
 const admins = mongoCollections.admins;
-const adminData = require("../data/admin.js");
+import { businessData, adminData } from "../data/index.js";
+
+const upload = multer({ dest: "uploads/" });
 
 router.route("/login").post(async (req, res) => {
   console.log("admin login");
@@ -49,15 +52,10 @@ router.route("/business-login").post(async (req, res) => {
     const adminData = await adminCollection.findOne({
       email: email,
     });
-
     if (!adminData) throw "No Admin Found";
-
     console.log(adminData);
-
     const passwordCompare = await bcrypt.compare(password, adminData.password);
-
     if (!passwordCompare) throw "Error Unautherized";
-
     res
       .status(200)
       .json({ businessAdminKey: "Key1", businessAdminEmail: email });
@@ -66,105 +64,54 @@ router.route("/business-login").post(async (req, res) => {
   }
 });
 
-//Master admin account edit feature removed later 
-/* 
-router.route('/account')
-  .get(async (req, res) => {
-    try{
-        const errorObject = {
-            status: 400
-        };
-        if(!req.session.admin){
-            errorObject.status = 401;
-            errorObject.error = "Unauthorized Access";
-        }
-    const accountData = await adminData.getAdminById(req.session.admin._id)
-    res.status(200).json(accountData);
-    } catch (e) {
-        if (
-          typeof e === 'object' &&
-          e !== null &&
-          !Array.isArray(e) &&
-          'status' in e &&
-          'error' in e
-        ) {
-          return res.status(e.status).json({
-            status: e.status,
-            message: e.error,
-          });
-        } else {
-          console.error(e);
-          return res.status(404).json({
-            status: 404,
-            message: e.error,
-          });
-        }
-      }   
-  })
-  .post(async (req, res) => {
-    try {
-        const errorObject = {
-            status: 400
-        };
-        if(!req.session.admin){
-            errorObject.status = 401;
-            errorObject.error = "Unauthorized Access";
-        }
-        admin = await adminData.getAdminById(req.session.admin._id)
-        if(!admin){
-            errorObject.status = 401;
-            errorObject.error = "No Admin with this id";
-        }
-        
-      if (Object.keys(req.body).length === 0) {
-        errorObject.status = 400;
-        errorObject.error = "Atlest one field needs to be supplied in the request body";
-      }
-      let updatedFields = {};
-
-      if (req.body.name && req.body.name !== admin.name) {
-        updatedFields.name = req.body.name;
-      }
-
-      if (req.body.email && req.body.email !== admin.email) {
-        updatedFields.email = req.body.email;
-      }
-  
-      if (req.body.password && req.body.password !== admin.password) {
-        updatedFields.password = await bcrypt.hash(req.body.password, 10);
-      }
-
-      if (Object.keys(updatedFields).length === 0) {
-        errorObject.status = 400;
-        errorObject.error = "No fields were updated";
-      }
-
-      const updatedAdmin = await adminData.updateAdminAccount(req.session.admin._id, updatedFields, { new: true });
-  
-      res.status(200).json(updatedAdmin);
-
-    } catch (e) {
-        if (
-          typeof e === 'object' &&
-          e !== null &&
-          !Array.isArray(e) &&
-          'status' in e &&
-          'error' in e
-        ) {
-          return res.status(e.status).json({
-            status: e.status,
-            message: e.error,
-          });
-        } else {
-          console.error(e);
-          return res.status(500).json({
-            status: 500,
-            message: e.error,
-          });
-        }
-      }
-  });
-
- */  
+router.route("/register-business-admin").post(async (req, res) => {
+  try {
+    const errorObject = {
+      status: 400,
+    };
+    let result = req.body;
+    let objKeys = ["email", "password", "name", "logo"];
+    objKeys.forEach((element) => {
+      result[element] = helpers.checkInput(
+        element,
+        result[element],
+        element + " for the business"
+      );
+    });
+    const businessRow = await businessData.createBusiness({
+      name: result.name,
+      logo: result.logo,
+    });
+    console.log(businessRow);
+    const adminRow = await adminData.createAdmin({
+      email: result.email,
+      password: result.password,
+      business_id: businessRow._id,
+    });
+    return res.status(200).json({
+      business: businessRow,
+      admin: adminRow,
+    });
+  } catch (e) {
+    console.log(e);
+    if (
+      typeof e === "object" &&
+      e !== null &&
+      !Array.isArray(e) &&
+      "status" in e &&
+      "error" in e
+    ) {
+      return res.status(e.status).json({
+        status: e.status,
+        message: e.error,
+      });
+    } else {
+      return res.status(400).json({
+        status: 400,
+        message: e.error,
+      });
+    }
+  }
+});
 
 export default router;

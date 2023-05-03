@@ -114,7 +114,7 @@ router.route("/create").post(async (req, res) => {
 
     let objKeys = ["name", "logo"];
     objKeys.forEach((element) => {
-      helpers.checkInput(
+      result[element]=helpers.checkInput(
         element,
         result[element],
         element + " of the business",
@@ -124,7 +124,7 @@ router.route("/create").post(async (req, res) => {
     businessData = await businessData.createBusiness(result);
     objKeys = ["email", "password", "name", "age"];
     objKeys.forEach((element) => {
-      helpers.checkInput(
+      result[element]=helpers.checkInput(
         element,
         result[element],
         element + " of the admin",

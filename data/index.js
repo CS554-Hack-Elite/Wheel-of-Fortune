@@ -1,12 +1,7 @@
 import customerDataFunctions from "./customer.js";
-const customerData = customerDataFunctions;
-const couponsData = require('./coupons.js');
+import businessDataFunctions from "./business.js";
+import adminDataFunctions from "./admin.js";
 
-module.exports = {
-    coupons: couponsData,
-    customer: customerData,
-    business: businessData
-  };
-
-
-
+export const customerData = customerDataFunctions;
+export const businessData = businessDataFunctions;
+export const adminData = adminDataFunctions;

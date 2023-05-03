@@ -12,7 +12,7 @@ let getCollectionFn = (collection) => {
     }
 
     return _col;
-  };
+  }; 
 };
 
 const customers = getCollectionFn("customers");

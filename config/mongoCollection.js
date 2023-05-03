@@ -12,11 +12,12 @@ let getCollectionFn = (collection) => {
     }
 
     return _col;
-  };
+  }; 
 };
 
 const customers = getCollectionFn("customers");
 const admins = getCollectionFn("admins");
+const business = getCollectionFn("business");
 
 /* Now, you can list your collections here: */
-export { customers, admins };
+export { customers, admins, business };

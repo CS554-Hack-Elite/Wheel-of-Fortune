@@ -1,4 +1,3 @@
-import { business } from "../config/mongoCollection.js";
 import bcrypt from "bcryptjs";
 const saltRounds = 10;
 import helpers from "../helpers/customerHelper.js";

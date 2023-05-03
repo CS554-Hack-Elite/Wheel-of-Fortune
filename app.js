@@ -7,7 +7,7 @@ dotenv.config();
 
 console.log(process.env.DATABASE);
 
-// app.use(VerifyToken);
+app.use(VerifyToken);
 
 app.use(express.json());
 

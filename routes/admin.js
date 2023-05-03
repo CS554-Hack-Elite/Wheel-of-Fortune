@@ -5,7 +5,7 @@ import multer from "multer";
 import bcrypt from "bcryptjs";
 import * as mongoCollections from "../config/mongoCollection.js";
 const admins = mongoCollections.admins;
-import { businessData,adminData } from "../data/index.js";
+import { businessData, adminData } from "../data/index.js";
 
 const upload = multer({ dest: "uploads/" });
 
@@ -68,6 +68,7 @@ router.route("/register-business-admin").post(async (req, res) => {
     const errorObject = {
       status: 400,
     };
+    let result = req.body;
     let objKeys = ["email", "password", "name", "logo"];
     objKeys.forEach((element) => {
       result[element] = helpers.checkInput(
@@ -80,16 +81,18 @@ router.route("/register-business-admin").post(async (req, res) => {
       name: result.name,
       logo: result.logo,
     });
+    console.log(businessRow);
     const adminRow = await adminData.createAdmin({
       email: result.email,
       password: result.password,
-      business_id: businessRow.id,
+      business_id: businessRow._id,
     });
     return res.status(200).json({
       business: businessRow,
       admin: adminRow,
     });
   } catch (e) {
+    console.log(e);
     if (
       typeof e === "object" &&
       e !== null &&

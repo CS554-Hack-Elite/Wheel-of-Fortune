@@ -1,4 +1,3 @@
-import { business } from "../config/mongoCollection.js";
 import bcrypt from "bcryptjs";
 const saltRounds = 10;
 import helpers from "../helpers/customerHelper.js";
@@ -11,6 +10,9 @@ const exportedMethods = {
    */
   async getCustomerDetails() {},
   async createBusiness(result) {
+    const errorObject = {
+      status: 400,
+    };
     let objKeys = ["name", "logo"];
     objKeys.forEach((element) => {
       result[element] = helpers.checkInput(
@@ -20,6 +22,14 @@ const exportedMethods = {
       );
     });
     const businessCollection = await business();
+    let duplicateUser = await businessCollection.findOne({
+      name: result.name,
+    });
+    if (duplicateUser != null) {
+      errorObject.error = "Business with this name already exists.";
+      throw errorObject;
+    }
+
     result.created_at = new Date().toLocaleString();
     const insertInfo = await businessCollection.insertOne(result);
     if (!insertInfo.acknowledged || insertInfo.insertedCount === 0) {

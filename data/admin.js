@@ -1,7 +1,8 @@
 import bcrypt from "bcryptjs";
 const saltRounds = 10;
 import helpers from "../helpers/customerHelper.js";
-import { admins } from "../config/mongoCollection.js";
+import { admins, business } from "../config/mongoCollection.js";
+import { ObjectId } from "mongodb";
 
 const exportedMethods = {
   /**
@@ -10,6 +11,9 @@ const exportedMethods = {
    */
   async getCustomerDetails() {},
   async createAdmin(result) {
+    const errorObject = {
+      status: 400,
+    };
     let objKeys = ["email", "password", "business_id"];
     objKeys.forEach((element) => {
       result[element] = helpers.checkInput(
@@ -25,10 +29,15 @@ const exportedMethods = {
       email: result.email,
     });
     if (duplicateUser != null) {
+      const businessCollection = await business();
+      businessCollection.deleteOne({
+        _id: new ObjectId(result.business_id),
+      });
       errorObject.error = "Admin with this email already exists.";
       throw errorObject;
     }
     result.password = hashedPass;
+    result.role_id = process.env.BUSINESS_ADMIN_ROLE;
     result.created_at = new Date().toLocaleString();
     const insertInfo = await adminCollection.insertOne(result);
     if (!insertInfo.acknowledged || insertInfo.insertedCount === 0) {
@@ -37,7 +46,7 @@ const exportedMethods = {
       throw errorObject;
     }
     const newId = insertInfo.insertedId;
-    let newCustomer = await customerCollection.findOne(newId);
+    let newCustomer = await adminCollection.findOne(newId);
     newCustomer._id = newCustomer._id.toString();
     newCustomer = (({ password, ...o }) => o)(newCustomer);
     return newCustomer;

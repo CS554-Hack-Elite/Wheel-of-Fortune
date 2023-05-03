@@ -1,4 +1,4 @@
-import ObjectId  from "mongodb";
+import {ObjectId} from "mongodb";
 
 //common function to check all input parameters for both route and data
 const exportedMethods = {
@@ -7,7 +7,8 @@ const exportedMethods = {
       status: 400,
     };
     if (!val && required) {
-      throw `${variableName || "Provided variable"} is required.`;
+      errorObject.error = `${variableName || "Provided variable"} is required.`;
+      throw errorObject;
     }
     let inputRegExp = "";
     let valid = false;
@@ -75,6 +76,22 @@ const exportedMethods = {
           } must not be empty.`;
           throw errorObject;
         }
+
+      case "logo":
+        if (typeof val !== "string") {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          } must be a string.`;
+          throw errorObject;
+        }
+        val = val.trim();
+        if (!val) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          } must not be empty.`;
+          throw errorObject;
+        }
+
         inputRegExp = /\d*[a-zA-Z][a-zA-Z0-9 ]*$/;
         valid = inputRegExp.test(val);
         if (!valid) {
@@ -130,6 +147,24 @@ const exportedMethods = {
         }
         if (!ObjectId.isValid(val)) {
           throw "Invalid Customer.";
+        }
+        break;
+      case "business_id":
+        if (typeof val !== "string") {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          } must be a string.`;
+          throw errorObject;
+        }
+        val = val.trim();
+        if (!val) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          } must not be empty.`;
+          throw errorObject;
+        }
+        if (!ObjectId.isValid(val)) {
+          throw "Invalid Business Id.";
         }
         break;
 

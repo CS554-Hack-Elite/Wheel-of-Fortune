@@ -7,7 +7,8 @@ const exportedMethods = {
       status: 400,
     };
     if (!val && required) {
-      throw `${variableName || "Provided variable"} is required.`;
+      errorObject.error = `${variableName || "Provided variable"} is required.`;
+      throw errorObject;
     }
     let inputRegExp = "";
     let valid = false;

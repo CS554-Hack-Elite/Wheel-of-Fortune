@@ -46,6 +46,7 @@ export const CustomerDashboard = () => {
 							setReward(data[prizeNumber]);
 							setShowReward(true);
 						}}
+						className="mx-auto min-w-max"
 					/>
 					<button
 						className="w-full col-span-1 bg-indigo-600 text-white rounded-lg p-4 mt-8 text-2xl hover:bg-indigo-500 hover:scale-105 active:bg-indigo-700"
@@ -95,6 +96,7 @@ export const CustomerDashboard = () => {
 				buttons={[
 					{ title: "Coupons", linkTo: "/customer/coupons" },
 					{ title: "Proofs", linkTo: "/customer/proof" },
+					{ title: "Profile", linkTo: "/customer/account" },
 				]}
 			/>
 			<main className="h-full ml-32 w-full">
@@ -104,7 +106,7 @@ export const CustomerDashboard = () => {
 				</div>
 
 				<div className="h-[85vh] pt-4 px-4 pb-0 grid grid-cols-1 gap-4">
-					<div className="max-w-full col-span-1 p-4 h-full rounded-lg bg-white bg-opacity-40">
+					<div className="max-w-full col-span-1 p-4 h-full rounded-lg bg-white bg-opacity-40 overflow-x-auto">
 						<div className="flex justify-center text-3xl font-medium text-indigo-600 p-2">Spin the Wheel</div>
 						<div className="wheel flex justify-center mt-10">{handleWheel(data)}</div>
 						{handleShowReward(showReward)}

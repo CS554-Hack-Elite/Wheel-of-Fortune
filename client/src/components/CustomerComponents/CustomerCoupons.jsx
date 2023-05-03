@@ -17,7 +17,7 @@ export const CustomerCoupons = () => {
 	const handleCoupons = (coupons) => {
 		return coupons.map((coupon) => {
 			return (
-				<div className="coupon bg-gradient-to-br from-indigo-800 via-indigo-600 to-violet-300 text-slate-200 rounded-lg my-4">
+				<div className="coupon bg-indigo-800 text-slate-200 rounded-lg my-4">
 					<div className="flex justify-center pt-2 text-2xl">{coupon.name}</div>
 					<span>
 						<div className="px-4 py-2 text-lg">Offer: {coupon.discount}</div>
@@ -87,6 +87,7 @@ export const CustomerCoupons = () => {
 				buttons={[
 					{ title: "Dashboard", linkTo: "/customer/dashboard" },
 					{ title: "Proofs", linkTo: "/customer/proof" },
+					{ title: "Profile", linkTo: "/customer/account" },
 				]}
 			/>
 			<main className="h-full ml-32 w-full">
@@ -99,7 +100,6 @@ export const CustomerCoupons = () => {
 						<div className="flex justify-center text-3xl font-medium text-indigo-700 p-2">My Coupons</div>
 						<div className="couponsList w-full p-8">{handleCoupons(coupons)}</div>
 					</div>
-					{/* <div class="md:col-span-2 p-4 lg:h-[80vh] h-[50vh] rounded-lg bg-white overflow-y-auto"></div> */}
 				</div>
 			</main>
 		</div>

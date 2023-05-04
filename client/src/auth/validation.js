@@ -1,6 +1,5 @@
-import { ObjectId } from "mongodb";
-
 //common function to check all input parameters for both route and data
+
 const exportedMethods = {
   checkInput(input, val, variableName, routeFlag = false, required = true) {
     const errorObject = {
@@ -76,22 +75,6 @@ const exportedMethods = {
           } must not be empty.`;
           throw errorObject;
         }
-
-      case "logo":
-        if (typeof val !== "string") {
-          errorObject.error = `${
-            variableName || "Provided variable"
-          } must be a string.`;
-          throw errorObject;
-        }
-        val = val.trim();
-        if (!val) {
-          errorObject.error = `${
-            variableName || "Provided variable"
-          } must not be empty.`;
-          throw errorObject;
-        }
-
         inputRegExp = /\d*[a-zA-Z][a-zA-Z0-9 ]*$/;
         valid = inputRegExp.test(val);
         if (!valid) {
@@ -131,42 +114,24 @@ const exportedMethods = {
         }
         break;
 
-      case "id":
-        if (typeof val !== "string") {
-          errorObject.error = `${
-            variableName || "Provided variable"
-          } must be a string.`;
-          throw errorObject;
-        }
-        val = val.trim();
-        if (!val) {
-          errorObject.error = `${
-            variableName || "Provided variable"
-          } must not be empty.`;
-          throw errorObject;
-        }
-        if (!ObjectId.isValid(val)) {
-          throw "Invalid Customer.";
-        }
-        break;
-      case "business_id":
-        if (typeof val !== "string") {
-          errorObject.error = `${
-            variableName || "Provided variable"
-          } must be a string.`;
-          throw errorObject;
-        }
-        val = val.trim();
-        if (!val) {
-          errorObject.error = `${
-            variableName || "Provided variable"
-          } must not be empty.`;
-          throw errorObject;
-        }
-        if (!ObjectId.isValid(val)) {
-          throw "Invalid Business Id.";
-        }
-        break;
+      //   case "id":
+      //     if (typeof val !== "string") {
+      //       errorObject.error = `${
+      //         variableName || "Provided variable"
+      //       } must be a string.`;
+      //       throw errorObject;
+      //     }
+      //     val = val.trim();
+      //     if (!val) {
+      //       errorObject.error = `${
+      //         variableName || "Provided variable"
+      //       } must not be empty.`;
+      //       throw errorObject;
+      //     }
+      //     if (!ObjectId.isValid(val)) {
+      //       throw "Invalid Customer.";
+      //     }
+      //     break;
 
       default:
         errorObject.error = "Invalid Data encountered";

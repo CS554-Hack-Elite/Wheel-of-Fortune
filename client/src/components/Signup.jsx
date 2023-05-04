@@ -5,6 +5,8 @@ import { FormInput } from "./Reusables/FormInput";
 import { useAuth } from "../contexts/AuthContext";
 import { CreateModal } from "./Reusables/CreateModal";
 import { Error } from "./Reusables/Error";
+import helpers from "../auth/validation.js";
+
 import axios from "axios";
 
 export const Signup = () => {
@@ -22,13 +24,10 @@ export const Signup = () => {
   const navigate = useNavigate();
 
   const signupCustomer = async () => {
-    //TODO: validate creds
-
-    //TODO: put info in DB
+    const objKeys = ["email", "password", "name", "age"];
 
     try {
       setLoading(true);
-      await register(email, password);
 
       const payload = {
         name,
@@ -38,7 +37,20 @@ export const Signup = () => {
         google_authenticated: 2,
       };
 
-      console.log(payload);
+      //TODO: Fix age validation don't send Nan
+
+      objKeys.forEach((element) => {
+        payload[element] = helpers.checkInput(
+          element,
+          payload[element],
+          element + " of the customer",
+          true
+        );
+      });
+
+      console.log("data is valid");
+
+      await register(email, password);
 
       await axios.post("/users/register", payload);
 
@@ -48,8 +60,11 @@ export const Signup = () => {
     } catch (e) {
       //TODO: delete user from db
 
+      console.log("error in data");
+      console.log(e);
+
       setErrorModal(true);
-      setErrorMessage(e.toString());
+      setErrorMessage(e && e.error ? e.error : e.toString());
     }
   };
 
@@ -67,13 +82,25 @@ export const Signup = () => {
           Signup
         </h2>
 
-        <FormInput title="Name" type="text" changeAction={setName} />
-        <FormInput title="Age" type="age" changeAction={setAge} />
+        <FormInput
+          title="Name"
+          type="text"
+          value={name}
+          changeAction={setName}
+        />
 
-        <FormInput title="Email" type="email" changeAction={setEmail} />
+        <FormInput title="Age" type="age" value={age} changeAction={setAge} />
+
+        <FormInput
+          title="Email"
+          type="email"
+          value={email}
+          changeAction={setEmail}
+        />
         <FormInput
           title="Password"
           type="password"
+          value={password}
           changeAction={setPassword}
         />
 

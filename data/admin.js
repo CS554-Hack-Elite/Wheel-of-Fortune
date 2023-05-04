@@ -30,7 +30,7 @@ const exportedMethods = {
         process.env.ADMIN_LOGIN
       );
 
-      if (email !== process.env.ADMIN_LOGIN_EMAIL || !passwordCompare) {
+      if (result.email !== process.env.ADMIN_LOGIN_EMAIL || !passwordCompare) {
         errorObject.status = 401;
         errorObject.error = "Invalid Credentials for Master Admin";
         throw errorObject;
@@ -38,7 +38,7 @@ const exportedMethods = {
       return {};
     }
     const adminCollection = await admins();
-    const adminData = await adminCollection.findOne({
+    let adminData = await adminCollection.findOne({
       email: result.email,
     });
     if (!adminData) {
@@ -46,7 +46,7 @@ const exportedMethods = {
       errorObject.error = "Invalid business email provided for login";
       throw errorObject;
     }
-    const passwordCompare = await bcrypt.compare(password, result.password);
+    const passwordCompare = await bcrypt.compare(password, adminData.password);
     if (!passwordCompare) {
       errorObject.status = 401;
       errorObject.error = "Invalid password provided for login";

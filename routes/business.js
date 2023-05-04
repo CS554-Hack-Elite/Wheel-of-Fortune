@@ -69,9 +69,9 @@ router.route("/coupons").get(async (req, res) => {
       errorObject.status = 403;
       errorObject.error = "Unauthorized Access";
     }
-    const couponsData = couponsData.getAllCoupons();
+    const couponsList = await couponsData.getAllCoupons();
     return res.status(200).json({
-      couponsData: couponsData,
+      ListOfCoupons: couponsList,
     });
   } catch (e) {
     if (
@@ -168,9 +168,9 @@ router.route("/list")
         errorObject.status = 403;
         errorObject.error = "Unauthorized Access";
       }
-      const businessData = await businessData.getBusinessList();
+      const businessList = await businessData.getBusinessList();;
       return res.status(200).json({
-        businessData: businessData,
+        ListOfBusinesses: businessList,
       });
     } catch (e) {
       if (
@@ -193,43 +193,56 @@ router.route("/list")
     }
   })
 
-router.route("/delete").delete(async (req, res) => {
-  try {
-    const errorObject = {
-      status: 400,
-    };
-    if (
-      !req.session.admin_role ||
-      !req.session.admin_role == process.env.MASTER_ADMIN_ROLE
-    ) {
-      errorObject.status = 403;
-      errorObject.error = "Unauthorized Access";
-    }
-    const businessId = req.params.business_id;
-    const deletedBusiness = await businessData.deleteBusinessById(businessId);
-    res.status(200).json({ message: "Business deleted successfully", deletedBusiness });
-  } catch (e) {
-    if (
-      typeof e === "object" &&
-      e !== null &&
-      !Array.isArray(e) &&
-      "status" in e &&
-      "error" in e
-    ) {
-      return res.status(e.status).json({
-        status: e.status,
-        message: e.error,
-      });
-    } else {
-      return res.status(400).json({
+  router.route("/delete/:_id").delete(async (req, res) => {
+    try {
+      const errorObject = {
         status: 400,
-        message: e.error,
-      });
+      };
+      if (
+        !req.session.admin_role ||
+        !req.session.admin_role == process.env.MASTER_ADMIN_ROLE
+      ) {
+        errorObject.status = 403;
+        errorObject.error = "Unauthorized Access";
+      }
+      let businessId = req.params._id;
+      console.log("Business ID:", businessId); // Add a console.log here
+      if (!businessId) {
+        errorObject.status = 400;
+        errorObject.error = "Business ID is required";
+        throw errorObject;
+      }
+      businessId = businessId.toString();
+      console.log("Business ID (string):", businessId); // Add a console.log here
+      const deletedBusiness = await businessData.deleteBusinessById(businessId);
+      console.log("Deleted Business:", deletedBusiness); // Add a console.log here
+      res
+        .status(200)
+        .json({ message: "Business deleted successfully", deletedBusiness });
+    } catch (e) {
+      console.log(e);
+      if (
+        typeof e === "object" &&
+        e !== null &&
+        !Array.isArray(e) &&
+        "status" in e &&
+        "error" in e
+      ) {
+        return res.status(e.status).json({
+          status: e.status,
+          message: e.error,
+        });
+      } else {
+        return res.status(400).json({
+          status: 400,
+          message: e.error,
+        });
+      }
     }
-  }
-});
-
-
+  });
+  
+  
+  
 
 router.route('/customer/list')
   .get(async (req, res) => {
@@ -244,9 +257,9 @@ router.route('/customer/list')
         errorObject.status = 403;
         errorObject.error = "Unauthorized Access";
       }
-      const customerData = await customerData.getAllCustomers();
+      const customerList = await customerData.getAllCustomers();
       return res.status(200).json({
-        customerData: customerData,
+        ListOfCustomer: customerList,
       });
     } catch (e) {
       if (

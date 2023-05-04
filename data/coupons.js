@@ -28,6 +28,14 @@ const exportedMethods = {
           element + " for the coupons"
         );
       });
+      const couponsCollection = await coupons();
+      let duplicateCoupon = await couponsCollection.findOne({
+        name: result.name,
+      });
+      if (duplicateCoupon != null) {
+        errorObject.error = "Coupon with this name already exists.";
+        throw errorObject;
+      }
       const date = new Date();
       const codes = [];
 
@@ -53,7 +61,7 @@ const exportedMethods = {
         business_id: result.business_id,
         created_at: new Date().toLocaleString()
       };
-      const couponsCollection = await coupons();
+      
       const couponRow = await couponsCollection.insertOne(coupon);
 
       if (couponRow.insertedCount !== 1) {

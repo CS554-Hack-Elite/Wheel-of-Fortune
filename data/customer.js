@@ -79,7 +79,7 @@ const exportedMethods = {
     result.coupons = [];
     result.points = 0;
     result.created_at = new Date().toLocaleString();
-    if (!duplicateUser) {
+    if (!duplicateUserRow) {
       const insertInfo = await customerCollection.insertOne(result);
       if (!insertInfo.acknowledged || insertInfo.insertedCount === 0) {
         errorObject.status = 500;

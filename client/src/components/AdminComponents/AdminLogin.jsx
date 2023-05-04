@@ -39,14 +39,14 @@ export const AdminLogin = () => {
         // Validating creds
 
         const trimmedUsername = helpers.checkInput(
-          "name",
+          "email",
           email,
           "username" + " of the master admin",
           true
         );
 
         const trimmedPassword = helpers.checkInput(
-          "name",
+          "password",
           password,
           "password" + " of the master admin",
           true

@@ -56,8 +56,17 @@ export const Login = () => {
     try {
       setLoading(true);
 
-      await googleLogin(email, password);
-      await axios.post("/users/register");
+      const user = await googleLogin(email, password);
+
+      console.log(user);
+
+      const payload = {
+        name: user.dispalyName,
+        email: user.email,
+        google_authenticated: 1,
+      };
+
+      await axios.post("/users/register", payload);
       setLoading(false);
       navigate("/customer/dashboard");
     } catch (e) {

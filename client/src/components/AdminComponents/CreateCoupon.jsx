@@ -4,8 +4,13 @@ import { Button } from "../Reusables/Button";
 
 export const CreateCoupon = () => {
   const [couponName, setCouponName] = useState("");
+  const [couponDescription, setCouponDescription] = useState("");
 
   const createCoupon = () => {
+    try {
+      // TODO: Validate Credentials
+      //TODO: Axios Request
+    } catch (e) {}
     console.log("creating coupon");
   };
 
@@ -18,13 +23,15 @@ export const CreateCoupon = () => {
 
         <FormInput
           title="Coupon Name"
-          type="name"
+          type="text"
+          value={couponName}
           changeAction={setCouponName}
         />
 
         <FormInput
           title="Coupon Description"
           type="text"
+          value={couponDescription}
           changeAction={setCouponName}
         />
 

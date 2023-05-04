@@ -3,11 +3,19 @@ import { StastisticsCard } from "../Reusables/StastisticsCard";
 import { useNavigate } from "react-router-dom";
 import { CreateModal } from "../Reusables/CreateModal";
 import { CreateCoupon } from "./CreateCoupon";
+import { GrantPoints } from "./GrantPoints";
 
 export const BusinessAdminDashboard = () => {
   const navigate = useNavigate();
 
   const [openModal, setOpenModal] = useState(false);
+  const [pointsModal, setPointsModal] = useState(false);
+  const [request, setRequest] = useState("");
+
+  const assignPoints = (customerRequest) => {
+    setPointsModal(true);
+    setRequest(customerRequest);
+  };
 
   const logoutAdmin = () => {
     localStorage.removeItem("adminToken");
@@ -24,6 +32,10 @@ export const BusinessAdminDashboard = () => {
       <div className="flex">
         <CreateModal openModal={openModal} setOpenModal={setOpenModal}>
           <CreateCoupon />{" "}
+        </CreateModal>
+
+        <CreateModal openModal={pointsModal} setOpenModal={setPointsModal}>
+          <GrantPoints />{" "}
         </CreateModal>
         <div className="fixed w-32 h-screen p-4 bg-white flex flex-col justify-between">
           <div className="flex flex-col items-center">
@@ -68,9 +80,21 @@ export const BusinessAdminDashboard = () => {
 
           <div className="p-4 grid md:grid-cols-4 grid-cols-1 gap-4 my-10">
             <div className="md:col-span-2 p-4 lg:h-[90vh] h-[50vh] rounded-lg bg-white overflow-y-auto">
-              <h1 className="text-3xl font-medium text-teal-600 p-2">
-                Available Coupons
-              </h1>
+              <div className="flex justify-between items-center">
+                <h1 className="text-3xl font-medium text-teal-600 p-2">
+                  Available Coupons
+                </h1>
+                <div
+                  className="bg-teal-600 text-white al p-3 rounded-lg inline-block hover:bg-teal-700 active:bg-teal-500"
+                  onClick={() => {
+                    setOpenModal(true);
+                  }}
+                >
+                  {/* <img src="public/img/logo_white.svg" style="width:20px" /> */}
+                  Create Coupon
+                </div>
+              </div>
+
               <ul>
                 <li className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
                   <div className="bg-teal-100 rounded-lg p-5">
@@ -80,15 +104,13 @@ export const BusinessAdminDashboard = () => {
                     />
                   </div>
                   <div className="pl-4">
-                    <p className="text-gray-800 font-bold">qweeqw</p>
-                    <p className="text-gray-400 text-sm">qweqew</p>
+                    <p className="text-gray-800 font-bold">Coupon Name</p>
+                    <p className="text-gray-400 text-sm">Coupon Description</p>
                   </div>
                   <span className="lg:flex md:hidden ml-auto right-6 text-md font-medium">
-                    <a href="/sales/generateaccount/{{_id}}">
-                      <button className="px-3 py-2 bg-emerald-600 text-white text-lg rounded-lg hover:bg-emerald-700 active:bg-emerald-500">
-                        Claim
-                      </button>
-                    </a>
+                    <div className="px-3 py-2 bg-gray-600 text-white text-lg rounded-lg ">
+                      Coupons Remaining: 50/100
+                    </div>
                   </span>
                 </li>
               </ul>
@@ -106,15 +128,18 @@ export const BusinessAdminDashboard = () => {
                     />
                   </div>
                   <div className="pl-4">
-                    <p className="text-gray-800 font-bold">qwqeewq</p>
-                    <p className="text-gray-400 text-sm">qweew</p>
+                    <p className="text-gray-800 font-bold">Customer Name</p>
+                    <p className="text-gray-400 text-sm">Request Id</p>
                   </div>
-                  <p className="lg:flex md:hidden absolute right-6 text-md font-medium">
-                    <a href="/sales/inquirydetails/{{_id}}">
-                      <button className="px-3 py-2 bg-emerald-600 text-white text-lg rounded-lg hover:bg-emerald-700 active:bg-emerald-500">
-                        Details
-                      </button>
-                    </a>
+                  <p className="lg:flex md:hidden ml-auto right-6 text-md font-medium">
+                    <button
+                      className="px-3 py-2 bg-emerald-600 text-white text-lg rounded-lg hover:bg-emerald-700 active:bg-emerald-500"
+                      onClick={() => {
+                        assignPoints("details");
+                      }}
+                    >
+                      Assign Points
+                    </button>
                   </p>
                 </li>
               </ul>

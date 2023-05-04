@@ -5,6 +5,8 @@ import { FormInput } from "./Reusables/FormInput";
 import { useAuth } from "../contexts/AuthContext";
 import { CreateModal } from "./Reusables/CreateModal";
 import { Error } from "./Reusables/Error";
+import helpers from "../auth/validation.js";
+
 import axios from "axios";
 
 export const Signup = () => {
@@ -22,13 +24,10 @@ export const Signup = () => {
 	const navigate = useNavigate();
 
 	const signupCustomer = async () => {
-		//TODO: validate creds
-
-		//TODO: put info in DB
+		const objKeys = ["email", "password", "name", "age"];
 
 		try {
 			setLoading(true);
-			await register(email, password);
 
 			const payload = {
 				name,
@@ -38,7 +37,15 @@ export const Signup = () => {
 				google_authenticated: 2,
 			};
 
-			console.log(payload);
+			//TODO: Fix age validation don't send Nan
+
+			objKeys.forEach((element) => {
+				payload[element] = helpers.checkInput(element, payload[element], element + " of the customer", true);
+			});
+
+			console.log("data is valid");
+
+			await register(email, password);
 
 			await axios.post("/users/register", payload);
 
@@ -48,8 +55,11 @@ export const Signup = () => {
 		} catch (e) {
 			//TODO: delete user from db
 
+			console.log("error in data");
+			console.log(e);
+
 			setErrorModal(true);
-			setErrorMessage(e.toString());
+			setErrorMessage(e && e.error ? e.error : e.toString());
 		}
 	};
 
@@ -65,11 +75,12 @@ export const Signup = () => {
 			<div className="lg:w-1/3 md:w-1/2 bg-white bg-opacity-30 flex flex-col w-full my-auto md:py-8 items-center rounded shadow-2xl ">
 				<div className="text-gray-900 text-lg mb-1 font-medium title-font">Signup</div>
 
-				<FormInput title="Name" type="text" changeAction={setName} />
-				<FormInput title="Age" type="age" changeAction={setAge} />
+				<FormInput title="Name" type="text" value={name} changeAction={setName} />
 
-				<FormInput title="Email" type="email" changeAction={setEmail} />
-				<FormInput title="Password" type="password" changeAction={setPassword} />
+				<FormInput title="Age" type="age" value={age} changeAction={setAge} />
+
+				<FormInput title="Email" type="email" value={email} changeAction={setEmail} />
+				<FormInput title="Password" type="password" value={password} changeAction={setPassword} />
 
 				<div className="grid lg:grid-row-3 gap-2 mt-4">
 					<Button title="Signup" clickAction={signupCustomer} />

@@ -1,9 +1,18 @@
 import React, { useState } from "react";
-import { Form, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 import { DashboardSidebar } from "../Reusables/DashboardSidebar";
+import { Loading } from "../Reusables/Loading";
+import { Error } from "../Reusables/Error";
+import { CreateModal } from "../Reusables/CreateModal";
+
 import axios from "axios";
 
 export const CustomerProof = () => {
+	const [errorModal, setErrorModal] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
+	const [loading, setLoading] = useState(false);
+	const { currentUser } = useAuth();
 	// const [proofList, setProofList] = useState([]);
 	const [uploadProof, setUploadProof] = useState(false);
 	const [businessId, setBusinessId] = useState("");
@@ -90,15 +99,28 @@ export const CustomerProof = () => {
 		);
 	};
 
-	const handleSubmit = () => {
+	const handleSubmit = async () => {
+		setLoading(true);
 		const formData = new FormData();
 		formData.append("business_id", businessId);
 		formData.append("proof", uploadedImage);
-		formData.append("customer_id", "customer");
-		axios.post("/customer/upload-proof", formData).then((res) => {
+		formData.append("email", currentUser.email);
+		try {
+			const res = await axios.post("/customer/upload-proof", formData);
 			console.log(res);
+			setBusinessId("");
+			setUploadedImage("");
+			console.log(businessId);
+			console.log(uploadedImage);
 			setUploadProof(false);
-		});
+			setLoading(false);
+		} catch (e) {
+			setUploadProof(false);
+			setLoading(false);
+			setErrorModal(true);
+			setErrorMessage(e.toString());
+			console.log(e);
+		}
 	};
 
 	let proofList = [
@@ -146,6 +168,8 @@ export const CustomerProof = () => {
 		},
 	];
 
+	if (loading) return <Loading />;
+
 	return (
 		<div>
 			<DashboardSidebar
@@ -157,6 +181,9 @@ export const CustomerProof = () => {
 			/>
 			<main className="h-full ml-32">
 				{uploadProof ? handleUploadProof() : null}
+				<CreateModal openModal={errorModal} setOpenModal={setErrorModal}>
+					<Error message={errorMessage} />
+				</CreateModal>
 				<div className="h-[98vh] pt-4 px-4 pb-0 grid grid-cols-1 gap-4">
 					<div className="max-w-full col-span-1 p-4 h-full rounded-lg bg-white bg-opacity-40 overflow-y-auto">
 						<div className="flex justify-center text-3xl font-medium text-indigo-600 p-2">Proof History</div>

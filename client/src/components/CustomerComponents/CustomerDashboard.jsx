@@ -4,8 +4,15 @@ import { useState, useEffect } from "react";
 import { StastisticsCard } from "../Reusables/StastisticsCard";
 import { DashboardSidebar } from "../Reusables/DashboardSidebar";
 import { Wheel } from "react-custom-roulette";
+import { Loading } from "../Reusables/Loading";
+import { Error } from "../Reusables/Error";
+import { CreateModal } from "../Reusables/CreateModal";
 import axios from "axios";
+
 export const CustomerDashboard = () => {
+	const [errorModal, setErrorModal] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
+	const [loading, setLoading] = useState(false);
 	const [Coupons, setCoupons] = useState([{}]);
 	const [reward, setReward] = useState({});
 	const [showReward, setShowReward] = useState(false);
@@ -14,11 +21,19 @@ export const CustomerDashboard = () => {
 	const [prizeNumber, setPrizeNumber] = useState(0);
 	// axios call to fetch coupons from /api/coupons route using useEffect hook
 	useEffect(() => {
-		// async function fetchCoupons() {
-		//   const { data } = await axios.get("/getallcoupons");
-		//   setCoupons(data);
-		// }
-		// fetchCoupons();
+		async function fetchCoupons() {
+			try {
+				setLoading(true);
+				const { data } = await axios.get("/getallcoupons");
+				setCoupons(data);
+				setLoading(false);
+			} catch (e) {
+				setLoading(false);
+				setErrorModal(true);
+				setErrorMessage(e.toString());
+			}
+		}
+		fetchCoupons();
 	});
 
 	const handleSpinClick = () => {
@@ -90,6 +105,9 @@ export const CustomerDashboard = () => {
 		{ option: "90% OFF" },
 	];
 	// const data = [];
+
+	if (loading) return <Loading />;
+
 	return (
 		<div className="max-h-fit flex">
 			<DashboardSidebar
@@ -100,6 +118,9 @@ export const CustomerDashboard = () => {
 				]}
 			/>
 			<main className="h-full ml-32 w-full">
+				<CreateModal openModal={errorModal} setOpenModal={setErrorModal}>
+					<Error message={errorMessage} />
+				</CreateModal>
 				<div className="grid lg:grid-cols-2 gap-5 p-4">
 					<StastisticsCard value="50" title="Points"></StastisticsCard>
 					<StastisticsCard value="50" title="Total Coupons Won"></StastisticsCard>

@@ -5,9 +5,9 @@ import { Link } from "react-router-dom";
 export const Homepage = () => {
 	return (
 		<div>
-			<nav className="z-10 fixed top-0 w-full h-20 flex justify-normal bg-gradient-to-r from-blue-800 to-indigo-600 drop-shadow-md text-white">
+			<nav className="z-10 fixed top-0 w-full h-20 flex justify-normal bg-indigo-950 drop-shadow-md text-white">
 				<div className="flex-1">
-					<Link to="/home">
+					<Link to="/home" aria-label="Home">
 						<button className="h-full w-24 ml-16 transition duration-200 hover:bg-indigo-800 hover:cursor-pointer active:bg-indigo-500">
 							<span className="hidden">Home</span>
 							<IoHomeOutline className="w-full" size={25} />
@@ -44,17 +44,7 @@ export const Homepage = () => {
 				</div>
 			</main>
 			<footer className="h-32 flex justify-center py-5 bg-indigo-800 text-white">
-				<div className="flex flex-row">
-					<a href="/" className="facebook px-2 hover:text-gray-200 hover:cursor-pointer">
-						{/* <FaFacebook size={20} /> */}
-					</a>
-					<a href="/" className="github px-2 hover:text-gray-200 hover:cursor-pointer">
-						{/* <FaInstagram size={20} /> */}
-					</a>
-					<a href="/" className="github px-2 hover:text-gray-200 hover:cursor-pointer">
-						{/* <FaLinkedin size={20} /> */}
-					</a>
-				</div>
+				<div className="flex flex-row"></div>
 			</footer>
 		</div>
 	);

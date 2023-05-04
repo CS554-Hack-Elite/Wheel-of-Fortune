@@ -1,7 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { DashboardSidebar } from "../Reusables/DashboardSidebar";
+import { Loading } from "../Reusables/Loading";
 
 export const CustomerProfile = () => {
+	const [loading, setLoading] = useState(false);
+
+	if (loading) return <Loading />;
+
 	return (
 		<div className="max-h-fit flex">
 			<DashboardSidebar

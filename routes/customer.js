@@ -39,6 +39,7 @@ router.route("/register").post(async (req, res) => {
 
     return res.status(200).json({ data: customerRow });
   } catch (e) {
+    console.log(e);
     if (
       typeof e === "object" &&
       e !== null &&

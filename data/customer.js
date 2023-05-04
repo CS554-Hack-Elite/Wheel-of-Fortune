@@ -61,7 +61,7 @@ const exportedMethods = {
       });
 
       if (duplicateUser !== null) {
-        await customerCollection.update(
+        await customerCollection.updateOne(
           { email: result.email, google_authenticated: 2 },
           { $set: { google_authenticated: 1, password: "" } }
         );
@@ -70,6 +70,7 @@ const exportedMethods = {
     }
     duplicateUser = await customerCollection.findOne({
       email: result.email,
+      google_authenticated: 2,
     });
     if (duplicateUser != null) {
       errorObject.error = "Customer with this email already exists.";

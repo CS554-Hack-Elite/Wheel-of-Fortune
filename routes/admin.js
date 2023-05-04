@@ -4,6 +4,7 @@ import helpers from "../helpers/customerHelper.js";
 import multer from "multer";
 import bcrypt from "bcryptjs";
 import * as mongoCollections from "../config/mongoCollection.js";
+
 const admins = mongoCollections.admins;
 import { businessData, adminData } from "../data/index.js";
 
@@ -22,7 +23,7 @@ router.route("/login").post(async (req, res) => {
     );
 
     if (email !== "SuperAdmin" || !passwordCompare) throw "Error";
-
+req.session.admin_role =1;
     res.status(200).json({ adminAccessKey: "Key1" });
   } catch (e) {
     res.status(400).json({ errorMessage: e });
@@ -46,10 +47,12 @@ router.route("/business-login").post(async (req, res) => {
     console.log(adminData);
     const passwordCompare = await bcrypt.compare(password, adminData.password);
     if (!passwordCompare) throw "Error Unautherized";
+    req.session.admin_role =2;
     res
       .status(200)
       .json({ businessAdminKey: "Key1", businessAdminEmail: email });
   } catch (e) {
+    console.log(e);
     res.status(400).json({ errorMessage: e });
   }
 });

@@ -1,7 +1,8 @@
 import bcrypt from "bcryptjs";
 const saltRounds = 10;
 import helpers from "../helpers/customerHelper.js";
-import { admins, business } from "../config/mongoCollection.js";
+import { business } from "../config/mongoCollection.js";
+import { admins } from "../config/mongoCollection.js";
 import { ObjectId } from "mongodb";
 
 const exportedMethods = {
@@ -51,6 +52,33 @@ const exportedMethods = {
     newCustomer = (({ password, ...o }) => o)(newCustomer);
     return newCustomer;
   },
+
+
+  async getBusinessId(admin_id) {
+    const errorObject = {
+      status: 400
+    };
+    
+      if (!admin_id || typeof admin_id !== 'string') {
+        errorObject.status = 400;
+        errorObject.error = 'Invalid admin ID';
+        throw errorObject;
+      }
+      const adminCollection = await admins();
+      let admin = await adminCollection.findOne({
+        _id: new ObjectId(admin_id),
+      });
+      
+      if (!admin) {
+        errorObject.status = 404;
+        errorObject.error = 'Admin not found';
+        throw errorObject;
+      }
+      const businessId = admin.business_id;
+      return businessId;
+      
+    
+  }
 };
 
 export default exportedMethods;

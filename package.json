@@ -25,6 +25,7 @@
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "express-session": "^1.17.3",
     "firebase": "^9.20.0",
     "firebase-admin": "^11.7.0",
     "fs": "^0.0.1-security",

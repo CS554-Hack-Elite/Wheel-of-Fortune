@@ -8,6 +8,10 @@ import { buildToken } from "../auth/tokenBuilder";
 export const UserDetails = () => {
   const [userDetails, setUserDetails] = useState("");
 
+  const { currentUser } = useAuth();
+
+  console.log(currentUser);
+
   const getUserDetails = async (username) => {
     const payloadHeader = await buildToken();
 

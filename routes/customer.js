@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 
-import customerData from "../data/customer.js";
+import {customerData} from "../data/index.js";
 import helpers from "../helpers/customerHelper.js";
 
 router.route("/").get(async (req, res) => {
@@ -26,7 +26,7 @@ router.route("/register").post(async (req, res) => {
       objKeys = ["email", "password", "name", "age"];
     }
     objKeys.forEach((element) => {
-      helpers.checkInput(
+      result[element] = helpers.checkInput(
         element,
         result[element],
         element + " of the customer",

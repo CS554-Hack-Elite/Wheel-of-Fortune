@@ -1,10 +1,14 @@
+import { business } from "../config/mongoCollection.js";
 import bcrypt from "bcryptjs";
 const saltRounds = 10;
 import helpers from "../helpers/customerHelper.js";
-import { business } from "../config/mongoCollection.js";
+import { ObjectId } from 'mongodb';
+
+
 
 const exportedMethods = {
-  /**
+
+    /**
    * Sample function to get user details
    * @returns User Jsom
    */
@@ -42,6 +46,62 @@ const exportedMethods = {
     newBusiness._id = newBusiness._id.toString();
     return newBusiness;
   },
-};
+
+  async getBusinessList() {
+    const errorObject = {
+      status: 400,
+      message: 'Failed to get businesses'
+    };
+    const businessCollection = await business();
+    const businessList = await businessCollection.find({}).toArray();
+    if (!businessList || businessList.length === 0) {
+      errorObject.message = 'No businesses found';
+      throw errorObject;
+    }
+    return businessList;
+  },
+
+
+
+    async getBusinessById(id) {
+      const errorObject = {
+        status: 400
+      };
+      
+      if (!id || typeof id !== 'string') {
+        errorObject.status = 400;
+        errorObject.error = 'Invalid business ID';
+        throw errorObject;
+      }
+      const businessCollection = await business();
+      const businessDoc = await businessCollection.findOne({ _id: new ObjectId(id) });
+      if (!businessDoc) {
+        errorObject.status = 404;
+        errorObject.error = `Business with ID ${id} not found`;
+        throw errorObject;
+      }
+      return businessDoc;
+    },  
+    
+    
+    async deleteBusinessById(id) {
+      const errorObject = {
+        status: 400
+      };
+        const businessCollection = await business();
+        const deletedBusiness = await this.getBusinessById(id);
+    
+        if (!deletedBusiness) {
+          errorObject.status = 404;
+          errorObject.error = `Business with ID ${id} not found`;
+          throw errorObject;
+        }
+    
+        await businessCollection.deleteOne({ _id: new ObjectId(id) });
+        return deletedBusiness;
+    }
+
+}
 
 export default exportedMethods;
+

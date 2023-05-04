@@ -4,10 +4,18 @@ import configRoutes from "./routes/index.js";
 import { VerifyToken } from "./middlewares/auth.js";
 import dotenv from "dotenv";
 dotenv.config();
+import session from 'express-session';
 
 console.log(process.env.DATABASE);
 
-// app.use(VerifyToken);
+app.use(session({
+  secret: 'my-secret-key', // this should be a long, randomly generated string
+  resave: false,
+  saveUninitialized: true
+}));
+
+
+//app.use(VerifyToken);
 
 app.use(express.json());
 

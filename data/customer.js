@@ -32,6 +32,8 @@ const exportedMethods = {
       status: 400,
     };
     let objKeys = [];
+    let duplicateUserRow = false;
+    let duplicateUser = null;
 
     if (result.google_authenticated && result.google_authenticated == 1) {
       objKeys = ["email", "name"];
@@ -54,10 +56,17 @@ const exportedMethods = {
     }
     const customerCollection = await customers();
     if (result.google_authenticated && result.google_authenticated == 1) {
-      await customerCollection.update(
-        { email: result.email, google_authenticated: 2 },
-        { $set: { google_authenticated: 1, password: "" } }
-      );
+      duplicateUser = await customerCollection.findOne({
+        email: result.email,
+      });
+
+      if (duplicateUser !== null) {
+        await customerCollection.update(
+          { email: result.email, google_authenticated: 2 },
+          { $set: { google_authenticated: 1, password: "" } }
+        );
+        duplicateUserRow = true;
+      }
     }
     duplicateUser = await customerCollection.findOne({
       email: result.email,
@@ -69,14 +78,15 @@ const exportedMethods = {
     result.coupons = [];
     result.points = 0;
     result.created_at = new Date().toLocaleString();
-    const insertInfo = await customerCollection.insertOne(result);
-    if (!insertInfo.acknowledged || insertInfo.insertedCount === 0) {
-      errorObject.status = 500;
-      errorObject.error = "Could not create customer.";
-      throw errorObject;
+    if (!duplicateUser) {
+      const insertInfo = await customerCollection.insertOne(result);
+      if (!insertInfo.acknowledged || insertInfo.insertedCount === 0) {
+        errorObject.status = 500;
+        errorObject.error = "Could not create customer.";
+        throw errorObject;
+      }
     }
-    const newId = insertInfo.insertedId;
-    let newCustomer = await customerCollection.findOne(newId);
+    let newCustomer = await customerCollection.findOne({ email: result.email });
     newCustomer._id = newCustomer._id.toString();
     newCustomer = (({ password, ...o }) => o)(newCustomer);
     return newCustomer;

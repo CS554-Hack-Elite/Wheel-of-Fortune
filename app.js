@@ -4,6 +4,16 @@ import configRoutes from "./routes/index.js";
 import { VerifyToken } from "./middlewares/auth.js";
 import dotenv from "dotenv";
 dotenv.config();
+import session from "express-session";
+
+app.use(
+  session({
+    secret: "my-secret-key",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true },
+  })
+);
 
 console.log(process.env.DATABASE);
 
@@ -19,4 +29,3 @@ app.listen(port, () => {
   console.log("We've now got a server! ");
   console.log("Your routes will be running on http://localhost:4000");
 });
-

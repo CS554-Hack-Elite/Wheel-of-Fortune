@@ -1,6 +1,6 @@
 import { Router } from "express";
 const router = Router();
-import {businessData}  from "../data/index.js";
+import { businessData } from "../data/index.js";
 const helpers = require("./../helpers/businessHelper");
 
 router.route("/coupons").get(async (req, res) => {
@@ -9,11 +9,11 @@ router.route("/coupons").get(async (req, res) => {
       status: 400,
     };
     if (
-      !req.session.admin ||
-      !req.session.admin.role_id == process.env.master_admin
+      !req.session.admin_role ||
+      !req.session.admin_role == process.env.BUSINESS_ADMIN_ROLE
     ) {
-      errorObject.status = 401;
-      errorObject.error = "Unauthorized Access";
+      errorObject.status = 403;
+      error.error = "Unauthorized Access";
     }
   } catch (e) {
     if (
@@ -42,11 +42,11 @@ router.route("/list").get(async (req, res) => {
       status: 400,
     };
     if (
-      !req.session.admin ||
-      !req.session.admin.role_id == process.env.master_admin
+      !req.session.admin_role ||
+      !req.session.admin_role == process.env.BUSINESS_ADMIN_ROLE
     ) {
-      errorObject.status = 401;
-      errorObject.error = "Unauthorized Access";
+      errorObject.status = 403;
+      error.error = "Unauthorized Access";
     }
     const businessData = await businessData.getBusinessList();
     return res.status(200).json({
@@ -90,7 +90,7 @@ router.route("/create").post(async (req, res) => {
 
     let objKeys = ["name", "logo"];
     objKeys.forEach((element) => {
-      result[element]=helpers.checkInput(
+      result[element] = helpers.checkInput(
         element,
         result[element],
         element + " of the business",
@@ -100,7 +100,7 @@ router.route("/create").post(async (req, res) => {
     businessData = await businessData.createBusiness(result);
     objKeys = ["email", "password", "name", "age"];
     objKeys.forEach((element) => {
-      result[element]=helpers.checkInput(
+      result[element] = helpers.checkInput(
         element,
         result[element],
         element + " of the admin",
@@ -111,7 +111,9 @@ router.route("/create").post(async (req, res) => {
       }
     });
     let customerData = await userData.createUser(result);
-    res.redirect("/list");
+    return res.status(200).json({
+      customer: customerData
+    });
   } catch (e) {
     if (
       typeof e === "object" &&

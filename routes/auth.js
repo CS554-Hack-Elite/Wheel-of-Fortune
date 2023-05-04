@@ -4,8 +4,6 @@ const router = Router();
 import auth from "../config/firebaseConfig.js";
 
 router.route("/login").get(async (req, res) => {
-  console.log("login");
-
   try {
     const token = req.headers.authorization.split(" ")[1];
     console.log(token);
@@ -13,7 +11,6 @@ router.route("/login").get(async (req, res) => {
     if (decodeValue) {
       req.user = decodeValue;
       console.log(decodeValue);
-      // return next();
     }
   } catch (e) {
     res.status(400).json({ errorMessage: e });

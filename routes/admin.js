@@ -10,28 +10,19 @@ import { businessData, adminData } from "../data/index.js";
 const upload = multer({ dest: "uploads/" });
 
 router.route("/login").post(async (req, res) => {
-  console.log("admin login");
-
   try {
-    const { password } = req.body;
-    const { email } = req.body;
-
-    // const hash = await bcrypt.hash("IAMADMIN", 1);
-
-    //TODO: Put it in .env file
-    //TODO: Check mongo
-    //TODO: qweqw
-    //TODO: Error Handling
-    //TODO: Get info on the new page
-    //TODO: Put firebase stuff in .env
-
-    const passwordCompare = await bcrypt.compare(
-      password,
-      process.env.ADMIN_LOGIN
-    );
-
-    if (email !== "SuperAdmin" || !passwordCompare) throw "Error";
-
+    let result = req.body;
+    let objKeys = ["email", "password"];
+    objKeys.forEach((element) => {
+      result[element] = helpers.checkInput(
+        element,
+        result[element],
+        element + " for the admin"
+      );
+    });
+    const adminRow = adminData.checkAdmin(result);
+    req.session.admin = adminRow;
+    req.session.admin_role = process.env.MASTER_ADMIN_ROLE;
     res.status(200).json({ adminAccessKey: "Key1" });
   } catch (e) {
     res.status(400).json({ errorMessage: e });
@@ -39,25 +30,20 @@ router.route("/login").post(async (req, res) => {
 });
 
 router.route("/business-login").post(async (req, res) => {
-  console.log("business admin login");
-
   try {
-    const { password } = req.body;
-    const { email } = req.body;
-
-    console.log(password);
-    console.log(email);
-    const adminCollection = await admins();
-    const adminData = await adminCollection.findOne({
-      email: email,
+    let result = req.body;
+    let objKeys = ["email", "password"];
+    objKeys.forEach((element) => {
+      result[element] = helpers.checkInput(
+        element,
+        result[element],
+        element + " for the admin"
+      );
     });
-    if (!adminData) throw "No Admin Found";
-    console.log(adminData);
-    const passwordCompare = await bcrypt.compare(password, adminData.password);
-    if (!passwordCompare) throw "Error Unautherized";
-    res
-      .status(200)
-      .json({ businessAdminKey: "Key1", businessAdminEmail: email });
+    const adminRow = adminData.checkAdmin(result);
+    req.session.admin = adminRow;
+    req.session.admin_role = process.env.BUSINESS_ADMIN_ROLE;
+    res.status(200).json({ businessAdminKey: "Key1", businessAdmin: adminRow });
   } catch (e) {
     res.status(400).json({ errorMessage: e });
   }
@@ -68,6 +54,13 @@ router.route("/register-business-admin").post(async (req, res) => {
     const errorObject = {
       status: 400,
     };
+    if (
+      !req.session.admin_role ||
+      !req.session.admin_role == process.env.MASTER_ADMIN_ROLE
+    ) {
+      errorObject.status = 403;
+      error.error = "Unauthorized Access";
+    }
     let result = req.body;
     let objKeys = ["email", "password", "name", "logo"];
     objKeys.forEach((element) => {
@@ -81,7 +74,6 @@ router.route("/register-business-admin").post(async (req, res) => {
       name: result.name,
       logo: result.logo,
     });
-    console.log(businessRow);
     const adminRow = await adminData.createAdmin({
       email: result.email,
       password: result.password,
@@ -92,7 +84,6 @@ router.route("/register-business-admin").post(async (req, res) => {
       admin: adminRow,
     });
   } catch (e) {
-    console.log(e);
     if (
       typeof e === "object" &&
       e !== null &&

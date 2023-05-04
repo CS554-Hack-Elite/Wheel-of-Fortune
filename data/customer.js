@@ -1,8 +1,9 @@
 import { customers } from "../config/mongoCollection.js";
 
-import bcrypt from "bcryptjs"; 
+import bcrypt from "bcryptjs";
 const saltRounds = 10;
 import helpers from "../helpers/customerHelper.js";
+import * as businessData from "./business.js";
 
 const exportedMethods = {
   /**
@@ -10,9 +11,21 @@ const exportedMethods = {
    * @returns User Jsom
    */
   async getCustomerDetails() {
-    return {
-      name: "customer1",
-    };
+    return "CUSTOMER 1";
+  },
+  async getCustomerByEmail(email) {
+    const customerCollection = await customers();
+    const customerData = await customerCollection.findOne({
+      email: email,
+    });
+    if (!customerData) {
+      errorObject.status = 401;
+      errorObject.error = "Invalid customer email provided";
+      throw errorObject;
+    }
+    customerData._id = customerData._id.toString();
+    customerData = (({ password, ...o }) => o)(customerData);
+    return customerData;
   },
   async createCustomer(result) {
     const errorObject = {
@@ -77,7 +90,25 @@ const exportedMethods = {
     return customerList;
   },
 
-  
+  async uploadProof(result) {
+    const errorObject = {
+      status: 400,
+    };
+    let objKeys = [];
+    objKeys = ["business_id", "proof", "email"];
+    objKeys.forEach((element) => {
+      result[element] = helpers.checkInput(
+        element,
+        result[element],
+        element + " for the proof"
+      );
+    });
+    let customerRow = this.getCustomerByEmail(result.email);
+    let businessRow = businessData.getBusinessById(result.business_id);
+
+
+
+  },
 };
 
 export default exportedMethods;

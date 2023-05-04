@@ -1,11 +1,5 @@
 import { Router } from "express";
 const router = Router();
-<<<<<<< HEAD
-import { businessData } from "../data/index.js";
-const helpers = require("./../helpers/businessHelper");
-=======
->>>>>>> cc4356564323c65ada21e8831b51b7375397eaf9
-
 import { businessData } from "../data/index.js";
 import { couponsData } from "../data/index.js";
 import { customerData } from "../data/index.js";
@@ -23,11 +17,7 @@ router.route("/generate_coupon").post(async (req, res) => {
       !req.session.admin_role == process.env.BUSINESS_ADMIN_ROLE
     ) {
       errorObject.status = 403;
-<<<<<<< HEAD
-      error.error = "Unauthorized Access";
-=======
       errorObject.error = "Unauthorized Access";
->>>>>>> cc4356564323c65ada21e8831b51b7375397eaf9
     }
     let result = req.body;
 
@@ -181,7 +171,7 @@ router.route("/list")
       }
       const businessList = await businessData.getBusinessList();;
       return res.status(200).json({
-        ListOfBusinesses: businessList,
+        businessData: businessList,
       });
     } catch (e) {
       if (

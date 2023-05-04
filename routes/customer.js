@@ -76,6 +76,7 @@ router.route("/upload-proof").post(upload.single("file"), async (req, res) => {
     });
     const { path, filename } = req.file;
     try {
+      console.log("HELLO");
       const { path, filename } = req.file;
       await convert(path, ["-resize", "200x200", `uploads/${filename}`]);
       res.send("Image uploaded successfully");
@@ -85,6 +86,7 @@ router.route("/upload-proof").post(upload.single("file"), async (req, res) => {
       throw errorObject;
     }
     result.proof = filename;
+    return res.status(200).json({ data: true });
     const updatedCustomerRow = customerData.uploadProof(result);
     return res.status(200).json({ data: customerRow });
   } catch (e) {

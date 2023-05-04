@@ -23,6 +23,7 @@ const exportedMethods = {
         element + " for the admin"
       );
     });
+    let password = result.password;
     if (role == process.env.MASTER_ADMIN_ROLE) {
       const passwordCompare = await bcrypt.compare(
         password,

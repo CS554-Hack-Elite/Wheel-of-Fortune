@@ -26,7 +26,7 @@ router.route("/login").post(async (req, res) => {
     req.session.admin_role = process.env.MASTER_ADMIN_ROLE;
     res.status(200).json({ adminAccessKey: "Key1" });
   } catch (e) {
-    res.status(400).json({ errorMessage: e });
+    res.status(400).json({ error: e });
   }
 });
 

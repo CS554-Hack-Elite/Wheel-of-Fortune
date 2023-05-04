@@ -4,6 +4,7 @@ import { Homepage } from "./components/Homepage";
 import { CustomerDashboard } from "./components/CustomerComponents/CustomerDashboard";
 import { CustomerCoupons } from "./components/CustomerComponents/CustomerCoupons";
 import { CustomerProof } from "./components/CustomerComponents/CustomerProof";
+import { CustomerProfile } from "./components/CustomerComponents/CustomerProfile";
 import { AdminLogin } from "./components/AdminComponents/AdminLogin";
 import { UserDetails } from "./components/UserDetails";
 import { CreateBusinessAdmin } from "./components/AdminComponents/CreateBusinessAdmin";
@@ -58,6 +59,14 @@ function App() {
 							element={
 								<ProtectedRoute>
 									<CustomerCoupons />
+								</ProtectedRoute>
+							}
+						/>
+						<Route
+							path="customer/account"
+							element={
+								<ProtectedRoute>
+									<CustomerProfile />
 								</ProtectedRoute>
 							}
 						/>

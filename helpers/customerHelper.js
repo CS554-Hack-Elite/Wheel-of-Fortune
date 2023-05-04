@@ -1,4 +1,4 @@
-import {ObjectId} from "mongodb";
+import { ObjectId } from "mongodb";
 
 //common function to check all input parameters for both route and data
 const exportedMethods = {

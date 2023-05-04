@@ -10,7 +10,7 @@ export const UserDetails = () => {
 
   const { currentUser } = useAuth();
 
-  console.log(currentUser);
+  // console.log(currentUser);
 
   const getUserDetails = async (username) => {
     const payloadHeader = await buildToken();
@@ -20,7 +20,7 @@ export const UserDetails = () => {
     axios
       .get(`/users`, payloadHeader)
       .then((res) => {
-        setUserDetails(res.data.name);
+        setUserDetails(res.data);
       })
       .catch((e) => {
         setUserDetails("Not found");
@@ -34,6 +34,7 @@ export const UserDetails = () => {
   return (
     <div>
       <p>{userDetails}</p>
+      <p>qweeqwqew</p>
     </div>
   );
 };

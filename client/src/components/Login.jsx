@@ -61,10 +61,12 @@ export const Login = () => {
       console.log(user);
 
       const payload = {
-        name: user.dispalyName,
+        name: user.displayName,
         email: user.email,
         google_authenticated: 1,
       };
+
+      console.log(payload);
 
       await axios.post("/users/register", payload);
       setLoading(false);

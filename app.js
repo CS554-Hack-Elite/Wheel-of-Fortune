@@ -5,8 +5,6 @@ import { VerifyToken } from "./middlewares/auth.js";
 import dotenv from "dotenv";
 dotenv.config();
 import session from "express-session";
-<<<<<<< HEAD
-=======
 
 app.use(
   session({
@@ -16,7 +14,6 @@ app.use(
     cookie: { secure: true },
   })
 );
->>>>>>> main
 
 console.log(process.env.DATABASE);
 

@@ -52,12 +52,16 @@ export const AdminLogin = () => {
           true
         );
 
-        adminCreds[email] = trimmedUsername;
-        adminCreds[password] = trimmedPassword;
+        adminCreds["email"] = trimmedUsername;
+        adminCreds["password"] = trimmedPassword;
+
+        console.log(adminCreds);
 
         // sending request
 
         const { data } = await axios.post("/admin/login", adminCreds);
+
+        console.log(data);
 
         setLoading(false);
 

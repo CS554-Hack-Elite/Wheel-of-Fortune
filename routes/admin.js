@@ -21,12 +21,17 @@ router.route("/login").post(async (req, res) => {
         element + " for the admin"
       );
     });
-    const adminRow = adminData.checkAdmin(result);
+    const adminRow = await adminData.checkAdmin(
+      result,
+      process.env.MASTER_ADMIN_ROLE
+    );
     req.session.admin = adminRow;
     req.session.admin_role = process.env.MASTER_ADMIN_ROLE;
     res.status(200).json({ adminAccessKey: "Key1" });
   } catch (e) {
-    res.status(400).json({ error: e });
+    res
+      .status(e.status ? e.status : 400)
+      .json({ error: e.error ? e.error : e });
   }
 });
 
@@ -41,13 +46,14 @@ router.route("/business-login").post(async (req, res) => {
         element + " for the admin"
       );
     });
-    const adminRow = adminData.checkAdmin(result);
+    const adminRow = await adminData.checkAdmin(result);
     req.session.admin = adminRow;
     req.session.admin_role = process.env.BUSINESS_ADMIN_ROLE;
     res.status(200).json({ businessAdminKey: "Key1", businessAdmin: adminRow });
   } catch (e) {
-    console.log(e);
-    res.status(400).json({ errorMessage: e });
+    res
+      .status(e.status ? e.status : 400)
+      .json({ error: e.error ? e.error : e });
   }
 });
 

@@ -19,8 +19,6 @@ export const CreateBusinessAdmin = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const createBusinessAdmin = async () => {
-    // TODO: Validate Credentials
-
     const objKeys = ["name", "email", "password"];
 
     try {

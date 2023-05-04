@@ -81,9 +81,9 @@ export const BusinessAdminDashboard = () => {
           <div className="p-4 grid md:grid-cols-4 grid-cols-1 gap-4 my-10">
             <div className="md:col-span-2 p-4 lg:h-[90vh] h-[50vh] rounded-lg bg-white overflow-y-auto">
               <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-medium text-teal-600 p-2">
+                <div className="text-3xl font-medium text-teal-600 p-2">
                   Available Coupons
-                </h1>
+                </div>
                 <div
                   className="bg-teal-600 text-white al p-3 rounded-lg inline-block hover:bg-teal-700 active:bg-teal-500"
                   onClick={() => {
@@ -116,9 +116,9 @@ export const BusinessAdminDashboard = () => {
               </ul>
             </div>
             <div className="md:col-span-2 p-4 lg:h-[90vh] h-[50vh] rounded-lg bg-white overflow-y-auto">
-              <h1 className="text-3xl font-medium text-teal-600 p-2">
+              <div className="text-3xl font-medium text-teal-600 p-2">
                 Customer Requests
-              </h1>
+              </div>
               <ul>
                 <li className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
                   <div className="bg-yellow-100 rounded-lg p-5">

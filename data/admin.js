@@ -11,6 +11,51 @@ const exportedMethods = {
    * @returns User Jsom
    */
   async getCustomerDetails() {},
+  async checkAdmin(result, role) {
+    const errorObject = {
+      status: 400,
+    };
+    let objKeys = ["email", "password"];
+    objKeys.forEach((element) => {
+      result[element] = helpers.checkInput(
+        element,
+        result[element],
+        element + " for the admin"
+      );
+    });
+    if (role == process.env.MASTER_ADMIN_ROLE) {
+      const passwordCompare = await bcrypt.compare(
+        password,
+        process.env.ADMIN_LOGIN
+      );
+
+      if (email !== process.env.ADMIN_LOGIN_EMAIL || !passwordCompare) {
+        errorObject.status = 401;
+        errorObject.error = "Invalid Credentials for Master Admin";
+        throw errorObject;
+      }
+      return {};
+    }
+    const adminCollection = await admins();
+    const adminData = await adminCollection.findOne({
+      email: result.email,
+    });
+    if (!adminData) {
+      errorObject.status = 401;
+      errorObject.error = "Invalid business email provided for login";
+      throw errorObject;
+    }
+    const passwordCompare = await bcrypt.compare(password, result.password);
+    if (!passwordCompare) {
+      errorObject.status = 401;
+      errorObject.error = "Invalid password provided for login";
+      throw errorObject;
+    }
+    
+    adminData._id = adminData._id.toString();
+    adminData = (({ password, ...o }) => o)(adminData);
+    return adminData;
+  },
   async createAdmin(result) {
     const errorObject = {
       status: 400,

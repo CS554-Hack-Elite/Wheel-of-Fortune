@@ -5,6 +5,18 @@ import { VerifyToken } from "./middlewares/auth.js";
 import dotenv from "dotenv";
 dotenv.config();
 import session from "express-session";
+<<<<<<< HEAD
+=======
+
+app.use(
+  session({
+    secret: "my-secret-key",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true },
+  })
+);
+>>>>>>> main
 
 console.log(process.env.DATABASE);
 

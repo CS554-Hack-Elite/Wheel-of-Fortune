@@ -21,19 +21,19 @@ export const CustomerDashboard = () => {
 	const [prizeNumber, setPrizeNumber] = useState(0);
 	// axios call to fetch coupons from /api/coupons route using useEffect hook
 	useEffect(() => {
-		async function fetchCoupons() {
-			try {
-				setLoading(true);
-				const { data } = await axios.get("/getallcoupons");
-				setCoupons(data);
-				setLoading(false);
-			} catch (e) {
-				setLoading(false);
-				setErrorModal(true);
-				setErrorMessage(e.toString());
-			}
-		}
-		fetchCoupons();
+		// async function fetchCoupons() {
+		// 	try {
+		// 		setLoading(true);
+		// 		const { data } = await axios.get("/getallcoupons");
+		// 		setCoupons(data);
+		// 		setLoading(false);
+		// 	} catch (e) {
+		// 		setLoading(false);
+		// 		setErrorModal(true);
+		// 		setErrorMessage(e.toString());
+		// 	}
+		// }
+		// fetchCoupons();
 	});
 
 	const handleSpinClick = () => {

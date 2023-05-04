@@ -1,13 +1,17 @@
-const mongoCollection = require('../config/mongoCollection');
-const business = mongoCollection.business;
+import { business } from "../config/mongoCollection.js";
 import bcrypt from "bcryptjs";
 const saltRounds = 10;
 import helpers from "../helpers/customerHelper.js";
-import { business } from "../config/mongoCollection.js";
+
 
 
 const exportedMethods = {
 
+    /**
+   * Sample function to get user details
+   * @returns User Jsom
+   */
+  async getCustomerDetails() {},
   async createBusiness(result) {
     const errorObject = {
       status: 400,
@@ -124,5 +128,4 @@ const exportedMethods = {
 }
 
 export default exportedMethods;
-
 

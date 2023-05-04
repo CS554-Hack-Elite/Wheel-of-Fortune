@@ -61,8 +61,8 @@ export const Login = () => {
       console.log(user);
 
       const payload = {
-        name: user.displayName,
-        email: user.email,
+        name: user.user.displayName,
+        email: user.user.email,
         google_authenticated: 1,
       };
 

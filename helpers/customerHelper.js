@@ -92,7 +92,31 @@ const exportedMethods = {
           throw errorObject;
         }
 
-        inputRegExp = /\d*[a-zA-Z][a-zA-Z0-9 ]*$/;
+        inputRegExp = /\d*[a-zA-Z][a-zA-Z0-9. ]*$/;
+        valid = inputRegExp.test(val);
+        if (!valid) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          }   must be a valid Name.`;
+          throw errorObject;
+        }
+        break;
+      case "proof":
+        if (typeof val !== "string") {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          } must be a string.`;
+          throw errorObject;
+        }
+        val = val.trim();
+        if (!val) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          } must not be empty.`;
+          throw errorObject;
+        }
+
+        inputRegExp = /\d*[a-zA-Z][a-zA-Z0-9. ]*$/;
         valid = inputRegExp.test(val);
         if (!valid) {
           errorObject.error = `${
@@ -237,7 +261,7 @@ const exportedMethods = {
         }
         break;
       case "business_id":
-        case "id":
+      case "id":
         if (typeof val !== "string") {
           errorObject.error = `${
             variableName || "Provided variable"
@@ -253,6 +277,24 @@ const exportedMethods = {
         }
         if (!ObjectId.isValid(val)) {
           throw "Invalid Business.";
+        }
+        break;
+      case "customer_id":
+        if (typeof val !== "string") {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          } must be a string.`;
+          throw errorObject;
+        }
+        val = val.trim();
+        if (!val) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          } must not be empty.`;
+          throw errorObject;
+        }
+        if (!ObjectId.isValid(val)) {
+          throw "Invalid Business Id.";
         }
         break;
 

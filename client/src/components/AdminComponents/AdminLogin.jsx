@@ -10,6 +10,8 @@ import { CreateModal } from "../Reusables/CreateModal";
 import { Login } from "../Login";
 import { Loading } from "../Reusables/Loading";
 
+import helpers from "../../auth/validation.js";
+
 export const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,24 +22,41 @@ export const AdminLogin = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    console.log(adminType);
-  }, [adminType]);
+  const objKeys = ["email", "password"];
+
+  useEffect(() => {}, [adminType]);
 
   const navigate = useNavigate();
 
   const checkCredentialsAndLogin = async () => {
-    //TODO: validate creds
-
     clearLocalTokens();
     const adminCreds = { email: email, password: password };
-
-    console.log(adminCreds);
-    console.log(adminType);
 
     if (adminType === "master") {
       try {
         setLoading(true);
+
+        // Validating creds
+
+        const trimmedUsername = helpers.checkInput(
+          "name",
+          email,
+          "username" + " of the master admin",
+          true
+        );
+
+        const trimmedPassword = helpers.checkInput(
+          "name",
+          password,
+          "password" + " of the master admin",
+          true
+        );
+
+        adminCreds[email] = trimmedUsername;
+        adminCreds[password] = trimmedPassword;
+
+        // sending request
+
         const { data } = await axios.post("/admin/login", adminCreds);
 
         setLoading(false);
@@ -47,11 +66,25 @@ export const AdminLogin = () => {
       } catch (e) {
         setLoading(false);
         setErrorModal(true);
-        setErrorMessage(e.toString());
+        setErrorMessage(e && e.error ? e.error : e.toString());
       }
     } else {
       try {
         setLoading(true);
+
+        // TODO: Validating creds
+
+        // objKeys.forEach((element) => {
+        //   adminCreds[element] = helpers.checkInput(
+        //     element,
+        //     adminCreds[element],
+        //     element + " of the customer",
+        //     true
+        //   );
+        // });
+
+        // sending request
+
         const { data } = await axios.post("/admin/business-login", adminCreds);
 
         setLoading(false);
@@ -61,11 +94,9 @@ export const AdminLogin = () => {
       } catch (e) {
         setLoading(false);
         setErrorModal(true);
-        setErrorMessage(e.toString());
+        setErrorMessage(e && e.error ? e.error : e.toString());
       }
     }
-
-    //TODO: post request to login as a business
   };
 
   if (loading) return <Loading />;
@@ -81,10 +112,16 @@ export const AdminLogin = () => {
           Admin Login
         </h2>
 
-        <FormInput title="Username" type="name" changeAction={setEmail} />
+        <FormInput
+          title="Username"
+          type="name"
+          value={email}
+          changeAction={setEmail}
+        />
         <FormInput
           title="Password"
           type="password"
+          value={password}
           changeAction={setPassword}
         />
 

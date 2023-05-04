@@ -6,78 +6,109 @@ import { useAuth } from "../contexts/AuthContext";
 import { CreateModal } from "./Reusables/CreateModal";
 import { Error } from "./Reusables/Error";
 import { Loading } from "./Reusables/Loading";
+import axios from "axios";
+import helpers from "../auth/validation.js";
 
 export const Login = () => {
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-	const { currentUser, login, googleLogin } = useAuth();
+  const { currentUser, login, googleLogin } = useAuth();
 
-	const [loading, setLoading] = useState(false);
-	const [errorModal, setErrorModal] = useState(false);
-	const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorModal, setErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-	const navigate = useNavigate();
+  const navigate = useNavigate();
 
-	console.log(currentUser);
+  const objKeys = ["email", "password"];
 
-	const loginCustomer = async () => {
-		//TODO: validate creds
+  const loginCustomer = async () => {
+    try {
+      setLoading(true);
 
-		// redirect
+      const payload = {
+        email: email,
+        password: password,
+      };
 
-		try {
-			setLoading(true);
-			await login(email, password);
-			setLoading(false);
-			navigate("/customer/dashboard");
-		} catch (e) {
-			setLoading(false);
-			setErrorModal(true);
-			setErrorMessage(e.toString());
-		}
-	};
+      objKeys.forEach((element) => {
+        payload[element] = helpers.checkInput(
+          element,
+          payload[element],
+          element + " of the customer",
+          true
+        );
+      });
 
-	const loginCutomerByGoogle = async () => {
-		try {
-			setLoading(true);
-			await googleLogin(email, password);
-			setLoading(false);
-			navigate("/customer/dashboard");
-		} catch (e) {
-			setLoading(false);
-			setErrorModal(true);
-			setErrorMessage(e.toString());
-		}
-	};
+      console.log("data is valid");
+      await login(email, password);
+      setLoading(false);
+      navigate("/customer/dashboard");
+    } catch (e) {
+      setLoading(false);
+      setErrorModal(true);
+      setErrorMessage(e && e.error ? e.error : e.toString());
+    }
+  };
 
-	const redirectToSignup = () => {
-		navigate("/signup");
-	};
+  const loginCutomerByGoogle = async () => {
+    try {
+      setLoading(true);
 
-	if (loading) return <Loading />;
+      await googleLogin(email, password);
+      await axios.post("/users/register");
+      setLoading(false);
+      navigate("/customer/dashboard");
+    } catch (e) {
+      setLoading(false);
+      setErrorModal(true);
+      setErrorMessage(e.toString());
+    }
+  };
 
-	return (
-		<div className="flex justify-center h-full bg-opacity-30">
-			<CreateModal openModal={errorModal} setOpenModal={setErrorModal}>
-				<Error message={errorMessage} />
-			</CreateModal>
+  const redirectToSignup = () => {
+    navigate("/signup");
+  };
 
-			<div className="lg:w-1/3 md:w-1/2 bg-white bg-opacity-30 flex flex-col w-full my-auto md:py-8 items-center rounded-lg shadow-2xl ">
-				<div className="text-gray-900 text-lg mb-1 font-medium title-font">Login</div>
+  if (loading) return <Loading />;
 
-				<FormInput title="Email" type="email" changeAction={setEmail} />
+  return (
+    <div className="flex justify-center h-full bg-opacity-30">
+      <CreateModal openModal={errorModal} setOpenModal={setErrorModal}>
+        <Error message={errorMessage} />
+      </CreateModal>
 
-				<FormInput title="Password" type="password" changeAction={setPassword} />
+      <div className="lg:w-1/3 md:w-1/2 bg-white bg-opacity-30 flex flex-col w-full my-auto md:py-8 items-center rounded-lg shadow-2xl ">
+        <div className="text-gray-900 text-lg mb-1 font-medium title-font">
+          Login
+        </div>
 
-				<div className="grid lg:grid-row-3 gap-2 mt-4">
-					<Button title="Login" clickAction={loginCustomer} />
+        <FormInput
+          title="Email"
+          type="email"
+          value={email}
+          changeAction={setEmail}
+        />
 
-					<Button title="Login With Google" clickAction={loginCutomerByGoogle} />
+        <FormInput
+          title="Password"
+          type="password"
+          valye={password}
+          changeAction={setPassword}
+        />
 
-					<Button title="Signup" clickAction={redirectToSignup} />
-				</div>
-			</div>
-		</div>
-	);
+        <div className="grid lg:grid-row-3 gap-2 mt-4">
+          <Button title="Login" clickAction={loginCustomer} />
+
+          <Button
+            title="Login With Google"
+            clickAction={loginCutomerByGoogle}
+          />
+
+          <Button title="Signup" clickAction={redirectToSignup} />
+        </div>
+      </div>
+    </div>
+  );
 };

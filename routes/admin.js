@@ -4,6 +4,7 @@ import helpers from "../helpers/customerHelper.js";
 import multer from "multer";
 import bcrypt from "bcryptjs";
 import * as mongoCollections from "../config/mongoCollection.js";
+
 const admins = mongoCollections.admins;
 import { businessData, adminData } from "../data/index.js";
 
@@ -45,6 +46,7 @@ router.route("/business-login").post(async (req, res) => {
     req.session.admin_role = process.env.BUSINESS_ADMIN_ROLE;
     res.status(200).json({ businessAdminKey: "Key1", businessAdmin: adminRow });
   } catch (e) {
+    console.log(e);
     res.status(400).json({ errorMessage: e });
   }
 });

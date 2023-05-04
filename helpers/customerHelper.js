@@ -1,4 +1,4 @@
-import {ObjectId} from "mongodb";
+import { ObjectId } from "mongodb";
 
 //common function to check all input parameters for both route and data
 const exportedMethods = {
@@ -101,7 +101,7 @@ const exportedMethods = {
           throw errorObject;
         }
         break;
-        case "proof":
+      case "proof":
         if (typeof val !== "string") {
           errorObject.error = `${
             variableName || "Provided variable"
@@ -192,24 +192,111 @@ const exportedMethods = {
         }
         break;
 
-        case "customer_id":
-          if (typeof val !== "string") {
+      case "description":
+        if (typeof val !== "string") {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          } must be a string.`;
+          throw errorObject;
+        }
+        val = val.trim();
+        if (!val) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          } must not be empty.`;
+          throw errorObject;
+        }
+        inputRegExp = /\d*[a-zA-Z][a-zA-Z0-9 ]*$/;
+        valid = inputRegExp.test(val);
+        if (!valid) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          }   must be a valid description.`;
+          throw errorObject;
+        }
+        break;
+
+      case "image":
+        if (typeof val !== "string") {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          } must be a string.`;
+          throw errorObject;
+        }
+        val = val.trim();
+        if (!val) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          } must not be empty.`;
+          throw errorObject;
+        }
+        inputRegExp = /\d*[a-zA-Z][a-zA-Z0-9 ]*$/;
+        valid = inputRegExp.test(val);
+        if (!valid) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          }   must be a valid image url.`;
+          throw errorObject;
+        }
+        break;
+      case "max_allocation":
+        if (routeFlag) {
+          inputRegExp = /^[0-9]+$/;
+          valid = inputRegExp.test(val);
+          if (!valid) {
             errorObject.error = `${
               variableName || "Provided variable"
-            } must be a string.`;
+            }   must be a valid Number.`;
             throw errorObject;
           }
-          val = val.trim();
-          if (!val) {
-            errorObject.error = `${
-              variableName || "Provided variable"
-            } must not be empty.`;
-            throw errorObject;
-          }
-          if (!ObjectId.isValid(val)) {
-            throw "Invalid Business Id.";
-          }
-          break;
+
+          val = parseInt(val);
+        }
+
+        if (isNaN(val)) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          }   must be a valid Number.`;
+          throw errorObject;
+        }
+        break;
+      case "business_id":
+      case "id":
+        if (typeof val !== "string") {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          } must be a string.`;
+          throw errorObject;
+        }
+        val = val.trim();
+        if (!val) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          } must not be empty.`;
+          throw errorObject;
+        }
+        if (!ObjectId.isValid(val)) {
+          throw "Invalid Business.";
+        }
+        break;
+      case "customer_id":
+        if (typeof val !== "string") {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          } must be a string.`;
+          throw errorObject;
+        }
+        val = val.trim();
+        if (!val) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          } must not be empty.`;
+          throw errorObject;
+        }
+        if (!ObjectId.isValid(val)) {
+          throw "Invalid Business Id.";
+        }
+        break;
 
       default:
         errorObject.error = "Invalid Data encountered";

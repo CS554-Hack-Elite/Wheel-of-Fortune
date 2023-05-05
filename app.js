@@ -17,12 +17,13 @@ app.use(
 
 console.log(process.env.DATABASE);
 
-app.use(session({
-  secret: 'my-secret-key', // this should be a long, randomly generated string
-  resave: false,
-  saveUninitialized: true
-}));
-
+app.use(
+  session({
+    secret: "my-secret-key", // this should be a long, randomly generated string
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 //app.use(VerifyToken);
 
@@ -33,6 +34,6 @@ configRoutes(app);
 const port = process.env.PORT || 4000;
 
 app.listen(port, () => {
-	console.log("We've now got a server! ");
-	console.log("Your routes will be running on http://localhost:4000");
+  console.log("We've now got a server! ");
+  console.log("Your routes will be running on http://localhost:4000");
 });

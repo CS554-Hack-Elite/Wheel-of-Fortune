@@ -39,25 +39,29 @@ export const AdminLogin = () => {
         // Validating creds
 
         const trimmedUsername = helpers.checkInput(
-          "name",
+          "email",
           email,
           "username" + " of the master admin",
           true
         );
 
         const trimmedPassword = helpers.checkInput(
-          "name",
+          "password",
           password,
           "password" + " of the master admin",
           true
         );
 
-        adminCreds[email] = trimmedUsername;
-        adminCreds[password] = trimmedPassword;
+        adminCreds["email"] = trimmedUsername;
+        adminCreds["password"] = trimmedPassword;
+
+        console.log(adminCreds);
 
         // sending request
 
         const { data } = await axios.post("/admin/login", adminCreds);
+
+        console.log(data);
 
         setLoading(false);
 
@@ -72,16 +76,16 @@ export const AdminLogin = () => {
       try {
         setLoading(true);
 
-        // TODO: Validating creds
+        // validating creds
 
-        // objKeys.forEach((element) => {
-        //   adminCreds[element] = helpers.checkInput(
-        //     element,
-        //     adminCreds[element],
-        //     element + " of the customer",
-        //     true
-        //   );
-        // });
+        objKeys.forEach((element) => {
+          adminCreds[element] = helpers.checkInput(
+            element,
+            adminCreds[element],
+            element + " of the customer",
+            true
+          );
+        });
 
         // sending request
 
@@ -108,9 +112,9 @@ export const AdminLogin = () => {
       </CreateModal>
 
       <div className="lg:w-1/3 md:w-1/2 bg-white flex flex-col w-full my-auto md:py-8 items-center rounded shadow-2xl ">
-        <h2 className="text-gray-900 text-lg mb-1 font-medium title-font">
+        <div className="text-gray-900 text-lg mb-1 font-medium title-font">
           Admin Login
-        </h2>
+        </div>
 
         <FormInput
           title="Username"

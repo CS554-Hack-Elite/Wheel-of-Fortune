@@ -11,6 +11,52 @@ const exportedMethods = {
    * @returns User Jsom
    */
   async getCustomerDetails() {},
+  async checkAdmin(result, role) {
+    const errorObject = {
+      status: 400,
+    };
+    let objKeys = ["email", "password"];
+    objKeys.forEach((element) => {
+      result[element] = helpers.checkInput(
+        element,
+        result[element],
+        element + " for the admin"
+      );
+    });
+    let password = result.password;
+    if (role == process.env.MASTER_ADMIN_ROLE) {
+      const passwordCompare = await bcrypt.compare(
+        password,
+        process.env.ADMIN_LOGIN
+      );
+
+      if (result.email !== process.env.ADMIN_LOGIN_EMAIL || !passwordCompare) {
+        errorObject.status = 401;
+        errorObject.error = "Invalid Credentials for Master Admin";
+        throw errorObject;
+      }
+      return {};
+    }
+    const adminCollection = await admins();
+    let adminData = await adminCollection.findOne({
+      email: result.email,
+    });
+    if (!adminData) {
+      errorObject.status = 401;
+      errorObject.error = "Invalid business email provided for login";
+      throw errorObject;
+    }
+    const passwordCompare = await bcrypt.compare(password, adminData.password);
+    if (!passwordCompare) {
+      errorObject.status = 401;
+      errorObject.error = "Invalid password provided for login";
+      throw errorObject;
+    }
+
+    adminData._id = adminData._id.toString();
+    adminData = (({ password, ...o }) => o)(adminData);
+    return adminData;
+  },
   async createAdmin(result) {
     const errorObject = {
       status: 400,
@@ -53,32 +99,29 @@ const exportedMethods = {
     return newCustomer;
   },
 
-
   async getBusinessId(admin_id) {
     const errorObject = {
-      status: 400
+      status: 400,
     };
-    
-      if (!admin_id || typeof admin_id !== 'string') {
-        errorObject.status = 400;
-        errorObject.error = 'Invalid admin ID';
-        throw errorObject;
-      }
-      const adminCollection = await admins();
-      let admin = await adminCollection.findOne({
-        _id: new ObjectId(admin_id),
-      });
-      
-      if (!admin) {
-        errorObject.status = 404;
-        errorObject.error = 'Admin not found';
-        throw errorObject;
-      }
-      const businessId = admin.business_id;
-      return businessId;
-      
-    
-  }
+
+    if (!admin_id || typeof admin_id !== "string") {
+      errorObject.status = 400;
+      errorObject.error = "Invalid admin ID";
+      throw errorObject;
+    }
+    const adminCollection = await admins();
+    let admin = await adminCollection.findOne({
+      _id: new ObjectId(admin_id),
+    });
+
+    if (!admin) {
+      errorObject.status = 404;
+      errorObject.error = "Admin not found";
+      throw errorObject;
+    }
+    const businessId = admin.business_id;
+    return businessId;
+  },
 };
 
 export default exportedMethods;

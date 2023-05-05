@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { DashboardSidebar } from "../Reusables/DashboardSidebar";
@@ -14,9 +14,28 @@ export const CustomerProof = () => {
 	const [loading, setLoading] = useState(false);
 	const { currentUser } = useAuth();
 	// const [proofList, setProofList] = useState([]);
+	const [businessList, setBusinessList] = useState([]);
 	const [uploadProof, setUploadProof] = useState(false);
 	const [businessId, setBusinessId] = useState("");
 	const [uploadedImage, setUploadedImage] = useState("");
+
+	useEffect(() => {
+		async function fetchBusinessList() {
+			try {
+				setLoading(true);
+				const businessArray = await axios.get("/business/list");
+				setBusinessList(businessArray.data.businessData);
+				setLoading(false);
+			} catch (e) {
+				setLoading(false);
+				setErrorModal(true);
+				setErrorMessage(e && e.error ? e.error : e.toString());
+				console.log(e);
+			}
+		}
+
+		fetchBusinessList();
+	}, []);
 
 	const handlePointsRender = (points) => {
 		if (points) {
@@ -67,10 +86,13 @@ export const CustomerProof = () => {
 							>
 								{console.log(businessId)}
 								<option value="">Select an option</option>
-								<option value="Business 1">Business 1</option>
-								<option value="Business 2">Business 2</option>
-								<option value="Business 3">Business 3</option>
-								<option value="Business 4">Business 4</option>
+								{businessList.map((business) => {
+									return (
+										<option key={business._id} value={business._id}>
+											{business.name}
+										</option>
+									);
+								})}
 							</select>
 						</label>
 						<label htmlFor="proofImage" className="text-2xl col-span-1 m-4">
@@ -106,7 +128,7 @@ export const CustomerProof = () => {
 		formData.append("proof", uploadedImage);
 		formData.append("email", currentUser.email);
 		try {
-			const res = await axios.post("/customer/upload-proof", formData);
+			const res = await axios.post("/users/upload-proof", formData);
 			console.log(res);
 			setBusinessId("");
 			setUploadedImage("");
@@ -118,7 +140,7 @@ export const CustomerProof = () => {
 			setUploadProof(false);
 			setLoading(false);
 			setErrorModal(true);
-			setErrorMessage(e.toString());
+			setErrorMessage(e && e.error ? e.error : e.toString());
 			console.log(e);
 		}
 	};

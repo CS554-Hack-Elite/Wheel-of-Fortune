@@ -1,6 +1,5 @@
 import { Router } from "express";
 const router = Router();
-
 import { businessData } from "../data/index.js";
 import { couponsData } from "../data/index.js";
 import { customerData } from "../data/index.js";
@@ -64,10 +63,10 @@ router.route("/coupons").get(async (req, res) => {
     };
     if (
       !req.session.admin_role ||
-      !req.session.admin_role == process.env.MASTER_ADMIN_ROLE
+      !req.session.admin_role == process.env.BUSINESS_ADMIN_ROLE
     ) {
       errorObject.status = 403;
-      errorObject.error = "Unauthorized Access";
+      error.error = "Unauthorized Access";
     }
     const couponsList = await couponsData.getAllCoupons();
     return res.status(200).json({
@@ -131,8 +130,10 @@ router.route("/create").post(async (req, res) => {
         result[element] = parseInt(result[element]);
       }
     });
-    let customerInfo = await userData.createUser(result);
-    res.redirect("/list");
+    let customerData = await userData.createUser(result);
+    return res.status(200).json({
+      customer: customerData
+    });
   } catch (e) {
     if (
       typeof e === "object" &&
@@ -170,7 +171,7 @@ router.route("/list")
       }
       const businessList = await businessData.getBusinessList();;
       return res.status(200).json({
-        ListOfBusinesses: businessList,
+        businessData: businessList,
       });
     } catch (e) {
       if (

@@ -67,9 +67,9 @@ export const AdminDashboard = () => {
 
         <div class="p-4 grid md:grid-cols-4 grid-cols-1 gap-4">
           <div class="md:col-span-2 p-4 lg:h-[80vh] h-[50vh] rounded-lg bg-white overflow-y-auto">
-            <h1 class="text-3xl font-medium text-teal-600 p-2">
+            <div class="text-3xl font-medium text-teal-600 p-2">
               Top 10 Coupons
-            </h1>
+            </div>
             <ul>
               {/* {{#each newInquiryList}}
 							<li class="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
@@ -86,7 +86,7 @@ export const AdminDashboard = () => {
             </ul>
           </div>
           <div class="md:col-span-2 p-4 lg:h-[80vh] h-[50vh] rounded-lg bg-white overflow-y-auto">
-            <h1 class="text-3xl font-medium text-teal-600 p-2">Businesses</h1>
+            <div class="text-3xl font-medium text-teal-600 p-2">Businesses</div>
             <ul>
               {/* {{#each ongoingInquiryList}}
 							<li class="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">

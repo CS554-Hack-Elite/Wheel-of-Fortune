@@ -56,7 +56,7 @@ router.route("/generate_coupon").post(async (req, res) => {
   }
 });
 
-router.route("/coupons").get(async (req, res) => {
+router.route("/coupons/:businessId").get(async (req, res) => {
   try {
     const errorObject = {
       status: 400,
@@ -66,9 +66,14 @@ router.route("/coupons").get(async (req, res) => {
       !req.session.admin_role == process.env.BUSINESS_ADMIN_ROLE
     ) {
       errorObject.status = 403;
-      error.error = "Unauthorized Access";
+      errorObject.message = "Unauthorized Access";
+      throw errorObject;
     }
-    const couponsList = await couponsData.getAllCoupons();
+
+    const { businessId } = req.params;
+
+    const couponsList = await couponsData.getAllCouponsByBusinessId(businessId);
+
     return res.status(200).json({
       ListOfCoupons: couponsList,
     });
@@ -78,20 +83,21 @@ router.route("/coupons").get(async (req, res) => {
       e !== null &&
       !Array.isArray(e) &&
       "status" in e &&
-      "error" in e
+      "message" in e
     ) {
       return res.status(e.status).json({
         status: e.status,
-        message: e.error,
+        message: e.message,
       });
     } else {
       return res.status(400).json({
         status: 400,
-        message: e.error,
+        message: e.message,
       });
     }
   }
-})
+});
+
 
 router.route("/create").post(async (req, res) => {
   try {

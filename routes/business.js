@@ -12,12 +12,14 @@ router.route("/generate_coupon").post(async (req, res) => {
     const errorObject = {
       status: 400,
     };
+    console.log(req.session.admin_role)
     if (
       !req.session.admin_role ||
       !req.session.admin_role == process.env.BUSINESS_ADMIN_ROLE
     ) {
       errorObject.status = 403;
-      errorObject.error = "Unauthorized Access";
+      errorObject.message = "Unauthorized Access";
+      throw errorObject;
     }
     let result = req.body;
 
@@ -61,6 +63,7 @@ router.route("/coupons/:businessId").get(async (req, res) => {
     const errorObject = {
       status: 400,
     };
+    console.log(req.session.admin_role)
     if (
       !req.session.admin_role ||
       !req.session.admin_role == process.env.BUSINESS_ADMIN_ROLE

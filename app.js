@@ -17,15 +17,7 @@ app.use(
 
 console.log(process.env.DATABASE);
 
-app.use(
-  session({
-    secret: "my-secret-key", // this should be a long, randomly generated string
-    resave: false,
-    saveUninitialized: true,
-  })
-);
-
-//app.use(VerifyToken);
+// app.use(VerifyToken);
 
 app.use(express.json());
 

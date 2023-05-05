@@ -2,9 +2,23 @@ import { Router } from "express";
 const router = Router();
 import { customerData } from "../data/index.js";
 import helpers from "../helpers/customerHelper.js";
-import { convert } from "imagemagick";
+import { convert, identify } from "imagemagick";
 import multer from "multer";
-const upload = multer({ dest: "uploads/" });
+import gm from "gm";
+import path from "path";
+import fs from "fs";
+
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+const upload = multer({ storage });
 
 router.route("/").get(async (req, res) => {
   try {
@@ -58,7 +72,7 @@ router.route("/register").post(async (req, res) => {
   }
 });
 
-router.route("/upload-proof").post(upload.single("file"), async (req, res) => {
+router.route("/upload-proof").post(upload.single("proof"), async (req, res) => {
   try {
     const errorObject = {
       status: 400,
@@ -75,22 +89,44 @@ router.route("/upload-proof").post(upload.single("file"), async (req, res) => {
         element + " for the proof"
       );
     });
-    const { path, filename } = req.file;
-    try {
-      console.log("HELLO");
-      const { path, filename } = req.file;
-      await convert(path, ["-resize", "200x200", `uploads/${filename}`]);
-      res.send("Image uploaded successfully");
-    } catch (error) {
-      errorObject.status = 500;
-      errorObject.error = "Error saving image";
-      throw errorObject;
-    }
-    result.proof = filename;
+
+    const filePath = req.file.path;
+
+    // Resize and save the image
+    const outputPath = path.join(
+      __dirname,
+      "uploads",
+      "resized",
+      req.file.originalname
+    );
+    gm(filePath)
+      .resize(500, 500)
+      .write(outputPath, (err) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).send("Error resizing image");
+        } else {
+          console.log("Image saved successfully.");
+          // Send a response with the path to the resized image
+          const url = `/uploads/resized/${req.file.originalname}`;
+          return res.status(200).send({ url });
+        }
+      });
+
+    // Remove the uploaded file from the server
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Uploaded file removed successfully.");
+      }
+    });
+
+    // result.proof = filename;
+    // const updatedCustomerRow = customerData.uploadProof(result);
     return res.status(200).json({ data: true });
-    const updatedCustomerRow = customerData.uploadProof(result);
-    return res.status(200).json({ data: customerRow });
   } catch (e) {
+    console.log(e);
     if (
       typeof e === "object" &&
       e !== null &&

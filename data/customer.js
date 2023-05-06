@@ -14,6 +14,9 @@ const exportedMethods = {
     return "CUSTOMER 1";
   },
   async getCustomerByEmail(email) {
+    const errorObject = {
+      status: 400,
+    };
     const customerCollection = await customers();
     const customerData = await customerCollection.findOne({
       email: email,

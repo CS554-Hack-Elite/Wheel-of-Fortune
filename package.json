@@ -28,6 +28,7 @@
     "express-session": "^1.17.3",
     "firebase": "^9.20.0",
     "firebase-admin": "^11.7.0",
+    "formidable": "^2.1.1",
     "fs": "^0.0.1-security",
     "gm": "^1.25.0",
     "imagemagick": "^0.1.3",

@@ -74,6 +74,22 @@ const exportedMethods = {
       };
   },
 
+  //function of fetch all coupons for a particular business
+  async getCouponsByBusinessId(businessId) {
+    const errorObject = {
+      status: 400,
+      message: 'Failed to get coupons'
+    };
+    const couponsCollection = await coupons();
+    const couponsList = await couponsCollection.find({ business_id: businessId }).toArray();
+    if (!couponsList || couponsList.length === 0) {
+      errorObject.message = 'No coupons found for this business';
+      throw errorObject;
+    }
+    return couponsList;
+  },
+
+  
   async getAllCoupons() {
    
       const errorObject = {
@@ -87,8 +103,7 @@ const exportedMethods = {
         throw errorObject;
       }
       return couponsList;
-    } 
-
+    }
 };
 
 export default exportedMethods;

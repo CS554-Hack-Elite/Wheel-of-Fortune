@@ -260,8 +260,7 @@ const exportedMethods = {
           throw errorObject;
         }
         break;
-      case "business_id":
-      case "id":
+      case "admin_id":
         if (typeof val !== "string") {
           errorObject.error = `${
             variableName || "Provided variable"

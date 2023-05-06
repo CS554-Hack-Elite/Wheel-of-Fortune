@@ -7,13 +7,14 @@ import { Wheel } from "react-custom-roulette";
 import { Loading } from "../Reusables/Loading";
 import { Error } from "../Reusables/Error";
 import { CreateModal } from "../Reusables/CreateModal";
+import { buildToken } from "../../auth/tokenBuilder";
 import axios from "axios";
 
 export const CustomerDashboard = () => {
 	const [errorModal, setErrorModal] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [loading, setLoading] = useState(false);
-	const [customerDetails, setCustomerDetails] = useState("");
+	const [customerDetails, setCustomerDetails] = useState({});
 	const [Coupons, setCoupons] = useState([{}]);
 	const [reward, setReward] = useState({});
 	const [showReward, setShowReward] = useState(false);
@@ -42,8 +43,8 @@ export const CustomerDashboard = () => {
 		async function fetchCustomerDetails() {
 			try {
 				setLoading(true);
-				const response = await axios.get("/users");
-				console.log(response);
+				const payloadHeader = await buildToken();
+				const response = await axios.get("/users/get-customer", payloadHeader);
 				setCustomerDetails(response.data);
 				setLoading(false);
 			} catch (e) {
@@ -147,14 +148,14 @@ export const CustomerDashboard = () => {
 					<Error message={errorMessage} />
 				</CreateModal>
 				<div className="grid lg:grid-cols-2 gap-5 p-4">
-					<StastisticsCard value={customerDetails.points ? customerDetails.points : "N/A"} title="Points"></StastisticsCard>
-					<StastisticsCard value={customerDetails.coupons ? customerDetails.coupons : "N/A"} title="Total Coupons Won"></StastisticsCard>
+					<StastisticsCard value={customerDetails.points && customerDetails.points} title="Points"></StastisticsCard>
+					<StastisticsCard value={customerDetails.coupons ? customerDetails.coupons.length : "N/A"} title="Total Coupons Won"></StastisticsCard>
 				</div>
 
 				<div className="h-[85vh] pt-4 px-4 pb-0 grid grid-cols-1 gap-4">
 					<div className="max-w-full col-span-1 p-4 h-full rounded-lg bg-white bg-opacity-40 overflow-x-auto">
 						{console.log(customerDetails)}
-						<div className="flex justify-center text-3xl font-medium text-indigo-600 p-2">Spin the Wheel: {customerDetails}</div>
+						<div className="flex justify-center text-3xl font-medium text-indigo-600 p-2">Spin the Wheel:</div>
 						<div className="wheel flex justify-center mt-10">{handleWheel(data)}</div>
 						{handleShowReward(showReward)}
 					</div>

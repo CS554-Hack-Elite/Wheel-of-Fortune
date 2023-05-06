@@ -24,7 +24,8 @@ export const CustomerProof = () => {
 		async function fetchBusinessList() {
 			try {
 				setLoading(true);
-				const businessArray = await axios.get("/business/list");
+				const payloadHeader = await buildToken();
+				const businessArray = await axios.get("/business/list", payloadHeader);
 				setBusinessList(businessArray.data.businessData);
 				setLoading(false);
 			} catch (e) {
@@ -85,14 +86,18 @@ export const CustomerProof = () => {
 								onChange={(e) => setBusinessId(e.target.value)}
 							>
 								{console.log(businessId)}
-								<option value="">Select an option</option>
-								{businessList.map((business) => {
-									return (
-										<option key={business._id} value={business._id}>
-											{business.name}
-										</option>
-									);
-								})}
+								<option key="0" value="">
+									Select an option
+								</option>
+								{businessList
+									? businessList.map((business) => {
+											return (
+												<option key={business._id} value={business._id}>
+													{business.name}
+												</option>
+											);
+									  })
+									: null}
 							</select>
 						</label>
 						<label htmlFor="proofImage" className="text-2xl col-span-1 m-4">

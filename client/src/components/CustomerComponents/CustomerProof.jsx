@@ -5,6 +5,7 @@ import { DashboardSidebar } from "../Reusables/DashboardSidebar";
 import { Loading } from "../Reusables/Loading";
 import { Error } from "../Reusables/Error";
 import { CreateModal } from "../Reusables/CreateModal";
+import { buildToken } from "../../auth/tokenBuilder";
 
 import axios from "axios";
 
@@ -23,7 +24,8 @@ export const CustomerProof = () => {
 		async function fetchBusinessList() {
 			try {
 				setLoading(true);
-				const businessArray = await axios.get("/business/list");
+				const payloadHeader = await buildToken();
+				const businessArray = await axios.get("/business/list", payloadHeader);
 				setBusinessList(businessArray.data.businessData);
 				setLoading(false);
 			} catch (e) {
@@ -33,7 +35,6 @@ export const CustomerProof = () => {
 				console.log(e);
 			}
 		}
-
 		fetchBusinessList();
 	}, []);
 
@@ -85,14 +86,18 @@ export const CustomerProof = () => {
 								onChange={(e) => setBusinessId(e.target.value)}
 							>
 								{console.log(businessId)}
-								<option value="">Select an option</option>
-								{businessList.map((business) => {
-									return (
-										<option key={business._id} value={business._id}>
-											{business.name}
-										</option>
-									);
-								})}
+								<option key="0" value="">
+									Select an option
+								</option>
+								{businessList
+									? businessList.map((business) => {
+											return (
+												<option key={business._id} value={business._id}>
+													{business.name}
+												</option>
+											);
+									  })
+									: null}
 							</select>
 						</label>
 						<label htmlFor="proofImage" className="text-2xl col-span-1 m-4">
@@ -127,8 +132,9 @@ export const CustomerProof = () => {
 		formData.append("business_id", businessId);
 		formData.append("proof", uploadedImage);
 		formData.append("email", currentUser.email);
+		const payloadHeader = await buildToken();
 		try {
-			const res = await axios.post("/users/upload-proof", formData);
+			const res = await axios.post("/users/upload-proof", formData, { headers: payloadHeader });
 			console.log(res);
 			setBusinessId("");
 			setUploadedImage("");
@@ -206,6 +212,7 @@ export const CustomerProof = () => {
 				<CreateModal openModal={errorModal} setOpenModal={setErrorModal}>
 					<Error message={errorMessage} />
 				</CreateModal>
+				{console.log()}
 				<div className="h-[98vh] pt-4 px-4 pb-0 grid grid-cols-1 gap-4">
 					<div className="max-w-full col-span-1 p-4 h-full rounded-lg bg-white bg-opacity-40 overflow-y-auto">
 						<div className="flex justify-center text-3xl font-medium text-indigo-600 p-2">Proof History</div>

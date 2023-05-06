@@ -6,26 +6,19 @@ import axios from "axios";
 import { CreateModal } from "../Reusables/CreateModal";
 import { Error } from "../Reusables/Error";
 
-export const CreateCoupon = () => {
+export const CreateCoupon = ({ businessAdmin }) => {
   const [loading, setLoading] = useState(false);
   const [couponName, setCouponName] = useState("");
   const [couponDescription, setCouponDescription] = useState("");
   const [couponMaxAllocation, setCouponMaxAllocation] = useState("");
 
-  const { businessAdmin } = JSON.parse(
-    localStorage.getItem("businessAdminToken")
-  );
-
-  // console.log(businessAdmin);
-
   const [errorModal, setErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const objKeys = ["name", "description", "max_allocation", "admin_id"];
+  const objKeys = ["name", "description", "max_allocation", "business_id"];
 
   const createCoupon = async () => {
     try {
-      // TODO: Validate Credentials
       setLoading(true);
 
       const payload = {
@@ -33,7 +26,7 @@ export const CreateCoupon = () => {
         description: couponDescription,
         max_allocation: couponMaxAllocation.toString(),
         image: "qweqwe",
-        admin_id: businessAdmin._id,
+        business_id: businessAdmin.business_id,
       };
 
       // console.log(typeof payload.max_allocation);
@@ -49,8 +42,9 @@ export const CreateCoupon = () => {
 
       console.log(payload);
 
-      //TODO: Axios Request
       await axios.post("/business/generate_coupon", payload);
+
+      //TODO: Show message on creation and clear the input fields
 
       setLoading(false);
     } catch (e) {

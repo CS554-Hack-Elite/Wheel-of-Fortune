@@ -4,17 +4,49 @@ import { useNavigate } from "react-router-dom";
 import { CreateModal } from "../Reusables/CreateModal";
 import { CreateCoupon } from "./CreateCoupon";
 import { GrantPoints } from "./GrantPoints";
+import axios from "axios";
 
 export const BusinessAdminDashboard = () => {
   const navigate = useNavigate();
 
   const [openModal, setOpenModal] = useState(false);
   const [pointsModal, setPointsModal] = useState(false);
-  const [request, setRequest] = useState("");
+  const [requests, setRequests] = useState({});
+  const [requestDetails, setRequestDetails] = useState({});
+  const [coupons, setCoupons] = useState({});
+
+  const [business, setBusiness] = useState({});
+
+  const [loading, setLoading] = useState(false);
+  const [errorModal, setErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  console.log(business);
+
+  const getData = async () => {
+    try {
+      setLoading(true);
+      const requestData = await axios.get("/business/coupons/");
+      // const couponData = await axios.get("/business/list/");
+
+      setRequests(requestData.data.ListOfCoupons);
+      // setCoupons(couponData.data.ListOfCoupons);
+
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+      setErrorModal(true);
+      setErrorMessage(
+        e && e.response && e.response.data
+          ? e.response.data.message
+          : e.toString()
+      );
+    }
+  };
 
   const assignPoints = (customerRequest) => {
     setPointsModal(true);
-    setRequest(customerRequest);
+    setRequestDetails(customerRequest);
   };
 
   const logoutAdmin = () => {
@@ -23,17 +55,52 @@ export const BusinessAdminDashboard = () => {
     navigate("/admin-login");
   };
 
+  const buildRequestCard = (request) => {
+    return (
+      <li className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
+        <div className="bg-teal-100 rounded-lg p-5">
+          <img
+            src="../public/img/solar.svg"
+            className="text-purple-800 w-[40px]"
+          />
+        </div>
+        <div className="pl-4">
+          <p className="text-gray-800 font-bold">{request.name} </p>
+          <p className="text-gray-400 text-sm">{request.description}</p>
+        </div>
+        <span className="lg:flex md:hidden ml-auto right-6 text-md font-medium">
+          <div className="px-3 py-2 bg-gray-600 text-white text-lg rounded-lg ">
+            Max Coupons: {request.max_allocation}
+          </div>
+        </span>
+      </li>
+    );
+  };
+
+  const render = () => {
+    const allRequest = [];
+
+    for (let request of requests) {
+      allRequest.push(buildRequestCard(request));
+    }
+
+    return allRequest;
+  };
+
   useEffect(() => {
     const businessToken = localStorage.getItem("businessAdminToken");
     if (!businessToken) navigate("/admin-login");
-    console.log(businessToken);
+    // console.log(JSON.parse(businessToken));
+    setBusiness(JSON.parse(businessToken));
+
+    getData();
   }, []);
 
   return (
     <div>
       <div className="flex">
         <CreateModal openModal={openModal} setOpenModal={setOpenModal}>
-          <CreateCoupon />{" "}
+          <CreateCoupon businessAdmin={business.businessAdmin} />{" "}
         </CreateModal>
 
         <CreateModal openModal={pointsModal} setOpenModal={setPointsModal}>

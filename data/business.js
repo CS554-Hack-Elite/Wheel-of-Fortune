@@ -99,7 +99,8 @@ const exportedMethods = {
     
         await businessCollection.deleteOne({ _id: new ObjectId(id) });
         return deletedBusiness;
-    }
+    },
+    
 
 }
 

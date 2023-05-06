@@ -11,77 +11,67 @@ import multer from "multer";
 const upload = multer({ dest: "public/images/" });
 
 router.route("/get-customer").get(async (req, res) => {
-  try {
-    let email = req.user && req.user.email ? req.user.email : "";
-    const user = await customerData.getCustomerByEmail(email);
-    res.status(200).json(user);
-  } catch (e) {
-    console.log(e);
-    res.status(400).json({ errorMessage: e });
-  }
+	try {
+		let email = req.user && req.user.email ? req.user.email : "";
+		console.log(req.user);
+		const user = await customerData.getCustomerByEmail(email);
+		res.status(200).json(user);
+	} catch (e) {
+		console.log(e);
+		res.status(400).json({ errorMessage: e });
+	}
 });
 
 router.route("/register").post(async (req, res) => {
-  try {
-    const errorObject = {
-      status: 400,
-    };
-    let result = req.body;
-    let objKeys = [];
-    if (result.google_authenticated && result.google_authenticated == 1) {
-      objKeys = ["email", "name"];
-    } else {
-      objKeys = ["email", "password", "name", "age"];
-    }
-    objKeys.forEach((element) => {
-      result[element] = helpers.checkInput(
-        element,
-        result[element],
-        element + " of the customer",
-        true
-      );
-    });
-    const customerRow = await customerData.createCustomer(result);
+	try {
+		const errorObject = {
+			status: 400,
+		};
+		let result = req.body;
+		let objKeys = [];
+		if (result.google_authenticated && result.google_authenticated == 1) {
+			objKeys = ["email", "name"];
+		} else {
+			objKeys = ["email", "password", "name", "age"];
+		}
+		objKeys.forEach((element) => {
+			result[element] = helpers.checkInput(element, result[element], element + " of the customer", true);
+		});
+		const customerRow = await customerData.createCustomer(result);
 
-    return res.status(200).json({ data: customerRow });
-  } catch (e) {
-    console.log(e);
-    if (
-      typeof e === "object" &&
-      e !== null &&
-      !Array.isArray(e) &&
-      "status" in e &&
-      "error" in e
-    ) {
-      return res.status(e.status).json({
-        error: e.error,
-      });
-    } else {
-      return res.status(400).json({
-        error: e,
-      });
-    }
-  }
+		return res.status(200).json({ data: customerRow });
+	} catch (e) {
+		console.log(e);
+		if (typeof e === "object" && e !== null && !Array.isArray(e) && "status" in e && "error" in e) {
+			return res.status(e.status).json({
+				error: e.error,
+			});
+		} else {
+			return res.status(400).json({
+				error: e,
+			});
+		}
+	}
 });
 
 router.route("/upload-proof").post(upload.single("proof"), async (req, res) => {
-  try {
-    // const errorObject = {
-    //   status: 400,
-    // };
-    // let result = req.body;
-    console.log(req.body);
-    // let objKeys = [];
+	try {
+		// const errorObject = {
+		//   status: 400,
+		// };
+		// let result = req.body;
+		console.log(req.body);
+		// let objKeys = [];
 
-    // objKeys = ["business_id", "email"];
+		// objKeys = ["business_id", "email"];
 
-    // objKeys.forEach((element) => {
-    //   result[element] = helpers.checkInput(
-    //     element,
-    //     result[element],
-    //     element + " for the proof"
-    //   );
-    // });
+		// objKeys.forEach((element) => {
+		//   result[element] = helpers.checkInput(
+		//     element,
+		//     result[element],
+		//     element + " for the proof"
+		//   );
+		// });
 
     // console.log(req.file);
     // const fileName = req.file.originalname;

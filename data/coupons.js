@@ -79,23 +79,26 @@ const exportedMethods = {
     };
   },
 
-  //function of fetch all coupons for a particular business
-  async getCouponsByBusinessId(businessId) {
+  async getCouponsByBusinessId(id) {
     const errorObject = {
       status: 400,
-      message: "Failed to get coupons",
     };
-    const couponsCollection = await coupons();
-    const couponsList = await couponsCollection
-      .find({ business_id: businessId })
-      .toArray();
-    if (!couponsList || couponsList.length === 0) {
-      errorObject.message = "No coupons found for this business";
+  
+    if (!id || typeof id !== "string") {
+      errorObject.error = "Invalid business ID";
       throw errorObject;
     }
+  
+    const couponsCollection = await coupons();
+    const couponsList = await couponsCollection.find({ business_id: id }).toArray();
+  
+    if (!couponsList.length) { 
+      errorObject.error = "No coupons found for this business";
+      throw errorObject;
+    }
+  
     return couponsList;
   },
-
   async getAllCoupons() {
    
       const errorObject = {

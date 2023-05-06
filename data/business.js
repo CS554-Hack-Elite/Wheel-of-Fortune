@@ -70,14 +70,14 @@ const exportedMethods = {
       
       if (!id || typeof id !== 'string') {
         errorObject.status = 400;
-        errorObject.error = 'Invalid business ID';
+        errorObject.message = 'Invalid business ID';
         throw errorObject;
       }
       const businessCollection = await business();
       const businessDoc = await businessCollection.findOne({ _id: new ObjectId(id) });
       if (!businessDoc) {
         errorObject.status = 404;
-        errorObject.error = `Business with ID ${id} not found`;
+        errorObject.message = `Business with ID ${id} not found`;
         throw errorObject;
       }
       return businessDoc;

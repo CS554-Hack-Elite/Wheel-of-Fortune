@@ -1,9 +1,9 @@
 import { customers } from "../config/mongoCollection.js";
-
 import bcrypt from "bcryptjs";
 const saltRounds = 10;
 import helpers from "../helpers/customerHelper.js";
 import * as businessData from "./business.js";
+import { ObjectId } from "mongodb";
 
 const exportedMethods = {
   /**
@@ -18,7 +18,7 @@ const exportedMethods = {
       status: 400,
     };
     const customerCollection = await customers();
-    const customerData = await customerCollection.findOne({
+    let customerData = await customerCollection.findOne({
       email: email,
     });
     if (!customerData) {
@@ -115,6 +115,8 @@ const exportedMethods = {
       status: 400,
     };
     let objKeys = [];
+    let email = req.email ? req.email : "";
+    req.email = email;
     objKeys = ["business_id", "proof", "email"];
     objKeys.forEach((element) => {
       result[element] = helpers.checkInput(
@@ -123,10 +125,30 @@ const exportedMethods = {
         element + " for the proof"
       );
     });
-
-    console.log("HELLO");
     let customerRow = this.getCustomerByEmail(result.email);
     let businessRow = businessData.getBusinessById(result.business_id);
+    result.status = 1;
+    result.created_at = new Date().toLocaleString();
+    result.proof = "abc";
+    result._id = new ObjectId();
+    let customerProof = customerRow.proof;
+    customerProof = customerProof.push(result);
+    customerRow.updateOne({ $set: { proof: customerProof } });
+    return customerRow;
+  },
+  async updateProof(result) {
+    const errorObject = {
+      status: 400,
+    };
+    let objKeys = [];
+    objKeys = ["proof_id", "status", "points"];
+    objKeys.forEach((element) => {
+      result[element] = helpers.checkInput(
+        element,
+        result[element],
+        element + " for the proof"
+      );
+    });
   },
 };
 

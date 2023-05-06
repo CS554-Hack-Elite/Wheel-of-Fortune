@@ -239,45 +239,33 @@ const exportedMethods = {
           throw errorObject;
         }
         break;
-      case "max_allocation":
-        if (routeFlag) {
-          inputRegExp = /^[0-9]+$/;
-          valid = inputRegExp.test(val);
-          if (!valid) {
+        case "max_allocation":
+          if (routeFlag) {
+            inputRegExp = /^[0-9]+$/;
+            valid = inputRegExp.test(val);
+            if (!valid) {
+              errorObject.error = `${
+                variableName || "Provided variable"
+              } must be a valid Number.`;
+              throw errorObject;
+            }
+        
+            val = parseInt(val);
+        
+            if (val > 1000) {
+              errorObject.error = `Maximum allocation limit cannot exceed 1000.`;
+              throw errorObject;
+            }
+          }
+        
+          if (isNaN(val)) {
             errorObject.error = `${
               variableName || "Provided variable"
-            }   must be a valid Number.`;
+            } must be a valid Number.`;
             throw errorObject;
           }
-
-          val = parseInt(val);
-        }
-
-        if (isNaN(val)) {
-          errorObject.error = `${
-            variableName || "Provided variable"
-          }   must be a valid Number.`;
-          throw errorObject;
-        }
-        break;
-      case "admin_id":
-        if (typeof val !== "string") {
-          errorObject.error = `${
-            variableName || "Provided variable"
-          } must be a string.`;
-          throw errorObject;
-        }
-        val = val.trim();
-        if (!val) {
-          errorObject.error = `${
-            variableName || "Provided variable"
-          } must not be empty.`;
-          throw errorObject;
-        }
-        if (!ObjectId.isValid(val)) {
-          throw "Invalid Business.";
-        }
-        break;
+          break;
+          
       case "customer_id":
         if (typeof val !== "string") {
           errorObject.error = `${

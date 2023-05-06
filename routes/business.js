@@ -252,11 +252,11 @@ router.route("/delete/:_id").delete(async (req, res) => {
     }
     businessId = businessId.toString();
     console.log("Business ID (string):", businessId); // Add a console.log here
-    const deletedBusiness = await businessData.deleteBusinessById(businessId);
-    console.log("Deleted Business:", deletedBusiness); // Add a console.log here
+    const deletedBusinessDetails = await businessData.deleteBusinessById(businessId);
+    console.log("Deleted Business:", deletedBusinessDetails); // Add a console.log here
     res
       .status(200)
-      .json({ message: "Business deleted successfully", deletedBusiness });
+      .json({ message: "Business deleted successfully", deletedBusinessDetails });
   } catch (e) {
     console.log(e);
     if (
@@ -278,6 +278,7 @@ router.route("/delete/:_id").delete(async (req, res) => {
     }
   }
 });
+
 
 router.route("/customer/list").get(async (req, res) => {
   try {

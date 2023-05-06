@@ -13,28 +13,49 @@ export const CustomerDashboard = () => {
 	const [errorModal, setErrorModal] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [customerDetails, setCustomerDetails] = useState("");
 	const [Coupons, setCoupons] = useState([{}]);
 	const [reward, setReward] = useState({});
 	const [showReward, setShowReward] = useState(false);
 	const [timer, setTimer] = useState(0);
 	const [mustSpin, setMustSpin] = useState(false);
 	const [prizeNumber, setPrizeNumber] = useState(0);
+
 	// axios call to fetch coupons from /api/coupons route using useEffect hook
+	// useEffect(() => {
+	// 	async function fetchCoupons() {
+	// 		try {
+	// 			setLoading(true);
+	// 			const { data } = await axios.get("/getallcoupons");
+	// 			setCoupons(data);
+	// 			setLoading(false);
+	// 		} catch (e) {
+	// 			setLoading(false);
+	// 			setErrorModal(true);
+	// 			setErrorMessage(e.toString());
+	// 		}
+	// 	}
+	// 	fetchCoupons();
+	// });
+
 	useEffect(() => {
-		// async function fetchCoupons() {
-		// 	try {
-		// 		setLoading(true);
-		// 		const { data } = await axios.get("/getallcoupons");
-		// 		setCoupons(data);
-		// 		setLoading(false);
-		// 	} catch (e) {
-		// 		setLoading(false);
-		// 		setErrorModal(true);
-		// 		setErrorMessage(e.toString());
-		// 	}
-		// }
-		// fetchCoupons();
-	});
+		async function fetchCustomerDetails() {
+			try {
+				setLoading(true);
+				const response = await axios.get("/users");
+				console.log(response);
+				setCustomerDetails(response.data);
+				setLoading(false);
+			} catch (e) {
+				setLoading(false);
+				setErrorModal(true);
+				setErrorMessage(e && e.error ? e.error : e.toString());
+				console.log(e);
+			}
+		}
+
+		fetchCustomerDetails();
+	}, []);
 
 	const handleSpinClick = () => {
 		if (!mustSpin) {
@@ -93,6 +114,10 @@ export const CustomerDashboard = () => {
 		}
 	};
 
+	// const handleSendReward = () => {
+
+	// }
+
 	const data = [
 		{ option: "100% OFF" },
 		{ option: "20% OFF" },
@@ -122,17 +147,18 @@ export const CustomerDashboard = () => {
 					<Error message={errorMessage} />
 				</CreateModal>
 				<div className="grid lg:grid-cols-2 gap-5 p-4">
-					<StastisticsCard value="50" title="Points"></StastisticsCard>
-					<StastisticsCard value="50" title="Total Coupons Won"></StastisticsCard>
+					<StastisticsCard value={customerDetails.points ? customerDetails.points : "N/A"} title="Points"></StastisticsCard>
+					<StastisticsCard value={customerDetails.coupons ? customerDetails.coupons : "N/A"} title="Total Coupons Won"></StastisticsCard>
 				</div>
 
 				<div className="h-[85vh] pt-4 px-4 pb-0 grid grid-cols-1 gap-4">
 					<div className="max-w-full col-span-1 p-4 h-full rounded-lg bg-white bg-opacity-40 overflow-x-auto">
-						<div className="flex justify-center text-3xl font-medium text-indigo-600 p-2">Spin the Wheel</div>
+						{console.log(customerDetails)}
+						<div className="flex justify-center text-3xl font-medium text-indigo-600 p-2">Spin the Wheel: {customerDetails}</div>
 						<div className="wheel flex justify-center mt-10">{handleWheel(data)}</div>
 						{handleShowReward(showReward)}
 					</div>
-					{/* <div class="md:col-span-2 p-4 lg:h-[80vh] h-[50vh] rounded-lg bg-white overflow-y-auto"></div> */}
+					{/* <div className="md:col-span-2 p-4 lg:h-[80vh] h-[50vh] rounded-lg bg-white overflow-y-auto"></div> */}
 				</div>
 			</main>
 		</div>

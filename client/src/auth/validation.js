@@ -114,6 +114,84 @@ const exportedMethods = {
         }
         break;
 
+      case "max_allocation":
+        if (routeFlag) {
+          inputRegExp = /^[0-9]+$/;
+          valid = inputRegExp.test(val);
+          if (!valid) {
+            errorObject.error = `${
+              variableName || "Provided variable"
+            }   must be a valid Number.`;
+            throw errorObject;
+          }
+
+          val = parseInt(val);
+        }
+
+        if (isNaN(val)) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          }   must be a valid Number.`;
+          throw errorObject;
+        }
+        break;
+
+      case "description":
+        if (typeof val !== "string") {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          } must be a string.`;
+          throw errorObject;
+        }
+        val = val.trim();
+        if (!val) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          } must not be empty.`;
+          throw errorObject;
+        }
+        inputRegExp = /\d*[a-zA-Z][a-zA-Z0-9 ]*$/;
+        valid = inputRegExp.test(val);
+        if (!valid) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          }   must be a valid description.`;
+          throw errorObject;
+        }
+        break;
+
+      case "business_id":
+        if (typeof val !== "string") {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          } must be a string.`;
+          throw errorObject;
+        }
+        val = val.trim();
+        if (!val) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          } must not be empty.`;
+          throw errorObject;
+        }
+        break;
+
+      case "admin_id":
+        if (typeof val !== "string") {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          } must be a string.`;
+          throw errorObject;
+        }
+        val = val.trim();
+        if (!val) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          } must not be empty.`;
+          throw errorObject;
+        }
+        break;
+
       //   case "id":
       //     if (typeof val !== "string") {
       //       errorObject.error = `${

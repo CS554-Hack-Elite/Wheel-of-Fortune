@@ -34,6 +34,12 @@ export function AuthProvider({ children }) {
     return signInWithPopup(auth, provider);
   }
 
+  function deleteUser() {
+    auth.onAuthStateChanged((user) => {
+      if (user) user.delete();
+    });
+  }
+
   function logout() {
     return signOut(auth);
   }
@@ -53,6 +59,7 @@ export function AuthProvider({ children }) {
     register,
     googleLogin,
     logout,
+    deleteUser,
   };
 
   return (

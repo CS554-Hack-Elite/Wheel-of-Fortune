@@ -4,10 +4,101 @@ import { Link, useNavigate } from "react-router-dom";
 import { CreateModal } from "../Reusables/CreateModal";
 import { CreateBusinessAdmin } from "./CreateBusinessAdmin";
 import { clearLocalTokens } from "../../auth/localTokenHandler";
+import axios from "axios";
+import { Loading } from "../Reusables/Loading";
 
 export const AdminDashboard = () => {
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
+
+  const [coupons, setCoupons] = useState([]);
+  const [businesses, setBusinesses] = useState([]);
+  const [customers, setCustomers] = useState([]);
+
+  const [loading, setLoading] = useState(false);
+  const [errorModal, setErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const getData = async () => {
+    try {
+      setLoading(true);
+      const couponData = await axios.get("/business/coupons/");
+      const businessData = await axios.get("/business/list/");
+      const customerData = await axios.get("/business/customer/list");
+
+      setCoupons(couponData.data.ListOfCoupons);
+      setBusinesses(businessData.data.businessData);
+      setCustomers(customerData.data.ListOfCustomer);
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+      setErrorModal(true);
+      setErrorMessage(
+        e && e.response && e.response.data
+          ? e.response.data.message
+          : e.toString()
+      );
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const buildCouponCard = (coupon) => {
+    return (
+      <li className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
+        <div className="bg-teal-100 rounded-lg p-5">
+          <img
+            src="../public/img/solar.svg"
+            className="text-purple-800 w-[40px]"
+          />
+        </div>
+        <div className="pl-4">
+          <p className="text-gray-800 font-bold">{coupon.name} </p>
+          <p className="text-gray-400 text-sm">{coupon.description}</p>
+        </div>
+        <span className="lg:flex md:hidden ml-auto right-6 text-md font-medium">
+          <div className="px-3 py-2 bg-gray-600 text-white text-lg rounded-lg ">
+            Max Coupons: {coupon.max_allocation}
+          </div>
+        </span>
+      </li>
+    );
+  };
+
+  const renderCoupons = () => {
+    const allCoupons = [];
+
+    for (let coupon of coupons) {
+      allCoupons.push(buildCouponCard(coupon));
+    }
+
+    return allCoupons;
+  };
+
+  const buildbusinessCard = (business) => {
+    return (
+      <li className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
+        <div className="bg-teal-100 rounded-lg p-5">
+          <img src={business.logo} className="text-purple-800 w-[40px]" />
+        </div>
+        <div className="pl-4">
+          <p className="text-gray-800 font-bold">{business.name} </p>
+        </div>
+      </li>
+    );
+  };
+
+  const renderbusinesses = () => {
+    const allBusinesses = [];
+
+    for (let business of businesses) {
+      allBusinesses.push(buildbusinessCard(business));
+    }
+
+    return allBusinesses;
+  };
 
   const logoutAdmin = () => {
     clearLocalTokens();
@@ -17,6 +108,8 @@ export const AdminDashboard = () => {
   useEffect(() => {
     if (!localStorage.getItem("adminToken")) navigate("/admin-login");
   }, []);
+
+  if (loading) return <Loading />;
 
   return (
     <div class="flex">
@@ -52,15 +145,15 @@ export const AdminDashboard = () => {
       <main class=" ml-32 w-full">
         <div class="grid lg:grid-cols-3 gap-5 p-4">
           <StastisticsCard
-            value="50"
+            value={coupons ? coupons.length : "Error getting data"}
             title="Number of Coupons"
           ></StastisticsCard>
           <StastisticsCard
-            value="50"
+            value={customers ? customers.length : "Error getting data"}
             title="Number of Customers"
           ></StastisticsCard>
           <StastisticsCard
-            value="50"
+            value={businesses ? businesses.length : "Error getting data"}
             title="Number of Businesses"
           ></StastisticsCard>
         </div>
@@ -70,37 +163,11 @@ export const AdminDashboard = () => {
             <div class="text-3xl font-medium text-teal-600 p-2">
               Top 10 Coupons
             </div>
-            <ul>
-              {/* {{#each newInquiryList}}
-							<li class="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
-								<div class="bg-teal-100 rounded-lg p-5">
-									<img src="../public/img/solar.svg" class="text-purple-800 w-[40px]" />
-								</div>
-								<div class="pl-4">
-									<p class="text-gray-800 font-bold">{{subject}}</p>
-									<p class="text-gray-400 text-sm">{{message}}</p>
-								</div>
-								<span class="lg:flex md:hidden absolute right-6 text-md font-medium"><a href="/sales/generateaccount/{{_id}}"><button class="px-3 py-2 bg-emerald-600 text-white text-lg rounded-lg hover:bg-emerald-700 active:bg-emerald-500">Claim</button></a></span>
-							</li>
-						{{/each}} */}
-            </ul>
+            <ul>{renderCoupons()}</ul>
           </div>
           <div class="md:col-span-2 p-4 lg:h-[80vh] h-[50vh] rounded-lg bg-white overflow-y-auto">
             <div class="text-3xl font-medium text-teal-600 p-2">Businesses</div>
-            <ul>
-              {/* {{#each ongoingInquiryList}}
-							<li class="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
-								<div class="bg-yellow-100 rounded-lg p-5">
-									<img src="../public/img/solar-panel.svg" class="text-purple-800 w-[40px]" />
-								</div>
-								<div class="pl-4">
-									<p class="text-gray-800 font-bold">{{subject}}</p>
-									<p class="text-gray-400 text-sm">{{message}}</p>
-								</div>
-								<p class="lg:flex md:hidden absolute right-6 text-md font-medium"><a href="/sales/inquirydetails/{{_id}}"><button class="px-3 py-2 bg-emerald-600 text-white text-lg rounded-lg hover:bg-emerald-700 active:bg-emerald-500">Details</button></a></p>
-							</li>
-						{{/each}} */}
-            </ul>
+            <ul>{renderbusinesses()}</ul>
           </div>
         </div>
       </main>

@@ -24,7 +24,9 @@ export const BusinessAdminDashboard = () => {
   };
 
   useEffect(() => {
-    if (!localStorage.getItem("businessAdminToken")) navigate("/admin-login");
+    const businessToken = localStorage.getItem("businessAdminToken");
+    if (!businessToken) navigate("/admin-login");
+    console.log(businessToken);
   }, []);
 
   return (

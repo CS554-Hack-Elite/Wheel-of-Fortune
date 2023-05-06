@@ -13,7 +13,7 @@ export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { currentUser, login, googleLogin } = useAuth();
+  const { currentUser, login, googleLogin, deleteUser } = useAuth();
 
   const [loading, setLoading] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
@@ -54,11 +54,7 @@ export const Login = () => {
 
   const loginCutomerByGoogle = async () => {
     try {
-      setLoading(true);
-
       const user = await googleLogin(email, password);
-
-      console.log(user);
 
       const payload = {
         name: user.user.displayName,
@@ -66,12 +62,13 @@ export const Login = () => {
         google_authenticated: 1,
       };
 
-      console.log(payload);
-
       await axios.post("/users/register", payload);
+
       setLoading(false);
       navigate("/customer/dashboard");
     } catch (e) {
+      console.log(e);
+      deleteUser();
       setLoading(false);
       setErrorModal(true);
       setErrorMessage(e.toString());

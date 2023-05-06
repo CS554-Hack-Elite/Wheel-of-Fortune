@@ -25,7 +25,7 @@ app.use(
   })
 );
 
-//app.use(VerifyToken);
+// app.use(VerifyToken);
 
 app.use(express.json());
 

@@ -62,7 +62,7 @@ router.route("/coupons").get(async (req, res) => {
     };
     if (
       !req.session.admin_role ||
-      !req.session.admin_role == process.env.BUSINESS_ADMIN_ROLE
+      !req.session.admin_role == process.env.MASTER_ADMIN_ROLE
     ) {
       errorObject.status = 403;
       errorObject.error = "Unauthorized Access";

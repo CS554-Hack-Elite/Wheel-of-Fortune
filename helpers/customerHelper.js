@@ -127,17 +127,13 @@ const exportedMethods = {
         break;
 
       case "age":
-        if (routeFlag) {
-          inputRegExp = /^[0-9]+$/;
-          valid = inputRegExp.test(val);
-          if (!valid) {
-            errorObject.error = `${
-              variableName || "Provided variable"
-            }   must be a valid Age.`;
-            throw errorObject;
-          }
-
-          val = parseInt(val);
+        inputRegExp = /^[0-9]+$/;
+        valid = inputRegExp.test(val);
+        if (!valid) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          }   must be a valid Age.`;
+          throw errorObject;
         }
 
         if (isNaN(val)) {
@@ -155,40 +151,51 @@ const exportedMethods = {
         }
         break;
 
-      case "id":
-        if (typeof val !== "string") {
+      case "status":
+        inputRegExp = /^[0-9]+$/;
+        valid = inputRegExp.test(val);
+        if (!valid) {
           errorObject.error = `${
             variableName || "Provided variable"
-          } must be a string.`;
+          } must be a valid status.`;
           throw errorObject;
         }
-        val = val.trim();
-        if (!val) {
+        if (isNaN(val)) {
           errorObject.error = `${
             variableName || "Provided variable"
-          } must not be empty.`;
+          }   must be a valid status.`;
           throw errorObject;
         }
-        if (!ObjectId.isValid(val)) {
-          throw "Invalid Customer.";
+
+        if (val < 1 || val > 3) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          }  must be a valid status.`;
+          throw errorObject;
         }
         break;
-      case "business_id":
-        if (typeof val !== "string") {
+
+      case "points":
+        inputRegExp = /^[0-9]+$/;
+        valid = inputRegExp.test(val);
+        if (!valid) {
           errorObject.error = `${
             variableName || "Provided variable"
-          } must be a string.`;
+          } must be a valid points.`;
           throw errorObject;
         }
-        val = val.trim();
-        if (!val) {
+        if (isNaN(val)) {
           errorObject.error = `${
             variableName || "Provided variable"
-          } must not be empty.`;
+          }   must be a valid points.`;
           throw errorObject;
         }
-        if (!ObjectId.isValid(val)) {
-          throw "Invalid Business Id.";
+
+        if (val < 0) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          }  must be a valid points.`;
+          throw errorObject;
         }
         break;
 
@@ -281,7 +288,7 @@ const exportedMethods = {
           throw errorObject;
         }
         if (!ObjectId.isValid(val)) {
-          throw "Invalid Business Id.";
+          throw "Invalid Id.";
         }
         break;
 

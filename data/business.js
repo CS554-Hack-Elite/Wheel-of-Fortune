@@ -98,17 +98,14 @@ const exportedMethods = {
       throw errorObject;
     }
 
-    // Find the admin corresponding to the business
     const adminToDelete = await adminCollection.findOne({
       business_id: id,
     });
 
-    // Delete the admin, if found
     if (adminToDelete) {
       await adminCollection.deleteOne({ business_id: id });
     }
-
-    // Set is_display to 2 for all coupons with the business_id being deleted
+    
     await couponsCollection.updateMany(
       { business_id: id },
       { $set: { is_display: 2 } }

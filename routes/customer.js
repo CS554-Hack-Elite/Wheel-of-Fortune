@@ -11,13 +11,12 @@ import multer from "multer";
 // Set up multer to handle multipart/form-data
 const upload = multer({ dest: "public/images/" });
 
-router.route("/get-customer").post(async (req, res) => {
+router.route("/get-customer").get(async (req, res) => {
   try {
     let email = req.user && req.user.email ? req.user.email : "";
     const user = await customerData.getCustomerByEmail(email);
     res.status(200).json(user);
   } catch (e) {
-    console.log(e);
     res.status(400).json({ errorMessage: e });
   }
 });
@@ -46,7 +45,6 @@ router.route("/register").post(async (req, res) => {
 
     return res.status(200).json({ data: customerRow });
   } catch (e) {
-    console.log(e);
     if (
       typeof e === "object" &&
       e !== null &&
@@ -67,54 +65,133 @@ router.route("/register").post(async (req, res) => {
 
 router.route("/upload-proof").post(upload.single("proof"), async (req, res) => {
   try {
-    // const errorObject = {
-    //   status: 400,
-    // };
-    // let result = req.body;
-    console.log(req.body);
-    // let objKeys = [];
+    const errorObject = {
+      status: 400,
+    };
+    let result = req.body;
+    let objKeys = [];
+    let email = req.user && req.user.email ? req.user.email : "";
+    result.email = email;
+    objKeys = ["business_id", "email"];
 
-    // objKeys = ["business_id", "email"];
-
-    // objKeys.forEach((element) => {
-    //   result[element] = helpers.checkInput(
-    //     element,
-    //     result[element],
-    //     element + " for the proof"
-    //   );
-    // });
-
-    console.log(req.file);
-    const fileName = req.file.originalname;
-    const fileExtension = fileName.split(".").pop();
-
-    // Define the path where the file will be saved
-    const filePath = `/path/to/save/${fileName}`;
-
-    // Read the file and save it to the specified path
-    fs.readFile(req.file.path, function (err, data) {
-      if (err) throw err;
-
-      // Write the file to the specified path
-      fs.writeFile(filePath, data, function (err) {
-        if (err) throw err;
-
-        // Perform any ImageMagick operations as required
-        im.convert(
-          [filePath, "-resize", "50%", filePath],
-          function (err, stdout) {
-            if (err) throw err;
-            console.log("Image saved successfully");
-          }
-        );
-      });
+    objKeys.forEach((element) => {
+      result[element] = helpers.checkInput(
+        element,
+        result[element],
+        element + " for the proof"
+      );
     });
 
+    // console.log(req.file);
+    // const fileName = req.file.originalname;
+    // const fileExtension = fileName.split(".").pop();
+
+    // // Define the path where the file will be saved
+    // const filePath = `/path/to/save/${fileName}`;
+
+    // // Read the file and save it to the specified path
+    // fs.readFile(req.file.path, function (err, data) {
+    //   if (err) throw err;
+
+    //   // Write the file to the specified path
+    //   fs.writeFile(filePath, data, function (err) {
+    //     if (err) throw err;
+
+    //     // Perform any ImageMagick operations as required
+    //     im.convert(
+    //       [filePath, "-resize", "50%", filePath],
+    //       function (err, stdout) {
+    //         if (err) throw err;
+    //         console.log("Image saved successfully");
+    //       }
+    //     );
+    //   });
+    // });
+
     // result.proof = filename;
-    // const updatedCustomerRow = customerData.uploadProof(result);
-    return res.status(200).json({ data: true });
+    const updatedCustomerRow = await customerData.uploadProof(result);
+    return res.status(200).json({ customer: updatedCustomerRow });
   } catch (e) {
     console.log(e);
+    if (
+      typeof e === "object" &&
+      e !== null &&
+      !Array.isArray(e) &&
+      "status" in e &&
+      "error" in e
+    ) {
+      return res.status(e.status).json({
+        error: e.error,
+      });
+    } else {
+      return res.status(400).json({
+        error: e,
+      });
+    }
+  }
+});
+
+router.route("/update-proof").post(async (req, res) => {
+  try {
+    const errorObject = {
+      status: 400,
+    };
+    let result = req.body;
+    let objKeys = [];
+    let email = req.user && req.user.email ? req.user.email : "";
+    result.email = email;
+    objKeys = ["proof_id", "status", "points", "email"];
+    objKeys.forEach((element) => {
+      result[element] = helpers.checkInput(
+        element,
+        result[element],
+        element + " for the proof"
+      );
+    });
+
+    const updatedCustomerRow = await customerData.updateProof(result);
+    return res.status(200).json({ customer: updatedCustomerRow });
+  } catch (e) {
+    if (
+      typeof e === "object" &&
+      e !== null &&
+      !Array.isArray(e) &&
+      "status" in e &&
+      "error" in e
+    ) {
+      return res.status(e.status).json({
+        error: e.error,
+      });
+    } else {
+      return res.status(400).json({
+        error: e,
+      });
+    }
+  }
+});
+
+
+router.route("/update-points").post(async (req, res) => {
+  try {
+    const errorObject = {
+      status: 400,
+    };
+    let result = req.body;
+    let objKeys = [];
+    let email = req.user && req.user.email ? req.user.email : "";
+    result.email = email;
+    objKeys = ["coupon_id"];
+    objKeys.forEach((element) => {
+      result[element] = helpers.checkInput(
+        element,
+        result[element],
+        element + " for the proof"
+      );
+    });
+
+    const updatedCustomerRow = await customerData.updatePoints(result);
+    return res.status(200).json({ customer: updatedCustomerRow });
+  } catch (e) {
     if (
       typeof e === "object" &&
       e !== null &&

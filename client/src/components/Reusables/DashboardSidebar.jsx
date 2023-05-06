@@ -5,7 +5,7 @@ import { DashboardSidebarButton } from "../Reusables/DashboardSidebarButton";
 export const DashboardSidebar = ({ buttons }) => {
 	function handleButtons(buttons) {
 		return buttons.map((button) => {
-			return <DashboardSidebarButton linkTo={button.linkTo} name={button.title} />;
+			return <DashboardSidebarButton key={button.title} linkTo={button.linkTo} name={button.title} />;
 		});
 	}
 	return (

@@ -84,6 +84,7 @@ export const CustomerCoupons = () => {
 	return (
 		<div className="max-h-fit flex">
 			<DashboardSidebar
+				key={"sidebar"}
 				buttons={[
 					{ title: "Dashboard", linkTo: "/customer/dashboard" },
 					{ title: "Proofs", linkTo: "/customer/proof" },

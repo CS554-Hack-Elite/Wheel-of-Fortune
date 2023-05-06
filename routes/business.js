@@ -12,19 +12,16 @@ router.route("/generate_coupon").post(async (req, res) => {
     const errorObject = {
       status: 400,
     };
-    console.log(req.session.admin_role)
     if (
       !req.session.admin_role ||
       !req.session.admin_role == process.env.BUSINESS_ADMIN_ROLE
     ) {
       errorObject.status = 403;
-      errorObject.message = "Unauthorized Access";
-      throw errorObject;
+      errorObject.error = "Unauthorized Access";
+
     }
     let result = req.body;
 
-    const business_id = (await adminData.getBusinessId(result.admin_id)).toString();
-    result.business_id = business_id;
     let objKeys = ["name", "description", "image", "max_allocation", "business_id"];
     objKeys.forEach((element) => {
       helpers.checkInput(
@@ -58,25 +55,19 @@ router.route("/generate_coupon").post(async (req, res) => {
   }
 });
 
-router.route("/coupons/:businessId").get(async (req, res) => {
+router.route("/coupons").get(async (req, res) => {
   try {
     const errorObject = {
       status: 400,
     };
-    console.log(req.session.admin_role)
     if (
       !req.session.admin_role ||
       !req.session.admin_role == process.env.BUSINESS_ADMIN_ROLE
     ) {
       errorObject.status = 403;
-      errorObject.message = "Unauthorized Access";
-      throw errorObject;
+      errorObject.error = "Unauthorized Access";
     }
-
-    const { businessId } = req.params;
-
-    const couponsList = await couponsData.getAllCouponsByBusinessId(businessId);
-
+    const couponsList = await couponsData.getAllCoupons();
     return res.status(200).json({
       ListOfCoupons: couponsList,
     });
@@ -86,16 +77,54 @@ router.route("/coupons/:businessId").get(async (req, res) => {
       e !== null &&
       !Array.isArray(e) &&
       "status" in e &&
-      "message" in e
+      "error" in e
     ) {
       return res.status(e.status).json({
         status: e.status,
-        message: e.message,
+        message: e.error,
       });
     } else {
       return res.status(400).json({
         status: 400,
-        message: e.message,
+        message: e.error,
+      });
+    }
+  }
+})
+
+router.route("/coupons/:business_id").get(async (req, res) => {
+  try {
+    const errorObject = {
+      status: 400,
+    };
+    if (
+      !req.session.admin_role ||
+      !req.session.admin_role == process.env.BUSINESS_ADMIN_ROLE
+    ) {
+      errorObject.status = 403;
+      errorObject.error = "Unauthorized Access";
+    }
+    const businessId = req.params.business_id;
+    const couponsList = await couponsData.getCouponsByBusinessId(businessId);
+    return res.status(200).json({
+      ListOfCoupons: couponsList,
+    });
+  } catch (e) {
+    if (
+      typeof e === "object" &&
+      e !== null &&
+      !Array.isArray(e) &&
+      "status" in e &&
+      "error" in e
+    ) {
+      return res.status(e.status).json({
+        status: e.status,
+        message: e.error,
+      });
+    } else {
+      return res.status(400).json({
+        status: 400,
+        message: e.error,
       });
     }
   }

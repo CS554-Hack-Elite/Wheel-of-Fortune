@@ -14,6 +14,9 @@ const exportedMethods = {
     return "CUSTOMER 1";
   },
   async getCustomerByEmail(email) {
+    const errorObject = {
+      status: 400,
+    };
     const customerCollection = await customers();
     const customerData = await customerCollection.findOne({
       email: email,
@@ -78,6 +81,7 @@ const exportedMethods = {
     }
     result.coupons = [];
     result.points = 0;
+    result.proof = [];
     result.created_at = new Date().toLocaleString();
     if (!duplicateUserRow) {
       const insertInfo = await customerCollection.insertOne(result);
@@ -119,6 +123,8 @@ const exportedMethods = {
         element + " for the proof"
       );
     });
+
+    console.log("HELLO");
     let customerRow = this.getCustomerByEmail(result.email);
     let businessRow = businessData.getBusinessById(result.business_id);
   },

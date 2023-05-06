@@ -103,6 +103,21 @@ const exportedMethods = {
         throw errorObject;
       }
       return couponsList;
+    },
+
+    async getAvailableCoupons() {
+      const couponCollection = await coupons();
+      const allCoupons = await couponCollection.find({ is_display: 1 }).toArray();
+      const couponsWithCodes = [];
+    
+      for (const coupon of allCoupons) {
+        const count = coupon.coupon_codes.filter((code) => code.status === 1).length;
+        if (count >= 1) {
+          couponsWithCodes.push(coupon);
+        }
+      }
+    
+      return couponsWithCodes;
     }
 };
 

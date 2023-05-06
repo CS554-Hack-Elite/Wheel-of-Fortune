@@ -1,6 +1,7 @@
 import { Router } from "express";
 const router = Router();
 import { customerData } from "../data/index.js";
+import { couponsData } from "../data/index.js";
 import helpers from "../helpers/customerHelper.js";
 import im from "imagemagick";
 import gm from "gm";
@@ -131,5 +132,39 @@ router.route("/upload-proof").post(upload.single("proof"), async (req, res) => {
     }
   }
 });
+
+router.route('/coupons').get(async (req, res) => {
+  try {
+    const errorObject = {
+      status: 400,
+    };
+    
+    const availableCouponsList = await couponsData.getAvailableCoupons();
+
+    return res.status(200).json({
+      availableCoupons: availableCouponsList,
+    });
+  } catch (e) {
+    console.log(e);
+    if (
+      typeof e === 'object' &&
+      e !== null &&
+      !Array.isArray(e) &&
+      'status' in e &&
+      'error' in e
+    ) {
+      return res.status(e.status).json({
+        status: e.status,
+        message: e.error,
+      });
+    } else {
+      return res.status(400).json({
+        status: 400,
+        message: e.error,
+      });
+    }
+  }
+});
+
 
 export default router;

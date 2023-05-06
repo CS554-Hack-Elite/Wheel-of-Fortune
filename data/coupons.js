@@ -97,18 +97,35 @@ const exportedMethods = {
   },
 
   async getAllCoupons() {
-    const errorObject = {
-      status: 400,
-      message: "Failed to get coupons",
-    };
-    const couponsCollection = await coupons();
-    const couponsList = await couponsCollection.find({}).toArray();
-    if (!couponsList) {
-      errorObject.message = "No coupons found";
-      throw errorObject;
-    }
-    return couponsList;
+   
+      const errorObject = {
+        status: 400,
+        message: 'Failed to get coupons'
+      };
+      const couponsCollection = await coupons();
+      const couponsList = await couponsCollection.find({}).toArray();
+      if (!couponsList) {
+        errorObject.message = 'No coupons found';
+        throw errorObject;
+      }
+      return couponsList;
+    },
+
+    async getAvailableCoupons() {
+      const couponCollection = await coupons();
+      const allCoupons = await couponCollection.find({ is_display: 1 }).toArray();
+      const couponsWithCodes = [];
+    
+      for (const coupon of allCoupons) {
+        const count = coupon.coupon_codes.filter((code) => code.status === 1).length;
+        if (count >= 1) {
+          couponsWithCodes.push(coupon);
+        }
+      }
+    
+      return couponsWithCodes;
   },
+
   async getCouponById(id, displayCoupon = false) {
     const errorObject = {
       status: 400,

@@ -67,7 +67,7 @@ router.route("/register-business-admin").post(async (req, res) => {
       !req.session.admin_role == process.env.MASTER_ADMIN_ROLE
     ) {
       errorObject.status = 403;
-      error.error = "Unauthorized Access";
+      errorObject.error = "Unauthorized Access";
     }
     let result = req.body;
     let objKeys = ["email", "password", "name", "logo"];

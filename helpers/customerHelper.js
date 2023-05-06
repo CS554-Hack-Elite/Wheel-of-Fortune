@@ -246,27 +246,33 @@ const exportedMethods = {
           throw errorObject;
         }
         break;
-      case "max_allocation":
-        inputRegExp = /^[0-9]+$/;
-        valid = inputRegExp.test(val);
-        if (!valid) {
-          errorObject.error = `${
-            variableName || "Provided variable"
-          }   must be a valid Number.`;
-          throw errorObject;
-        }
-        if (isNaN(val)) {
-          errorObject.error = `${
-            variableName || "Provided variable"
-          }   must be a valid Number.`;
-          throw errorObject;
-        }
-        break;
-      case "id":
-      case "coupon_id":
-      case "admin_id":
-      case "business_id":
-      case "proof_id":
+        case "max_allocation":
+          if (routeFlag) {
+            inputRegExp = /^[0-9]+$/;
+            valid = inputRegExp.test(val);
+            if (!valid) {
+              errorObject.error = `${
+                variableName || "Provided variable"
+              } must be a valid Number.`;
+              throw errorObject;
+            }
+        
+            val = parseInt(val);
+        
+            if (val > 1000) {
+              errorObject.error = `Maximum allocation limit cannot exceed 1000.`;
+              throw errorObject;
+            }
+          }
+        
+          if (isNaN(val)) {
+            errorObject.error = `${
+              variableName || "Provided variable"
+            } must be a valid Number.`;
+            throw errorObject;
+          }
+          break;
+          
       case "customer_id":
         if (typeof val !== "string") {
           errorObject.error = `${

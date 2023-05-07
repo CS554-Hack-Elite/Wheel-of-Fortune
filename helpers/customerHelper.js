@@ -7,7 +7,9 @@ const exportedMethods = {
       status: 400,
     };
     if (typeof val !== "number" && !val && required) {
-      errorObject.message = `${variableName || "Provided variable"} is required.`;
+      errorObject.message = `${
+        variableName || "Provided variable"
+      } is required.`;
       throw errorObject;
     }
     let inputRegExp = "";
@@ -80,6 +82,15 @@ const exportedMethods = {
           errorObject.message = `${
             variableName || "Provided variable"
           } must not exceed 15 characters.`;
+          throw errorObject;
+        }
+
+        inputRegExp = /\d*[a-zA-Z][a-zA-Z0-9. ]*$/;
+        valid = inputRegExp.test(val);
+        if (!valid) {
+          errorObject.message = `${
+            variableName || "Provided variable"
+          }   must be a valid Name.`;
           throw errorObject;
         }
         break;

@@ -15,37 +15,36 @@ export const CustomerDashboard = () => {
 	const [errorMessage, setErrorMessage] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [customerDetails, setCustomerDetails] = useState({});
-	const [Coupons, setCoupons] = useState([{}]);
+	const [couponOptions, setCouponOptions] = useState([{}]);
+	const [coupons, setCoupons] = useState([]);
 	const [reward, setReward] = useState({});
 	const [showReward, setShowReward] = useState(false);
 	const [timer, setTimer] = useState(0);
 	const [mustSpin, setMustSpin] = useState(false);
 	const [prizeNumber, setPrizeNumber] = useState(0);
+	const [prizeNumberId, setPrizeNumberId] = useState("");
 
 	// axios call to fetch coupons from /api/coupons route using useEffect hook
-	// useEffect(() => {
-	// 	async function fetchCoupons() {
-	// 		try {
-	// 			setLoading(true);
-	// 			const { data } = await axios.get("/getallcoupons");
-	// 			setCoupons(data);
-	// 			setLoading(false);
-	// 		} catch (e) {
-	// 			setLoading(false);
-	// 			setErrorModal(true);
-	// 			setErrorMessage(e.toString());
-	// 		}
-	// 	}
-	// 	fetchCoupons();
-	// });
-
 	useEffect(() => {
-		async function fetchCustomerDetails() {
+		async function fetchAvailableCoupons() {
 			try {
 				setLoading(true);
 				const payloadHeader = await buildToken();
-				const response = await axios.get("/users/get-customer", payloadHeader);
-				setCustomerDetails(response.data);
+				const response = await axios.get("/users/coupons", payloadHeader);
+				const wheelCouponNames = [];
+				// response.data.availableCoupons.map((coupon) => {
+				// 	wheelCouponNames.push({ option: coupon.name.toString() });
+				// });
+				if (response.data.availableCoupons.length > 0) {
+					for (let coupon of response.data.availableCoupons) {
+						wheelCouponNames.push({ option: coupon.name.toString() });
+					}
+					setCoupons(response.data.availableCoupons);
+				}
+				// wheelCouponNames.push({ option: "none" });
+				// console.log("wheelCouponNames", wheelCouponNames);
+				setCouponOptions(wheelCouponNames);
+				console.log("coupons", wheelCouponNames);
 				setLoading(false);
 			} catch (e) {
 				setLoading(false);
@@ -54,19 +53,49 @@ export const CustomerDashboard = () => {
 				console.log(e);
 			}
 		}
+		fetchAvailableCoupons();
+	}, []);
 
+	async function fetchCustomerDetails() {
+		try {
+			// setLoading(true);
+			const payloadHeader = await buildToken();
+			console.log("payload header", payloadHeader);
+			const response = await axios.get("/users/get-customer", payloadHeader);
+			setCustomerDetails(response.data);
+			// setLoading(false);
+		} catch (e) {
+			setLoading(false);
+			setErrorModal(true);
+			setErrorMessage(e && e.data && e.data.error ? e.data.error : e.toString());
+			console.log(e);
+		}
+	}
+	useEffect(() => {
 		fetchCustomerDetails();
 	}, []);
 
 	const handleSpinClick = () => {
 		if (!mustSpin) {
-			const newPrizeNumber = Math.floor(Math.random() * data.length);
-			setPrizeNumber(newPrizeNumber);
+			const newPrizeNumber = Math.floor(Math.random() * couponOptions.length);
+			console.log("newPrizeNumber", newPrizeNumber);
+			console.log("couponsObjects", coupons);
+			if (isNaN(newPrizeNumber)) {
+				setPrizeNumber(1);
+			} else {
+				setPrizeNumber(newPrizeNumber);
+			}
+			for (let coupon of coupons) {
+				if (coupon.name === couponOptions[newPrizeNumber].option) {
+					setPrizeNumberId(coupon._id);
+				}
+			}
 			setMustSpin(true);
 		}
 	};
+
 	const handleWheel = (data) => {
-		if (data.length > 0) {
+		if (data.length > 1) {
 			return (
 				<div className="grid grid-cols-1">
 					<Wheel
@@ -78,19 +107,32 @@ export const CustomerDashboard = () => {
 						innerBorderWidth={4}
 						innerRadius={4}
 						fontSize={16}
-						onStopSpinning={() => {
+						onStopSpinning={async () => {
 							setMustSpin(false);
 							setReward(data[prizeNumber]);
+							console.log("prize number id", prizeNumberId);
+							try {
+								const payloadHeader = await buildToken();
+								await axios.post("/users/update-points", { coupon_id: prizeNumberId }, payloadHeader);
+								fetchCustomerDetails();
+							} catch (e) {
+								setLoading(false);
+								setErrorModal(true);
+								setErrorMessage(e && e.error ? e.error : e.toString());
+								console.log(e);
+							}
 							setShowReward(true);
 						}}
 						className="mx-auto min-w-max"
 					/>
-					<button
-						className="w-full col-span-1 bg-indigo-600 text-white rounded-lg p-4 mt-8 text-2xl hover:bg-indigo-500 hover:scale-105 active:bg-indigo-700"
-						onClick={handleSpinClick}
-					>
-						SPIN
-					</button>
+					{customerDetails.points > 0 && (
+						<button
+							className="w-full col-span-1 bg-indigo-600 text-white rounded-lg p-4 mt-8 text-2xl hover:bg-indigo-500 hover:scale-105 active:bg-indigo-700"
+							onClick={handleSpinClick}
+						>
+							SPIN
+						</button>
+					)}
 				</div>
 			);
 		} else {
@@ -119,17 +161,18 @@ export const CustomerDashboard = () => {
 
 	// }
 
-	const data = [
-		{ option: "100% OFF" },
-		{ option: "20% OFF" },
-		{ option: "Buy 1 Get 1 Free" },
-		{ option: "30% OFF" },
-		{ option: "50% OFF" },
-		{ option: "60% OFF" },
-		{ option: "70% OFF" },
-		{ option: "80% OFF" },
-		{ option: "90% OFF" },
-	];
+	// const data = [
+	// 	{ option: "100% OFF" },
+	// 	{ option: "20% OFF" },
+	// 	{ option: "Buy 1 Get 1 Free" },
+	// 	{ option: "30% OFF" },
+	// 	{ option: "50% OFF" },
+	// 	{ option: "60% OFF" },
+	// 	{ option: "70% OFF" },
+	// 	{ option: "80% OFF" },
+	// 	{ option: "90% OFF" },
+	// ];
+
 	// const data = [];
 
 	if (loading) return <Loading />;
@@ -149,6 +192,7 @@ export const CustomerDashboard = () => {
 				</CreateModal>
 				<div className="grid lg:grid-cols-2 gap-5 p-4">
 					<StastisticsCard value={customerDetails.points && customerDetails.points} title="Points"></StastisticsCard>
+					{console.log("customer points", customerDetails.points)}
 					<StastisticsCard value={customerDetails.coupons ? customerDetails.coupons.length : "N/A"} title="Total Coupons Won"></StastisticsCard>
 				</div>
 
@@ -156,7 +200,7 @@ export const CustomerDashboard = () => {
 					<div className="max-w-full col-span-1 p-4 h-full rounded-lg bg-white bg-opacity-40 overflow-x-auto">
 						{console.log(customerDetails)}
 						<div className="flex justify-center text-3xl font-medium text-indigo-600 p-2">Spin the Wheel:</div>
-						<div className="wheel flex justify-center mt-10">{handleWheel(data)}</div>
+						<div className="wheel flex justify-center mt-10">{couponOptions && handleWheel(couponOptions)}</div>
 						{handleShowReward(showReward)}
 					</div>
 					{/* <div className="md:col-span-2 p-4 lg:h-[80vh] h-[50vh] rounded-lg bg-white overflow-y-auto"></div> */}

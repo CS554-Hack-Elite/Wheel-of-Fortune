@@ -1,4 +1,6 @@
 import { business } from "../config/mongoCollection.js";
+import { admins } from "../config/mongoCollection.js";
+import { coupons } from "../config/mongoCollection.js";
 import bcrypt from "bcryptjs";
 const saltRounds = 10;
 import helpers from "../helpers/customerHelper.js";
@@ -8,11 +10,11 @@ import { ObjectId } from 'mongodb';
 
 const exportedMethods = {
 
-    /**
-   * Sample function to get user details
-   * @returns User Jsom
-   */
-  async getCustomerDetails() {},
+  /**
+ * Sample function to get user details
+ * @returns User Jsom
+ */
+  async getCustomerDetails() { },
   async createBusiness(result) {
     const errorObject = {
       status: 400,
@@ -61,46 +63,53 @@ const exportedMethods = {
     return businessList;
   },
 
+  async getBusinessById(id) {
+    const errorObject = {
+      status: 400
+    };
 
+    const businessCollection = await business();
+    const businessDoc = await businessCollection.findOne({ _id: new ObjectId(id) });
+    if (!businessDoc) {
+      errorObject.status = 404;
+      errorObject.error = `Business with ID ${id} not found`;
+      throw errorObject;
+    }
+    return businessDoc;
+  },
 
-    async getBusinessById(id) {
+  async deleteBusinessById(id) {
+    const businessCollection = await business();
+    const adminCollection = await admins();
+    const couponsCollection = await coupons();
+
+    const deletedBusiness = await this.getBusinessById(id);
+
+    if (!deletedBusiness) {
       const errorObject = {
-        status: 400
+        status: 404,
+        error: `Business with ID ${id} not found`,
       };
-      
-      if (!id || typeof id !== 'string') {
-        errorObject.status = 400;
-        errorObject.message = 'Invalid business ID';
-        throw errorObject;
-      }
-      const businessCollection = await business();
-      const businessDoc = await businessCollection.findOne({ _id: new ObjectId(id) });
-      if (!businessDoc) {
-        errorObject.status = 404;
-        errorObject.message = `Business with ID ${id} not found`;
-        throw errorObject;
-      }
-      return businessDoc;
-    },  
+      throw errorObject;
+    }
+
+    const adminToDelete = await adminCollection.findOne({
+      business_id: id,
+    });
+
+    if (adminToDelete) {
+      await adminCollection.deleteOne({ business_id: id });
+    }
     
-    
-    async deleteBusinessById(id) {
-      const errorObject = {
-        status: 400
-      };
-        const businessCollection = await business();
-        const deletedBusiness = await this.getBusinessById(id);
-    
-        if (!deletedBusiness) {
-          errorObject.status = 404;
-          errorObject.error = `Business with ID ${id} not found`;
-          throw errorObject;
-        }
-    
-        await businessCollection.deleteOne({ _id: new ObjectId(id) });
-        return deletedBusiness;
-    },
-    
+    await couponsCollection.updateMany(
+      { business_id: id },
+      { $set: { is_display: 2 } }
+    );
+
+    await businessCollection.deleteOne({ _id: new ObjectId(id) });
+
+    return deletedBusiness;
+  }
 
 }
 

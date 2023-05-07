@@ -1,7 +1,6 @@
 import { Router } from "express";
 const router = Router();
-import { customerData } from "../data/index.js";
-import { couponsData } from "../data/index.js";
+import { customerData, couponsData, businessData } from "../data/index.js";
 import helpers from "../helpers/customerHelper.js";
 import im from "imagemagick";
 import gm from "gm";
@@ -17,7 +16,9 @@ router.route("/get-customer").get(async (req, res) => {
     const user = await customerData.getCustomerByEmail(email);
     res.status(200).json(user);
   } catch (e) {
-    res.status(400).json({ errorMessage: e });
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
   }
 });
 
@@ -45,21 +46,9 @@ router.route("/register").post(async (req, res) => {
 
     return res.status(200).json({ data: customerRow });
   } catch (e) {
-    if (
-      typeof e === "object" &&
-      e !== null &&
-      !Array.isArray(e) &&
-      "status" in e &&
-      "error" in e
-    ) {
-      return res.status(e.status).json({
-        error: e.error,
-      });
-    } else {
-      return res.status(400).json({
-        error: e,
-      });
-    }
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
   }
 });
 
@@ -112,30 +101,18 @@ router.route("/upload-proof").post(upload.single("proof"), async (req, res) => {
     const updatedCustomerRow = await customerData.uploadProof(result);
     return res.status(200).json({ customer: updatedCustomerRow });
   } catch (e) {
-    console.log(e);
-    if (
-      typeof e === "object" &&
-      e !== null &&
-      !Array.isArray(e) &&
-      "status" in e &&
-      "error" in e
-    ) {
-      return res.status(e.status).json({
-        error: e.error,
-      });
-    } else {
-      return res.status(400).json({
-        error: e,
-      });
-    }
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
   }
 });
 
-router.route("/update-proof").post(async (req, res) => {
+router.route("/business-list").get(async (req, res) => {
   try {
     const errorObject = {
       status: 400,
     };
+<<<<<<< HEAD
     let result = req.body;
     let objKeys = [];
     let email = req.body.email;
@@ -148,28 +125,19 @@ router.route("/update-proof").post(async (req, res) => {
         element + " for the proof"
       );
     });
+=======
+>>>>>>> main
 
-    const updatedCustomerRow = await customerData.updateProof(result);
-    return res.status(200).json({ customer: updatedCustomerRow });
+    const businessList = await businessData.getBusinessList();
+    return res.status(200).json({
+      businessData: businessList,
+    });
   } catch (e) {
-    if (
-      typeof e === "object" &&
-      e !== null &&
-      !Array.isArray(e) &&
-      "status" in e &&
-      "error" in e
-    ) {
-      return res.status(e.status).json({
-        error: e.error,
-      });
-    } else {
-      return res.status(400).json({
-        error: e,
-      });
-    }
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
   }
 });
-
 
 router.route("/update-points").post(async (req, res) => {
   try {
@@ -192,56 +160,28 @@ router.route("/update-points").post(async (req, res) => {
     const updatedCustomerRow = await customerData.updatePoints(result);
     return res.status(200).json({ customer: updatedCustomerRow });
   } catch (e) {
-    if (
-      typeof e === "object" &&
-      e !== null &&
-      !Array.isArray(e) &&
-      "status" in e &&
-      "error" in e
-    ) {
-      return res.status(e.status).json({
-        error: e.error,
-      });
-    } else {
-      return res.status(400).json({
-        error: e,
-      });
-    }
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
   }
 });
 
-router.route('/coupons').get(async (req, res) => {
+router.route("/coupons").get(async (req, res) => {
   try {
     const errorObject = {
       status: 400,
     };
-    
+
     const availableCouponsList = await couponsData.getAvailableCoupons();
 
     return res.status(200).json({
       availableCoupons: availableCouponsList,
     });
   } catch (e) {
-    console.log(e);
-    if (
-      typeof e === 'object' &&
-      e !== null &&
-      !Array.isArray(e) &&
-      'status' in e &&
-      'error' in e
-    ) {
-      return res.status(e.status).json({
-        status: e.status,
-        message: e.error,
-      });
-    } else {
-      return res.status(400).json({
-        status: 400,
-        message: e.error,
-      });
-    }
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
   }
 });
-
 
 export default router;

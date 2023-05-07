@@ -68,11 +68,6 @@ const exportedMethods = {
       status: 400
     };
 
-    if (!id || typeof id !== 'string') {
-      errorObject.status = 400;
-      errorObject.error = 'Invalid business ID';
-      throw errorObject;
-    }
     const businessCollection = await business();
     const businessDoc = await businessCollection.findOne({ _id: new ObjectId(id) });
     if (!businessDoc) {

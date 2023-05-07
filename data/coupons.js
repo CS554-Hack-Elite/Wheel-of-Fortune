@@ -126,9 +126,21 @@ const exportedMethods = {
         }
       }
     
-      return couponsWithCodes;
-  },
-
+      // If the length of the list is greater than 10, randomly select 10 coupons
+      if (couponsWithCodes.length > 10) {
+        const randomCoupons = [];
+        const copyCoupons = couponsWithCodes.slice(); // create a copy of the couponsWithCodes array
+        while (randomCoupons.length < 10) {
+          const randomIndex = Math.floor(Math.random() * copyCoupons.length);
+          randomCoupons.push(copyCoupons[randomIndex]);
+          copyCoupons.splice(randomIndex, 1); // remove the selected coupon from the copyCoupons array
+        }
+        return randomCoupons;
+      } else {
+        return couponsWithCodes;
+      }
+    },
+    
   async getCouponById(id, displayCoupon = false) {
     const errorObject = {
       status: 400,

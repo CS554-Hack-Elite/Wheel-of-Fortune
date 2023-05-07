@@ -39,9 +39,9 @@ export const CustomerCoupons = () => {
 			return coupons.map((coupon) => {
 				return (
 					<div key={coupon._id} className="coupon col-span-1 bg-indigo-800 text-slate-200 rounded-lg my-4 overflow-x-auto">
-						<div className="flex justify-center pt-2 text-xl">{coupon.businessName}</div>
+						<div className="flex justify-center pt-2 text-xl">{coupon.business_name}</div>
 						<span>
-							<div className="px-4 py-2 text-lg">Offer: {coupon.discount}</div>
+							<div className="px-4 py-2 text-lg">Offer: {coupon.coupon_name}</div>
 						</span>
 						<div className="w-full bg-gray-200 text-black rounded-b-lg">
 							<div className="p-4">{coupon.coupon_code}</div>
@@ -126,7 +126,7 @@ export const CustomerCoupons = () => {
 					<Error message={errorMessage} />
 				</CreateModal>
 				<div className="grid lg:grid-cols-2 gap-5 p-4">
-					<StastisticsCard value={customerDetails && customerDetails.points ? customerDetails.points : "N/A"} title="Points" />
+					<StastisticsCard value={customerDetails && customerDetails.points} title="Points" />
 					<StastisticsCard value={customerDetails && customerDetails.coupons ? customerDetails.coupons.length : "N/A"} title="Total Coupons Won" />
 				</div>
 				<div className="h-[70vh] md:h-[85vh] lg:h-[85vh] pt-4 px-4 pb-0 grid grid-cols-1 gap-4">

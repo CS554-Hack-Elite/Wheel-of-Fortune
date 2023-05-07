@@ -21,38 +21,40 @@ export const CustomerDashboard = () => {
 	const [showReward, setShowReward] = useState(false);
 	const [timer, setTimer] = useState(0);
 	const [mustSpin, setMustSpin] = useState(false);
+	const [allowSpin, setAllowSpin] = useState(false);
 	const [prizeNumber, setPrizeNumber] = useState(0);
 	const [prizeNumberId, setPrizeNumberId] = useState("");
 
 	// axios call to fetch coupons from /api/coupons route using useEffect hook
-	useEffect(() => {
-		async function fetchAvailableCoupons() {
-			try {
-				setLoading(true);
-				const payloadHeader = await buildToken();
-				const response = await axios.get("/users/coupons", payloadHeader);
-				const wheelCouponNames = [];
-				// response.data.availableCoupons.map((coupon) => {
-				// 	wheelCouponNames.push({ option: coupon.name.toString() });
-				// });
-				if (response.data.availableCoupons.length > 0) {
-					for (let coupon of response.data.availableCoupons) {
-						wheelCouponNames.push({ option: coupon.name.toString() });
-					}
-					setCoupons(response.data.availableCoupons);
+	async function fetchAvailableCoupons() {
+		try {
+			const payloadHeader = await buildToken();
+			const response = await axios.get("/users/coupons", payloadHeader);
+			const wheelCouponNames = [];
+			// response.data.availableCoupons.map((coupon) => {
+			// 	wheelCouponNames.push({ option: coupon.name.toString() });
+			// });
+			if (response.data.availableCoupons.length > 0) {
+				for (let coupon of response.data.availableCoupons) {
+					wheelCouponNames.push({ option: coupon.name.toString() });
 				}
-				// wheelCouponNames.push({ option: "none" });
-				// console.log("wheelCouponNames", wheelCouponNames);
-				setCouponOptions(wheelCouponNames);
-				console.log("coupons", wheelCouponNames);
-				setLoading(false);
-			} catch (e) {
-				setLoading(false);
-				setErrorModal(true);
-				setErrorMessage(e && e.error ? e.error : e.toString());
-				console.log(e);
+				console.log(response.data.availableCoupons);
+				setCoupons(response.data.availableCoupons);
 			}
+			// wheelCouponNames.push({ option: "none" });
+			// console.log("wheelCouponNames", wheelCouponNames);
+			setCouponOptions(wheelCouponNames);
+			console.log("coupons", wheelCouponNames);
+			setLoading(false);
+		} catch (e) {
+			setLoading(false);
+			setErrorModal(true);
+			setErrorMessage(e && e.error ? e.error : e.toString());
+			console.log(e);
 		}
+	}
+	useEffect(() => {
+		setLoading(true);
 		fetchAvailableCoupons();
 	}, []);
 
@@ -62,6 +64,11 @@ export const CustomerDashboard = () => {
 			const payloadHeader = await buildToken();
 			console.log("payload header", payloadHeader);
 			const response = await axios.get("/users/get-customer", payloadHeader);
+			if (response.data.points > 0) {
+				setAllowSpin(true);
+			} else {
+				setAllowSpin(false);
+			}
 			setCustomerDetails(response.data);
 			// setLoading(false);
 		} catch (e) {
@@ -109,12 +116,15 @@ export const CustomerDashboard = () => {
 						fontSize={16}
 						onStopSpinning={async () => {
 							setMustSpin(false);
+							setAllowSpin(false);
 							setReward(data[prizeNumber]);
+							// fetchCustomerDetails();
 							console.log("prize number id", prizeNumberId);
 							try {
 								const payloadHeader = await buildToken();
 								await axios.post("/users/update-points", { coupon_id: prizeNumberId }, payloadHeader);
 								fetchCustomerDetails();
+								fetchAvailableCoupons();
 							} catch (e) {
 								setLoading(false);
 								setErrorModal(true);
@@ -125,10 +135,18 @@ export const CustomerDashboard = () => {
 						}}
 						className="mx-auto min-w-max"
 					/>
-					{customerDetails.points > 0 && (
+					{!mustSpin && allowSpin ? (
 						<button
-							className="w-full col-span-1 bg-indigo-600 text-white rounded-lg p-4 mt-8 text-2xl hover:bg-indigo-500 hover:scale-105 active:bg-indigo-700"
 							onClick={handleSpinClick}
+							className="w-full col-span-1 bg-indigo-600 text-white rounded-lg p-4 mt-8 text-2xl hover:bg-indigo-500 hover:scale-105 active:bg-indigo-700"
+						>
+							SPIN
+						</button>
+					) : (
+						<button
+							onClick={handleSpinClick}
+							className="w-full col-span-1 bg-gray-500 bg-opacity-80 text-white rounded-lg p-4 mt-8 text-2xl"
+							disabled={true}
 						>
 							SPIN
 						</button>
@@ -138,7 +156,9 @@ export const CustomerDashboard = () => {
 		} else {
 			return (
 				<div className="grid grid-cols-1">
-					<div className="w-full col-span-1 border-indigo-600 border-2 text-gray-800 rounded-lg p-4 mt-8 text-2xl">No Coupons Available</div>
+					<div className="w-full col-span-1 border-indigo-600 border-2 text-gray-800 rounded-lg p-4 mt-8 text-2xl">
+						More than 1 Coupons not Available
+					</div>
 				</div>
 			);
 		}
@@ -157,24 +177,6 @@ export const CustomerDashboard = () => {
 		}
 	};
 
-	// const handleSendReward = () => {
-
-	// }
-
-	// const data = [
-	// 	{ option: "100% OFF" },
-	// 	{ option: "20% OFF" },
-	// 	{ option: "Buy 1 Get 1 Free" },
-	// 	{ option: "30% OFF" },
-	// 	{ option: "50% OFF" },
-	// 	{ option: "60% OFF" },
-	// 	{ option: "70% OFF" },
-	// 	{ option: "80% OFF" },
-	// 	{ option: "90% OFF" },
-	// ];
-
-	// const data = [];
-
 	if (loading) return <Loading />;
 
 	return (
@@ -191,9 +193,12 @@ export const CustomerDashboard = () => {
 					<Error message={errorMessage} />
 				</CreateModal>
 				<div className="grid lg:grid-cols-2 gap-5 p-4">
-					<StastisticsCard value={customerDetails.points && customerDetails.points} title="Points"></StastisticsCard>
+					<StastisticsCard value={customerDetails.points && customerDetails.points ? customerDetails.points : 0} title="Points"></StastisticsCard>
 					{console.log("customer points", customerDetails.points)}
-					<StastisticsCard value={customerDetails.coupons ? customerDetails.coupons.length : "N/A"} title="Total Coupons Won"></StastisticsCard>
+					<StastisticsCard
+						value={customerDetails.coupons && customerDetails.coupons ? customerDetails.coupons.length : "N/A"}
+						title="Total Coupons Won"
+					></StastisticsCard>
 				</div>
 
 				<div className="h-[85vh] pt-4 px-4 pb-0 grid grid-cols-1 gap-4">

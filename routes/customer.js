@@ -133,7 +133,7 @@ router.route("/update-points").post(async (req, res) => {
     let objKeys = [];
     let email = req.user && req.user.email ? req.user.email : "";
     result.email = email;
-    objKeys = ["coupon_id"];
+    objKeys = ["coupon_id", "email"];
     objKeys.forEach((element) => {
       result[element] = helpers.checkInput(
         element,

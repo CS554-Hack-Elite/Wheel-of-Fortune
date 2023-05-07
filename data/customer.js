@@ -291,6 +291,9 @@ const exportedMethods = {
       coupon_id: result.coupon_id,
       coupon_code: assignCode,
       created_at: new Date().toLocaleString(),
+      coupon_name: couponData.name,
+      coupon_description: couponData.description,
+      image: couponData.image,
     });
     await customerCollection.updateOne(
       { email: result.email },

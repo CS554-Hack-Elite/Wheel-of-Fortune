@@ -88,7 +88,6 @@ router.route("/business-list").get(async (req, res) => {
     const errorObject = {
       status: 400,
     };
-
     const businessList = await businessData.getBusinessList();
     return res.status(200).json({
       businessData: businessList,

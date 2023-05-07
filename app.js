@@ -10,8 +10,7 @@ app.use(
 	session({
 		secret: "my-secret-key",
 		resave: false,
-		saveUninitialized: true,
-		cookie: { secure: true },
+		saveUninitialized: true
 	})
 );
 

@@ -26,7 +26,7 @@ const exportedMethods = {
     });
     if (!customerData) {
       errorObject.status = 401;
-      errorObject.error = "Invalid customer email provided";
+      errorObject.message = "Invalid customer email provided";
       throw errorObject;
     }
     customerData._id = customerData._id.toString();
@@ -79,7 +79,7 @@ const exportedMethods = {
       google_authenticated: 2,
     });
     if (duplicateUser != null) {
-      errorObject.error = "Customer with this email already exists.";
+      errorObject.message = "Customer with this email already exists.";
       throw errorObject;
     }
     result.coupons = [];
@@ -90,7 +90,7 @@ const exportedMethods = {
       const insertInfo = await customerCollection.insertOne(result);
       if (!insertInfo.acknowledged || insertInfo.insertedCount === 0) {
         errorObject.status = 500;
-        errorObject.error = "Could not create customer.";
+        errorObject.message = "Could not create customer.";
         throw errorObject;
       }
     }
@@ -163,8 +163,7 @@ const exportedMethods = {
     const errorObject = {
       status: 400,
     };
-    let objKeys = [];
-    objKeys = ["proof_id", "status", "points", "email"];
+    let objKeys = ["proof_id", "status", "points", "email"];
     objKeys.forEach((element) => {
       result[element] = helpers.checkInput(
         element,
@@ -179,7 +178,7 @@ const exportedMethods = {
       "proof._id": new ObjectId(result.proof_id),
     });
     if (!proofRow) {
-      errorObject.error = "Invalid Proof Id provided";
+      errorObject.message = "Invalid Proof Id provided";
       throw errorObject;
     }
     proofRow = await customerCollection.findOne({
@@ -193,7 +192,14 @@ const exportedMethods = {
     });
     if (!proofRow) {
       errorObject.status = 401;
-      errorObject.error = "Can only update proof if status is pending";
+      errorObject.message = "Can only update proof if status is pending";
+      throw errorObject;
+    }
+    if (result.status == 3) {
+      result.points = 0;
+    }
+    if (result.status == 1 && result.points < 1) {
+      errorObject.message = "Should allocate points if status is approved";
       throw errorObject;
     }
     await customerCollection.updateOne(
@@ -212,24 +218,21 @@ const exportedMethods = {
     return customerRow;
   },
 
-  async getProofByBusiness(result) {
+  async getProofByBusiness(business_id) {
     const errorObject = {
       status: 400,
     };
-    let objKeys = [];
-    objKeys = ["business_id"];
-    objKeys.forEach((element) => {
-      result[element] = helpers.checkInput(
-        element,
-        result[element],
-        element + " for the proof"
-      );
-    });
-    let businessRow = await businessData.getBusinessById(result.business_id);
+    console.log(business_id);
+    business_id = helpers.checkInput(
+      "business_id",
+      business_id,
+      "Business ID for the proof"
+    );
+    let businessRow = await businessData.getBusinessById(business_id);
     const customerCollection = await customers();
     const customerList = await customerCollection
       .find({
-        "proof.business_id": result.business_id,
+        "proof.business_id": business_id,
       })
       .toArray();
     let data = [];
@@ -237,7 +240,7 @@ const exportedMethods = {
     customerList.forEach((customerValue) => {
       proofArray = [];
       customerValue.proof.forEach((proofValue) => {
-        if (proofValue.business_id == result.business_id) {
+        if (proofValue.business_id == business_id) {
           proofArray.push(proofValue);
         }
       });
@@ -266,7 +269,7 @@ const exportedMethods = {
     let customerRow = await this.getCustomerByEmail(result.email);
     if (customerRow.points < 1) {
       errorObject.status = 401;
-      errorObject.error = "Cannot spin the wheel, insufficient points";
+      errorObject.message = "Cannot spin the wheel, insufficient points";
       throw errorObject;
     }
     const customerCollection = await customers();

@@ -3,7 +3,6 @@ const router = Router();
 import { businessData } from "../data/index.js";
 import { couponsData } from "../data/index.js";
 import { customerData } from "../data/index.js";
-import { adminData } from "../data/index.js";
 import helpers from "../helpers/customerHelper.js";
 
 router.route("/generate_coupon").post(async (req, res) => {
@@ -16,7 +15,8 @@ router.route("/generate_coupon").post(async (req, res) => {
       !req.session.admin_role == process.env.BUSINESS_ADMIN_ROLE
     ) {
       errorObject.status = 403;
-      errorObject.error = "Unauthorized Access";
+      errorObject.message = "Unauthorized Access";
+      throw errorObject;
     }
     let result = req.body;
 
@@ -38,24 +38,9 @@ router.route("/generate_coupon").post(async (req, res) => {
     const createdCoupon = await couponsData.generateCoupons(result);
     res.status(201).json(createdCoupon);
   } catch (e) {
-    console.log(e);
-    if (
-      typeof e === "object" &&
-      e !== null &&
-      !Array.isArray(e) &&
-      "status" in e &&
-      "error" in e
-    ) {
-      return res.status(e.status).json({
-        status: e.status,
-        message: e.error,
-      });
-    } else {
-      return res.status(400).json({
-        status: 400,
-        message: e.error,
-      });
-    }
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
   }
 });
 
@@ -69,7 +54,8 @@ router.route("/coupons").get(async (req, res) => {
       !req.session.admin_role == process.env.MASTER_ADMIN_ROLE
     ) {
       errorObject.status = 403;
-      errorObject.error = "Unauthorized Access";
+      errorObject.message = "Unauthorized Access";
+      throw errorObject;
     }
 
     const couponsList = await couponsData.getAllCoupons();
@@ -77,24 +63,9 @@ router.route("/coupons").get(async (req, res) => {
       ListOfCoupons: couponsList,
     });
   } catch (e) {
-    console.log(e);
-    if (
-      typeof e === "object" &&
-      e !== null &&
-      !Array.isArray(e) &&
-      "status" in e &&
-      "error" in e
-    ) {
-      return res.status(e.status).json({
-        status: e.status,
-        message: e.error,
-      });
-    } else {
-      return res.status(400).json({
-        status: 400,
-        message: e.error,
-      });
-    }
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
   }
 });
 
@@ -108,7 +79,8 @@ router.route("/coupons/:business_id").get(async (req, res) => {
       !req.session.admin_role == process.env.BUSINESS_ADMIN_ROLE
     ) {
       errorObject.status = 403;
-      errorObject.error = "Unauthorized Access";
+      errorObject.message = "Unauthorized Access";
+      throw errorObject;
     }
     const businessId = req.params.business_id;
     const couponsList = await couponsData.getCouponsByBusinessId(businessId);
@@ -116,23 +88,9 @@ router.route("/coupons/:business_id").get(async (req, res) => {
       ListOfCoupons: couponsList,
     });
   } catch (e) {
-    if (
-      typeof e === "object" &&
-      e !== null &&
-      !Array.isArray(e) &&
-      "status" in e &&
-      "error" in e
-    ) {
-      return res.status(e.status).json({
-        status: e.status,
-        message: e.error,
-      });
-    } else {
-      return res.status(400).json({
-        status: 400,
-        message: e.error,
-      });
-    }
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
   }
 });
 
@@ -146,7 +104,8 @@ router.route("/create").post(async (req, res) => {
       !req.session.admin_role == process.env.MASTER_ADMIN_ROLE
     ) {
       errorObject.status = 403;
-      errorObject.error = "Unauthorized Access";
+      errorObject.message = "Unauthorized Access";
+      throw errorObject;
     }
 
     let result = req.body;
@@ -178,23 +137,9 @@ router.route("/create").post(async (req, res) => {
       customer: customerData,
     });
   } catch (e) {
-    if (
-      typeof e === "object" &&
-      e !== null &&
-      !Array.isArray(e) &&
-      "status" in e &&
-      "error" in e
-    ) {
-      return res.status(e.status).json({
-        status: e.status,
-        message: e.error,
-      });
-    } else {
-      return res.status(400).json({
-        status: 400,
-        message: e.error,
-      });
-    }
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
   }
 });
 
@@ -208,30 +153,17 @@ router.route("/list").get(async (req, res) => {
       !req.session.admin_role == process.env.MASTER_ADMIN_ROLE
     ) {
       errorObject.status = 403;
-      errorObject.error = "Unauthorized Access";
+      errorObject.message = "Unauthorized Access";
+      throw errorObject;
     }
     const businessList = await businessData.getBusinessList();
     return res.status(200).json({
       businessData: businessList,
     });
   } catch (e) {
-    if (
-      typeof e === "object" &&
-      e !== null &&
-      !Array.isArray(e) &&
-      "status" in e &&
-      "error" in e
-    ) {
-      return res.status(e.status).json({
-        status: e.status,
-        message: e.error,
-      });
-    } else {
-      return res.status(400).json({
-        status: 400,
-        message: e.error,
-      });
-    }
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
   }
 });
 
@@ -245,44 +177,32 @@ router.route("/delete/:_id").delete(async (req, res) => {
       !req.session.admin_role == process.env.MASTER_ADMIN_ROLE
     ) {
       errorObject.status = 403;
-      errorObject.error = "Unauthorized Access";
+      errorObject.message = "Unauthorized Access";
+      throw errorObject;
     }
     let businessId = req.params._id;
     console.log("Business ID:", businessId); // Add a console.log here
     if (!businessId) {
       errorObject.status = 400;
-      errorObject.error = "Business ID is required";
+      errorObject.message = "Business ID is required";
       throw errorObject;
     }
     businessId = businessId.toString();
     console.log("Business ID (string):", businessId); // Add a console.log here
-    const deletedBusinessDetails = await businessData.deleteBusinessById(businessId);
+    const deletedBusinessDetails = await businessData.deleteBusinessById(
+      businessId
+    );
     console.log("Deleted Business:", deletedBusinessDetails); // Add a console.log here
-    res
-      .status(200)
-      .json({ message: "Business deleted successfully", deletedBusinessDetails });
+    res.status(200).json({
+      message: "Business deleted successfully",
+      deletedBusinessDetails,
+    });
   } catch (e) {
-    console.log(e);
-    if (
-      typeof e === "object" &&
-      e !== null &&
-      !Array.isArray(e) &&
-      "status" in e &&
-      "error" in e
-    ) {
-      return res.status(e.status).json({
-        status: e.status,
-        message: e.error,
-      });
-    } else {
-      return res.status(400).json({
-        status: 400,
-        message: e.error,
-      });
-    }
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
   }
 });
-
 
 router.route("/customer/list").get(async (req, res) => {
   try {
@@ -294,82 +214,82 @@ router.route("/customer/list").get(async (req, res) => {
       !req.session.admin_role == process.env.MASTER_ADMIN_ROLE
     ) {
       errorObject.status = 403;
-      errorObject.error = "Unauthorized Access";
+      errorObject.message = "Unauthorized Access";
+      throw errorObject;
     }
     const customerList = await customerData.getAllCustomers();
     return res.status(200).json({
       ListOfCustomer: customerList,
     });
   } catch (e) {
-    if (
-      typeof e === "object" &&
-      e !== null &&
-      !Array.isArray(e) &&
-      "status" in e &&
-      "error" in e
-    ) {
-      return res.status(e.status).json({
-        status: e.status,
-        message: e.error,
-      });
-    } else {
-      return res.status(400).json({
-        status: 400,
-        message: e.error,
-      });
-    }
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
   }
 });
 
-router.route("/get-proof").post(async (req, res) => {
+router.route("/get-proof/:business_id").get(async (req, res) => {
   try {
     const errorObject = {
       status: 400,
     };
     if (
       !req.session.admin_role ||
-      !req.session.admin_role == process.env.BUSINESS_ADMIN_ROLE
+      req.session.admin_role !== process.env.BUSINESS_ADMIN_ROLE
     ) {
       errorObject.status = 403;
-      errorObject.error = "Unauthorized Access";
+      errorObject.message = "Unauthorized Access";
+      throw errorObject;
     }
+    let business_id = req.params.business_id;
+    business_id = helpers.checkInput(
+      "business_id",
+      business_id,
+      "Business ID of the business",
+      true
+    );
 
-    let result = req.body;
-
-    let objKeys = ["business_id"];
-    objKeys.forEach((element) => {
-      result[element] = helpers.checkInput(
-        element,
-        result[element],
-        element + " of the business",
-        true
-      );
-    });
-
-    let proofList = await customerData.getProofByBusiness(result);
+    let proofList = await customerData.getProofByBusiness(business_id);
 
     return res.status(200).json({
       proof: proofList,
     });
   } catch (e) {
-    console.log(e);
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
+  }
+});
+
+router.route("/update-proof").post(async (req, res) => {
+  try {
+    const errorObject = {
+      status: 400,
+    };
     if (
-      typeof e === "object" &&
-      e !== null &&
-      !Array.isArray(e) &&
-      "status" in e &&
-      "error" in e
+      !req.session.admin_role ||
+      req.session.admin_role !== process.env.BUSINESS_ADMIN_ROLE
     ) {
-      return res.status(e.status).json({
-        status: e.status,
-        message: e.error,
-      });
-    } else {
-      return res.status(400).json({
-        status: 400,
-        message: e.error,
-      });
+      errorObject.status = 403;
+      errorObject.message = "Unauthorized Access";
+      throw errorObject;
     }
+    let result = req.body;
+    let objKeys = ["proof_id", "status", "points", "email"];
+    objKeys.forEach((element) => {
+      result[element] = helpers.checkInput(
+        element,
+        result[element],
+        element + " for the proof"
+      );
+    });
+
+    const updatedCustomerRow = await customerData.updateProof(result);
+    return res.status(200).json({ customer: updatedCustomerRow });
+  } catch (e) {
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
   }
 });
 

@@ -32,7 +32,7 @@ const exportedMethods = {
 
       if (result.email !== process.env.ADMIN_LOGIN_EMAIL || !passwordCompare) {
         errorObject.status = 401;
-        errorObject.error = "Invalid Credentials for Master Admin";
+        errorObject.message = "Invalid Credentials for Master Admin";
         throw errorObject;
       }
       return {};
@@ -43,13 +43,13 @@ const exportedMethods = {
     });
     if (!adminData) {
       errorObject.status = 401;
-      errorObject.error = "Invalid business email provided for login";
+      errorObject.message = "Invalid business email provided for login";
       throw errorObject;
     }
     const passwordCompare = await bcrypt.compare(password, adminData.password);
     if (!passwordCompare) {
       errorObject.status = 401;
-      errorObject.error = "Invalid password provided for login";
+      errorObject.message = "Invalid password provided for login";
       throw errorObject;
     }
 
@@ -80,7 +80,7 @@ const exportedMethods = {
       businessCollection.deleteOne({
         _id: new ObjectId(result.business_id),
       });
-      errorObject.error = "Admin with this email already exists.";
+      errorObject.message = "Admin with this email already exists.";
       throw errorObject;
     }
     result.password = hashedPass;
@@ -89,7 +89,7 @@ const exportedMethods = {
     const insertInfo = await adminCollection.insertOne(result);
     if (!insertInfo.acknowledged || insertInfo.insertedCount === 0) {
       errorObject.status = 500;
-      errorObject.error = "Could not create admin.";
+      errorObject.message = "Could not create admin.";
       throw errorObject;
     }
     const newId = insertInfo.insertedId;
@@ -106,7 +106,7 @@ const exportedMethods = {
 
     if (!admin_id || typeof admin_id !== "string") {
       errorObject.status = 400;
-      errorObject.error = "Invalid admin ID";
+      errorObject.message = "Invalid admin ID";
       throw errorObject;
     }
     const adminCollection = await admins();
@@ -116,7 +116,7 @@ const exportedMethods = {
 
     if (!admin) {
       errorObject.status = 404;
-      errorObject.error = "Admin not found";
+      errorObject.message = "Admin not found";
       throw errorObject;
     }
     const businessId = admin.business_id;

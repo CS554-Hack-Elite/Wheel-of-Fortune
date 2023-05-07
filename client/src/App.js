@@ -26,7 +26,7 @@ function App() {
 							path="/"
 							element={
 								<ProtectedRoute>
-									<UserDetails />
+									<CustomerDashboard />
 								</ProtectedRoute>
 							}
 						/>
@@ -36,8 +36,7 @@ function App() {
 						<Route path="/admin-login" element={<AdminLogin />} />
 						<Route path="/admin-dashboard" element={<AdminDashboard />} />
 						<Route path="/admin-business-dashboard" element={<BusinessAdminDashboard />} />
-						<Route path="*" element={<Navigate to="/home"></Navigate>} />
-						<Route path="/home" element={<Homepage />} />
+						<Route path="*" element={<Navigate to="/"></Navigate>} />
 						<Route
 							path="customer/dashboard"
 							element={

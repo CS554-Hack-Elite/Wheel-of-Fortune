@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
 import { DashboardSidebar } from "../Reusables/DashboardSidebar";
 import { Loading } from "../Reusables/Loading";
 import { Error } from "../Reusables/Error";
 import { CreateModal } from "../Reusables/CreateModal";
 import { buildToken } from "../../auth/tokenBuilder";
-import { ReceiptImageView } from "./ReceiptImageView";
-
+import { ImageView } from "../Reusables/ImageView";
 import axios from "axios";
 
 export const CustomerProof = () => {
 	const [errorModal, setErrorModal] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [loading, setLoading] = useState(false);
-	const { currentUser } = useAuth();
 	const [customerDetails, setCustomerDetails] = useState({});
 	const [customerProofList, setCustomerProofList] = useState([]);
 	const [businessList, setBusinessList] = useState([]);
@@ -28,9 +24,9 @@ export const CustomerProof = () => {
 		try {
 			setLoading(true);
 			const payloadHeader = await buildToken();
-			const businessArray = await axios.get("/business/list", payloadHeader);
+			const businessArray = await axios.get("/users/business-list", payloadHeader);
 			setBusinessList(businessArray.data.businessData);
-			console.log(businessArray.data.businessData);
+			// console.log(businessArray.data.businessData);
 			setLoading(false);
 		} catch (e) {
 			setLoading(false);
@@ -51,7 +47,7 @@ export const CustomerProof = () => {
 			const response = await axios.get("/users/get-customer", payloadHeader);
 			setCustomerDetails(response.data);
 			setCustomerProofList(response.data.proof);
-			console.log(response.data);
+			// console.log(response.data);
 			setLoading(false);
 		} catch (e) {
 			setLoading(false);
@@ -66,7 +62,7 @@ export const CustomerProof = () => {
 
 	const getBusinessName = (businessId) => {
 		let business = businessList.find((business) => business._id === businessId);
-		console.log(business);
+		// console.log(business);
 		return business && business.name ? business.name : "N/A";
 	};
 
@@ -75,7 +71,7 @@ export const CustomerProof = () => {
 			return proofList.map((proof) => {
 				return (
 					<div key={proof.name} className="h-fit col-span-1 coupon bg-indigo-800 text-slate-200 rounded-lg my-4">
-						{console.log("proof", proof)}
+						{/* {console.log("proof", proof)} */}
 						<div
 							to="https://placehold.co/3000@3x?text=No+Image+Available&font=open-sans"
 							className="imageOverview cursor-pointer"
@@ -120,7 +116,7 @@ export const CustomerProof = () => {
 		return (
 			<div className="z-10 fixed inset-0 h-screen bg-black bg-opacity-30">
 				<div className="form absolute h-fit w-1/2 left-1/4 right-1/4 mt-24 py-8 bg-white bg-opacity-80 backdrop-blur-md rounded-lg">
-					<div className="m-4 flex justify-center text-xl md:text-3xl lg:text-3xl xl:text-4xl">Upload Proof</div>
+					<div className="m-4 flex justify-center text-xl md:text-3xl lg:text-3xl xl:text-4xl">Upload a receipt</div>
 					<div className="formFields grid grid-cols-1">
 						<button
 							className="absolute top-0 right-0 m-4 py-2 px-4 bg-red-500 text-white hover:bg-red-600 active:bg-red-500 rounded-lg"
@@ -130,15 +126,16 @@ export const CustomerProof = () => {
 						>
 							Close
 						</button>
-						<label htmlFor="proof" className="text-2xl col-span-1 m-4">
+						<label htmlFor="proof" className="text-xl col-span-1 m-4">
 							Select Business:
 							<select
 								name="business_id"
 								id="businessNameList"
 								className="mx-4 px-2 py-1 text-base text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50"
 								onChange={(e) => setBusinessId(e.target.value)}
+								required
 							>
-								{console.log(businessId)}
+								{/* {console.log(businessId)} */}
 								<option key="" value="">
 									Select an option
 								</option>
@@ -153,14 +150,15 @@ export const CustomerProof = () => {
 									: null}
 							</select>
 						</label>
-						<label htmlFor="proofImage" className="text-2xl col-span-1 m-4">
-							Upload a receipt:
+						<label htmlFor="proofImage" className="text-xl col-span-1 m-4">
+							Select Receipt:
 							<input
 								className="text-base text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 mx-4"
 								id="image"
 								name="image"
 								type="file"
 								onChange={(e) => setUploadedImage(e.target.files[0])}
+								required
 							/>
 						</label>
 						<button
@@ -199,11 +197,11 @@ export const CustomerProof = () => {
 		try {
 			const payloadHeader = await buildToken();
 			const res = await axios.post("/users/upload-proof", formData, payloadHeader);
-			console.log(res);
+			// console.log(res);
 			setBusinessId(null);
 			setUploadedImage(null);
-			console.log(businessId);
-			console.log(uploadedImage);
+			// console.log(businessId);
+			// console.log(uploadedImage);
 			setUploadProof(false);
 			setLoading(false);
 			fetchCustomerDetails();
@@ -233,8 +231,7 @@ export const CustomerProof = () => {
 					<Error message={errorMessage} />
 				</CreateModal>
 				<CreateModal openModal={receiptView} setOpenModal={setReceiptView}>
-					{console.log("image link", receiptViewSrc)}
-					<ReceiptImageView imageSrc={receiptViewSrc} />
+					<ImageView imageSrc={receiptViewSrc} />
 				</CreateModal>
 				<div className="h-[98vh] pt-4 px-4 pb-0 grid grid-cols-1 gap-4">
 					<div className="max-w-full col-span-1 p-4 h-full rounded-lg bg-white bg-opacity-40 overflow-y-auto">

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../../contexts/AuthContext";
 import { DashboardSidebar } from "../Reusables/DashboardSidebar";
 import { Error } from "../Reusables/Error";
 import { CreateModal } from "../Reusables/CreateModal";
@@ -12,7 +11,6 @@ export const CustomerProfile = () => {
 	const [errorMessage, setErrorMessage] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [customerDetails, setCustomerDetails] = useState({});
-	const { currentUser } = useAuth();
 
 	useEffect(() => {
 		async function fetchCustomerDetails() {

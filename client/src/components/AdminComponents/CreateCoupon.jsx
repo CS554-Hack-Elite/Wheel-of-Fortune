@@ -20,6 +20,8 @@ export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
 
   const objKeys = ["name", "description", "max_allocation", "business_id"];
 
+  // console.log(couponMaxAllocation);
+
   const createCoupon = async () => {
     try {
       setLoading(true);
@@ -28,12 +30,11 @@ export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
       const payload = {
         name: couponName,
         description: couponDescription,
-        max_allocation: couponMaxAllocation.toString(),
+        max_allocation: parseInt(couponMaxAllocation),
         image: "qweqwe",
         business_id: businessAdmin.business_id,
       };
-
-      // console.log(typeof payload.max_allocation);
+      console.log(payload);
 
       objKeys.forEach((element) => {
         payload[element] = helpers.checkInput(
@@ -43,8 +44,6 @@ export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
           true
         );
       });
-
-      console.log(payload);
 
       await axios.post("/business/generate_coupon", payload);
 
@@ -59,6 +58,7 @@ export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
       setShowCreated(true);
     } catch (e) {
       console.log(e);
+      setLoading(false);
       setErrorModal(true);
       setErrorMessage(
         e && e.response && e.response.data

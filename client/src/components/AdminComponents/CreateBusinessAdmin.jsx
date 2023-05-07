@@ -48,7 +48,7 @@ export const CreateBusinessAdmin = ({ modalChanged }) => {
     } catch (e) {
       console.log("error in data");
       console.log(e);
-
+      setLoading(false);
       setErrorModal(true);
       setErrorMessage(
         e && e.response && e.response.data

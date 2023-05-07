@@ -3,6 +3,8 @@ import { FormInput } from "../Reusables/FormInput";
 import { Button } from "../Reusables/Button";
 import helpers from "../../auth/validation.js";
 import axios from "axios";
+import { CreateModal } from "../Reusables/CreateModal";
+import { Error } from "../Reusables/Error";
 
 const objKeys = ["proof_id", "status", "points"];
 
@@ -19,8 +21,6 @@ export const GrantPoints = ({ requestDetails, setOpenModal }) => {
       setLoading(true);
 
       console.log(requestDetails);
-
-      //TODO: fix numerical handling of points in validation 2
 
       const payload = {
         proof_id: requestDetails._id,
@@ -58,6 +58,10 @@ export const GrantPoints = ({ requestDetails, setOpenModal }) => {
 
   return (
     <div className="flex justify-center h-full">
+      <CreateModal openModal={errorModal} setOpenModal={setErrorModal}>
+        <Error message={errorMessage} />
+      </CreateModal>
+
       <div className="bg-white flex flex-col w-full md:py-8 my-auto justify-center items-center rounded">
         <div className="text-gray-900 text-lg mb-1 font-medium title-font">
           Grant Points to {requestDetails.customer_name}

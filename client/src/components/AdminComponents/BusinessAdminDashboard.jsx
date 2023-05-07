@@ -26,6 +26,8 @@ export const BusinessAdminDashboard = () => {
   const [errorModal, setErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  console.log(business);
+
   // console.log(requests);
 
   const buildProofs = (customers) => {
@@ -60,6 +62,8 @@ export const BusinessAdminDashboard = () => {
       const couponData = await axios.get(
         "business/coupons/" + payload.business_id
       );
+
+      console.log(couponData);
 
       setRequests(buildProofs(requestData.data.proof));
       setCoupons(couponData.data.ListOfCoupons);
@@ -172,7 +176,8 @@ export const BusinessAdminDashboard = () => {
         </div>
         <span className="lg:flex md:hidden ml-auto right-6 text-md font-medium">
           <div className="px-3 py-2 bg-gray-600 text-white text-lg rounded-lg ">
-            Coupons Remaining: 50/{coupon.max_allocation}
+            Coupons Remaining: {coupon.unused_coupon_count} /
+            {coupon.max_allocation}
           </div>
         </span>
       </li>
@@ -201,6 +206,21 @@ export const BusinessAdminDashboard = () => {
   }, [openModal]);
 
   if (loading) return <Loading />;
+
+  if (errorModal)
+    return (
+      <div class="flex flex-col items-center justify-around ">
+        <Error message={errorMessage} />
+        <div
+          class="bg-gray-100 hover:bg-gray-200 cursor-pointer my-4 p-3 rounded-lg inline-block"
+          onClick={() => {
+            logoutAdmin();
+          }}
+        >
+          Logout
+        </div>
+      </div>
+    );
 
   return (
     <div>
@@ -238,23 +258,19 @@ export const BusinessAdminDashboard = () => {
           </div>
         </div>
         <main className=" ml-32 w-full">
-          {/* <div className="grid lg:grid-cols-3 gap-5 p-4 bg-blue-400">
+          <div className="grid lg:grid-cols-3 gap-5 p-4">
             <StastisticsCard
-              value="50"
-              title="Number of Coupons"
+              value="Business Name"
+              title="Name of the business"
             ></StastisticsCard>
             <StastisticsCard
-              value="50"
-              title="Number of Customers"
+              value={business.businessAdmin.email}
+              title="Email"
             ></StastisticsCard>
-            <StastisticsCard
-              value="50"
-              title="Number of Businesses"
-            ></StastisticsCard>
-          </div> */}
+          </div>
 
-          <div className="p-4 grid md:grid-cols-4 grid-cols-1 gap-4 my-10">
-            <div className="md:col-span-2 p-4 lg:h-[90vh] h-[50vh] rounded-lg bg-white overflow-y-auto">
+          <div className="p-4 grid md:grid-cols-4 grid-cols-1 gap-4">
+            <div className="md:col-span-2 p-4 lg:h-[80vh] h-[50vh] rounded-lg bg-white overflow-y-auto">
               <div className="flex justify-between items-center">
                 <div className="text-3xl font-medium text-teal-600 p-2">
                   Available Coupons
@@ -272,7 +288,7 @@ export const BusinessAdminDashboard = () => {
 
               <ul>{renderCoupons()}</ul>
             </div>
-            <div className="md:col-span-2 p-4 lg:h-[90vh] h-[50vh] rounded-lg bg-white overflow-y-auto">
+            <div className="md:col-span-2 p-4 lg:h-[80vh] h-[50vh] rounded-lg bg-white overflow-y-auto">
               <div className="text-3xl font-medium text-teal-600 p-2">
                 Customer Requests
               </div>

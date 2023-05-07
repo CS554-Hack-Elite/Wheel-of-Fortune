@@ -7,6 +7,7 @@ import { clearLocalTokens } from "../../auth/localTokenHandler";
 import axios from "axios";
 import { Loading } from "../Reusables/Loading";
 import { DeleteBusinessConfirmationModal } from "./DeleteBusinessConfirmationModal";
+import { Error } from "../Reusables/Error";
 
 export const AdminDashboard = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -27,8 +28,11 @@ export const AdminDashboard = () => {
   const getData = async () => {
     try {
       setLoading(true);
+
       const couponData = await axios.get("/business/coupons/");
+
       const businessData = await axios.get("/business/list/");
+
       const customerData = await axios.get("/business/customer/list");
 
       setCoupons(couponData.data.ListOfCoupons);
@@ -50,10 +54,6 @@ export const AdminDashboard = () => {
     setSelectedBusinessForDeletion(business);
     setOpenDeleteModal(true);
   };
-
-  useEffect(() => {
-    getData();
-  }, []);
 
   const buildCouponCard = (coupon) => {
     return (
@@ -127,14 +127,44 @@ export const AdminDashboard = () => {
     if (!localStorage.getItem("adminToken")) navigate("/admin-login");
   }, []);
 
+  useEffect(() => {
+    getData();
+  }, []);
+
+  useEffect(() => {
+    if (!openModal) getData();
+  }, [openModal]);
+
+  useEffect(() => {
+    if (!openDeleteModal) getData();
+  }, [openDeleteModal]);
+
   if (loading) return <Loading />;
+
+  if (errorModal)
+    return (
+      <div class="flex flex-col items-center justify-around ">
+        <Error message={errorMessage} />
+        <div
+          class="bg-gray-100 hover:bg-gray-200 cursor-pointer my-4 p-3 rounded-lg inline-block"
+          onClick={() => {
+            logoutAdmin();
+          }}
+        >
+          Logout
+        </div>
+      </div>
+    );
 
   return (
     <div class="flex">
+      <CreateModal openModal={errorModal} setOpenModal={setErrorModal}>
+        <Error message={errorMessage} />
+      </CreateModal>
+
       <CreateModal openModal={openModal} setOpenModal={setOpenModal}>
         <CreateBusinessAdmin modalChanged={openModal} />{" "}
       </CreateModal>
-
       <CreateModal
         openModal={openDeleteModal}
         setOpenModal={setOpenDeleteModal}
@@ -142,9 +172,9 @@ export const AdminDashboard = () => {
         <DeleteBusinessConfirmationModal
           business={selectedBusinessForDeletion}
           modalChanged={openModal}
+          setOpenModal={setOpenDeleteModal}
         />{" "}
       </CreateModal>
-
       <div class="fixed w-32 h-screen p-4 bg-white flex flex-col justify-between">
         <div class="flex flex-col items-center">
           <div

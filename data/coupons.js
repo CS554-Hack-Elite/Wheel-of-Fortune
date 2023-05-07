@@ -1,4 +1,5 @@
 import { coupons } from "../config/mongoCollection.js";
+import { business } from "../config/mongoCollection.js";
 import { ObjectId } from "mongodb";
 import helpers from "../helpers/customerHelper.js";
 
@@ -85,7 +86,15 @@ const exportedMethods = {
     };
 
     id = helpers.checkInput("business_id", id, "Invalid Business Id");
+  
+    const businessCollection = await business();
+    const businessRow = await businessCollection.findOne({ _id: new ObjectId(id) });
 
+    if(!businessRow){
+      errorObject.status = 404;
+      errorObject.message = `Business with ID ${id} not found`;
+      throw errorObject;
+    }
     const couponsCollection = await coupons();
     const couponsList = await couponsCollection
       .find({ business_id: id })
@@ -96,7 +105,12 @@ const exportedMethods = {
       throw errorObject;
     }
 
-    return couponsList;
+    const couponsWithCounts = await Promise.all(couponsList.map(async coupon => {
+      const unusedCouponCount = coupon.coupon_codes.filter(code => code.status === 1).length;
+      return { ...coupon, unused_coupon_count: unusedCouponCount };
+    }));
+  
+    return couponsWithCounts;
   },
 
   async updateCouponStatus(business_id, coupon_id) {

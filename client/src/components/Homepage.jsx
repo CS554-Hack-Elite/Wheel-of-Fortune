@@ -16,13 +16,18 @@ export const Homepage = () => {
 				</div>
 				<div className="text-lg">
 					<Link to="/signup" className="px-2">
-						<button className="h-full w-24 px-4 transition duration-200 hover:bg-indigo-800  hover:cursor-pointer active:bg-indigo-500">
+						<button className="h-full min-w-fit w-24 px-4 transition duration-200 hover:bg-indigo-800  hover:cursor-pointer active:bg-indigo-500">
 							Sign Up
 						</button>
 					</Link>
-					<Link to="/login" className="pl-2 pr-8">
-						<button className="h-full w-24 px-4 transition duration-200 hover:bg-indigo-800  hover:cursor-pointer active:bg-indigo-500">
+					<Link to="/login" className="pl-2 px-2">
+						<button className="h-full min-w-fit w-24 px-4 transition duration-200 hover:bg-indigo-800  hover:cursor-pointer active:bg-indigo-500">
 							Log In
+						</button>
+					</Link>
+					<Link to="/admin-login" className="pl-2">
+						<button className="h-full min-w-fit px-4 transition duration-200 hover:bg-indigo-800  hover:cursor-pointer active:bg-indigo-500">
+							Admin Login
 						</button>
 					</Link>
 				</div>

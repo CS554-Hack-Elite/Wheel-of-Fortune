@@ -11,7 +11,7 @@ export const CustomerProof = () => {
 	const [errorModal, setErrorModal] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [loading, setLoading] = useState(false);
-	const [customerDetails, setCustomerDetails] = useState({});
+	// const [customerDetails, setCustomerDetails] = useState({});
 	const [customerProofList, setCustomerProofList] = useState([]);
 	const [businessList, setBusinessList] = useState([]);
 	const [uploadProof, setUploadProof] = useState(false);
@@ -45,7 +45,7 @@ export const CustomerProof = () => {
 			setLoading(true);
 			const payloadHeader = await buildToken();
 			const response = await axios.get("/users/get-customer", payloadHeader);
-			setCustomerDetails(response.data);
+			// setCustomerDetails(response.data);
 			setCustomerProofList(response.data.proof);
 			// console.log(response.data);
 			setLoading(false);

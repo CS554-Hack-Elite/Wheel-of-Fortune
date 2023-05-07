@@ -274,6 +274,9 @@ const exportedMethods = {
     }
     const customerCollection = await customers();
     const couponData = await couponsData.getCouponById(result.coupon_id, true);
+    let businessRow = await businessData.getBusinessById(
+      couponData.business_id
+    );
     const couponsCollection = await coupons();
     let assignCode = "";
     let assignId = null;
@@ -291,6 +294,11 @@ const exportedMethods = {
       coupon_id: result.coupon_id,
       coupon_code: assignCode,
       created_at: new Date().toLocaleString(),
+      coupon_name: couponData.name,
+      coupon_description: couponData.description,
+      image: couponData.image,
+      name: businessRow.name,
+      business_image: businessRow.logo,
     });
     await customerCollection.updateOne(
       { email: result.email },

@@ -122,7 +122,7 @@ const exportedMethods = {
       for (const coupon of allCoupons) {
         const count = coupon.coupon_codes.filter((code) => code.status === 1).length;
         if (count >= 1) {
-          couponsWithCodes.push(coupon);
+          couponsWithCodes.push({ _id: coupon._id, name: coupon.name });
         }
       }
     

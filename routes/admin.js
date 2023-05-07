@@ -31,11 +31,7 @@ router.route("/login").post(async (req, res) => {
   } catch (e) {
     res
       .status(e.status ? e.status : 400)
-<<<<<<< HEAD
-      .json({ error: e.error ? e.error : e });
-=======
       .json({ message: e.message ? e.message : e });
->>>>>>> main
   }
 });
 

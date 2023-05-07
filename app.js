@@ -8,17 +8,10 @@ import session from "express-session";
 
 app.use(
   session({
-<<<<<<< HEAD
-    secret: "my-secret-key",
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: true },
-=======
-	name: "AuthCookie",
+    name: "AuthCookie",
     secret: "some secret string!",
     resave: false,
     saveUninitialized: true,
->>>>>>> main
   })
 );
 

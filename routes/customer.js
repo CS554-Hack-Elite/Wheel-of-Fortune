@@ -112,21 +112,6 @@ router.route("/business-list").get(async (req, res) => {
     const errorObject = {
       status: 400,
     };
-<<<<<<< HEAD
-    let result = req.body;
-    let objKeys = [];
-    let email = req.body.email;
-    result.email = email;
-    objKeys = ["proof_id", "status", "points", "email"];
-    objKeys.forEach((element) => {
-      result[element] = helpers.checkInput(
-        element,
-        result[element],
-        element + " for the proof"
-      );
-    });
-=======
->>>>>>> main
 
     const businessList = await businessData.getBusinessList();
     return res.status(200).json({

@@ -31,7 +31,6 @@ export const CustomerDashboard = () => {
 				setLoading(true);
 				const payloadHeader = await buildToken();
 				const response = await axios.get("/users/coupons", payloadHeader);
-				console.log("response", response);
 				const wheelCouponNames = [];
 				// response.data.availableCoupons.map((coupon) => {
 				// 	wheelCouponNames.push({ option: coupon.name.toString() });
@@ -68,7 +67,7 @@ export const CustomerDashboard = () => {
 		} catch (e) {
 			setLoading(false);
 			setErrorModal(true);
-			setErrorMessage(e && e.error ? e.error : e.toString());
+			setErrorMessage(e && e.data && e.data.error ? e.data.error : e.toString());
 			console.log(e);
 		}
 	}
@@ -126,12 +125,14 @@ export const CustomerDashboard = () => {
 						}}
 						className="mx-auto min-w-max"
 					/>
-					<button
-						className="w-full col-span-1 bg-indigo-600 text-white rounded-lg p-4 mt-8 text-2xl hover:bg-indigo-500 hover:scale-105 active:bg-indigo-700"
-						onClick={handleSpinClick}
-					>
-						SPIN
-					</button>
+					{customerDetails.points > 0 && (
+						<button
+							className="w-full col-span-1 bg-indigo-600 text-white rounded-lg p-4 mt-8 text-2xl hover:bg-indigo-500 hover:scale-105 active:bg-indigo-700"
+							onClick={handleSpinClick}
+						>
+							SPIN
+						</button>
+					)}
 				</div>
 			);
 		} else {
@@ -190,7 +191,8 @@ export const CustomerDashboard = () => {
 					<Error message={errorMessage} />
 				</CreateModal>
 				<div className="grid lg:grid-cols-2 gap-5 p-4">
-					<StastisticsCard value={customerDetails.points ? customerDetails.points : "N/A"} title="Points"></StastisticsCard>
+					<StastisticsCard value={customerDetails.points && customerDetails.points} title="Points"></StastisticsCard>
+					{console.log("customer points", customerDetails.points)}
 					<StastisticsCard value={customerDetails.coupons ? customerDetails.coupons.length : "N/A"} title="Total Coupons Won"></StastisticsCard>
 				</div>
 

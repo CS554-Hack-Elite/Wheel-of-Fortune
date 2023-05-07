@@ -70,7 +70,11 @@ export const AdminLogin = () => {
       } catch (e) {
         setLoading(false);
         setErrorModal(true);
-        setErrorMessage(e && e.error ? e.error : e.toString());
+        setErrorMessage(
+          e && e.response && e.response.data
+            ? e.response.data.message
+            : e.toString()
+        );
       }
     } else {
       try {
@@ -98,7 +102,11 @@ export const AdminLogin = () => {
       } catch (e) {
         setLoading(false);
         setErrorModal(true);
-        setErrorMessage(e && e.error ? e.error : e.toString());
+        setErrorMessage(
+          e && e.response && e.response.data
+            ? e.response.data.message
+            : e.toString()
+        );
       }
     }
   };

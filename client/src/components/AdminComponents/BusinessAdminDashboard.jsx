@@ -22,7 +22,7 @@ export const BusinessAdminDashboard = () => {
   const [requestDetails, setRequestDetails] = useState({});
   const [coupons, setCoupons] = useState([]);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [errorModal, setErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -52,15 +52,15 @@ export const BusinessAdminDashboard = () => {
         business_id: business.businessAdmin.business_id,
       };
 
-      console.log(payload);
-
+      // TODO: add the buisness_id to the payload
       const requestData = await axios.post("/business/get-proof", payload);
 
-      //TODO: Handle coupons
-      // const couponData = await axios.get("coupons/:business_id");
+      const couponData = await axios.get(
+        "business/coupons/" + payload.business_id
+      );
 
       setRequests(buildProofs(requestData.data.proof));
-      // setCoupons(couponData.data.ListOfCoupons);
+      setCoupons(couponData.data.ListOfCoupons);
 
       setLoading(false);
     } catch (e) {
@@ -118,22 +118,25 @@ export const BusinessAdminDashboard = () => {
 
   const buildRequestCard = (request) => {
     return (
-      <li className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
+      <li
+        key={request._id}
+        className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center"
+      >
         <div className="bg-yellow-100 rounded-lg p-5">
           <img
-            src="../public/img/solar-panel.svg"
-            className="text-purple-800 w-[40px]"
+          // src="../public/img/solar-panel.svg"
+          // className="text-purple-800 w-[40px]"
           />
         </div>
         <div className="pl-4">
-          <p className="text-gray-800 font-bold">
+          <div className="text-gray-800 font-bold">
             {request.customer_name}'s Request{" "}
-          </p>
-          <p className="text-gray-400 text-sm">{request.customer_email}</p>
+          </div>
+          <div className="text-gray-400 text-sm">{request.customer_email}</div>
         </div>
-        <p className="lg:flex md:hidden ml-auto right-6 text-md font-medium w-40">
+        <div className="lg:flex md:hidden ml-auto right-6 text-md font-medium w-40">
           {checkStatus(request.status, request)}
-        </p>
+        </div>
       </li>
     );
   };
@@ -146,6 +149,41 @@ export const BusinessAdminDashboard = () => {
     }
 
     return allRequest;
+  };
+
+  const buildCouponCard = (coupon) => {
+    // TODO: Remaining coupons
+    return (
+      <li
+        key={coupon._id}
+        className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center"
+      >
+        <div className="bg-teal-100 rounded-lg p-5">
+          <img
+          // src="../public/img/solar.svg"
+          // className="text-purple-800 w-[40px]"
+          />
+        </div>
+        <div className="pl-4">
+          <p className="text-gray-800 font-bold">{coupon.name}</p>
+          <p className="text-gray-400 text-sm">{coupon.description}</p>
+        </div>
+        <span className="lg:flex md:hidden ml-auto right-6 text-md font-medium">
+          <div className="px-3 py-2 bg-gray-600 text-white text-lg rounded-lg ">
+            Coupons Remaining: 50/{coupon.max_allocation}
+          </div>
+        </span>
+      </li>
+    );
+  };
+
+  const renderCoupons = () => {
+    const allCoupons = [];
+
+    for (let coupon of coupons) {
+      allCoupons.push(buildCouponCard(coupon));
+    }
+    return allCoupons;
   };
 
   useEffect(() => {
@@ -219,25 +257,7 @@ export const BusinessAdminDashboard = () => {
                 </div>
               </div>
 
-              <ul>
-                <li className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
-                  <div className="bg-teal-100 rounded-lg p-5">
-                    <img
-                      src="../public/img/solar.svg"
-                      className="text-purple-800 w-[40px]"
-                    />
-                  </div>
-                  <div className="pl-4">
-                    <p className="text-gray-800 font-bold">Coupon Name</p>
-                    <p className="text-gray-400 text-sm">Coupon Description</p>
-                  </div>
-                  <span className="lg:flex md:hidden ml-auto right-6 text-md font-medium">
-                    <div className="px-3 py-2 bg-gray-600 text-white text-lg rounded-lg ">
-                      Coupons Remaining: 50/100
-                    </div>
-                  </span>
-                </li>
-              </ul>
+              <ul>{renderCoupons()}</ul>
             </div>
             <div className="md:col-span-2 p-4 lg:h-[90vh] h-[50vh] rounded-lg bg-white overflow-y-auto">
               <div className="text-3xl font-medium text-teal-600 p-2">

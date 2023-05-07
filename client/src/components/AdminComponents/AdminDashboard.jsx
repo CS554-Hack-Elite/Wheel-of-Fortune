@@ -6,6 +6,7 @@ import { CreateBusinessAdmin } from "./CreateBusinessAdmin";
 import { clearLocalTokens } from "../../auth/localTokenHandler";
 import axios from "axios";
 import { Loading } from "../Reusables/Loading";
+import { DeleteBusinessConfirmationModal } from "./DeleteBusinessConfirmationModal";
 
 export const AdminDashboard = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -14,6 +15,10 @@ export const AdminDashboard = () => {
   const [coupons, setCoupons] = useState([]);
   const [businesses, setBusinesses] = useState([]);
   const [customers, setCustomers] = useState([]);
+
+  const [selectedBusinessForDeletion, setSelectedBusinessForDeletion] =
+    useState({});
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
@@ -39,6 +44,11 @@ export const AdminDashboard = () => {
           : e.toString()
       );
     }
+  };
+
+  const deleteBusiness = (business) => {
+    setSelectedBusinessForDeletion(business);
+    setOpenDeleteModal(true);
   };
 
   useEffect(() => {
@@ -86,6 +96,14 @@ export const AdminDashboard = () => {
         <div className="pl-4">
           <p className="text-gray-800 font-bold">{business.name} </p>
         </div>
+        <button
+          className="px-3 py-2 bg-red-600 ml-auto text-white text-lg rounded-lg hover:bg-red-700 active:bg-emerald-500"
+          onClick={() => {
+            deleteBusiness(business);
+          }}
+        >
+          Delete Business
+        </button>
       </li>
     );
   };
@@ -115,6 +133,16 @@ export const AdminDashboard = () => {
     <div class="flex">
       <CreateModal openModal={openModal} setOpenModal={setOpenModal}>
         <CreateBusinessAdmin modalChanged={openModal} />{" "}
+      </CreateModal>
+
+      <CreateModal
+        openModal={openDeleteModal}
+        setOpenModal={setOpenDeleteModal}
+      >
+        <DeleteBusinessConfirmationModal
+          business={selectedBusinessForDeletion}
+          modalChanged={openModal}
+        />{" "}
       </CreateModal>
 
       <div class="fixed w-32 h-screen p-4 bg-white flex flex-col justify-between">

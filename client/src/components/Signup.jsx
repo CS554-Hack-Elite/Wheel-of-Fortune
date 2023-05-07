@@ -55,6 +55,7 @@ export const Signup = () => {
       setLoading(false);
       navigate("/customer/dashboard");
     } catch (e) {
+      //TODO: Handle firebase exist error gracefully
       //TODO: delete user from db
 
       console.log("error in data");

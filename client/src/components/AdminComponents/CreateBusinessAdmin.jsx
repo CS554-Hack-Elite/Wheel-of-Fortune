@@ -23,6 +23,7 @@ export const CreateBusinessAdmin = ({ modalChanged }) => {
   const createBusinessAdmin = async () => {
     const objKeys = ["name", "email", "password"];
 
+    //TODO: Handle image
     try {
       setLoading(true);
       const payload = {

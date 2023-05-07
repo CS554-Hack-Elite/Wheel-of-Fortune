@@ -7,20 +7,12 @@ dotenv.config();
 import session from "express-session";
 
 app.use(
-<<<<<<< HEAD
-	session({
-		secret: "my-secret-key",
-		resave: false,
-		saveUninitialized: true
-	})
-=======
   session({
 	name: "AuthCookie",
     secret: "some secret string!",
     resave: false,
     saveUninitialized: true,
   })
->>>>>>> 36f318518c15907c99a40f9fb194261d0aaa57f7
 );
 
 app.use(VerifyToken);

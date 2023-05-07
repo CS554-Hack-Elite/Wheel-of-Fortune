@@ -68,6 +68,7 @@ export const AdminLogin = () => {
         setLocalToken("adminToken", JSON.stringify(data));
         navigate("/admin-dashboard");
       } catch (e) {
+        console.log(e);
         setLoading(false);
         setErrorModal(true);
         setErrorMessage(

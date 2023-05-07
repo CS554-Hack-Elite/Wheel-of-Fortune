@@ -4,9 +4,9 @@ import { Button } from "../Reusables/Button";
 import helpers from "../../auth/validation.js";
 import axios from "axios";
 
-const objKeys = ["proof_id", "status", "points", "email"];
+const objKeys = ["proof_id", "status", "points"];
 
-export const GrantPoints = ({ requestDetails }) => {
+export const GrantPoints = ({ requestDetails, setOpenModal }) => {
   const [points, setPoints] = useState(0);
   const [status, setStatus] = useState("approve");
 
@@ -18,6 +18,8 @@ export const GrantPoints = ({ requestDetails }) => {
     try {
       setLoading(true);
 
+      console.log(requestDetails);
+
       //TODO: fix numerical handling of points in validation 2
 
       const payload = {
@@ -26,8 +28,6 @@ export const GrantPoints = ({ requestDetails }) => {
         points: status === "approve" ? parseInt(points) : 0,
         email: requestDetails.customer_email,
       };
-
-      // console.log(payload);
 
       objKeys.forEach((element) => {
         payload[element] = helpers.checkInput(
@@ -38,9 +38,12 @@ export const GrantPoints = ({ requestDetails }) => {
         );
       });
 
-      const proofRequest = await axios.post("/users/update-proof", payload);
+      console.log(payload);
+
+      const proofRequest = await axios.post("/business/update-proof", payload);
 
       setLoading(false);
+      setOpenModal(false);
     } catch (e) {
       console.log(e);
       setLoading(false);
@@ -57,7 +60,7 @@ export const GrantPoints = ({ requestDetails }) => {
     <div className="flex justify-center h-full">
       <div className="bg-white flex flex-col w-full md:py-8 my-auto justify-center items-center rounded">
         <div className="text-gray-900 text-lg mb-1 font-medium title-font">
-          Grant Points
+          Grant Points to {requestDetails.customer_name}
         </div>
 
         <div className="flex justify-around items-center w-3/4 mt-2 mb-5">
@@ -98,8 +101,6 @@ export const GrantPoints = ({ requestDetails }) => {
         ) : (
           <Button title="Reject Request" clickAction={acceptOrReject} />
         )}
-
-        {/* <Button title="Grant Points" clickAction={grantPoints} /> */}
       </div>
     </div>
   );

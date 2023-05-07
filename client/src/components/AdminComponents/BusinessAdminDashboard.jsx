@@ -52,8 +52,10 @@ export const BusinessAdminDashboard = () => {
         business_id: business.businessAdmin.business_id,
       };
 
-      // TODO: add the buisness_id to the payload
-      const requestData = await axios.post("/business/get-proof", payload);
+      // // TODO: add the buisness_id to the payload
+      const requestData = await axios.get(
+        "/business/get-proof/" + payload.business_id
+      );
 
       const couponData = await axios.get(
         "business/coupons/" + payload.business_id
@@ -190,6 +192,14 @@ export const BusinessAdminDashboard = () => {
     getData();
   }, []);
 
+  useEffect(() => {
+    if (!pointsModal) getData();
+  }, [pointsModal]);
+
+  useEffect(() => {
+    if (!openModal) getData();
+  }, [openModal]);
+
   if (loading) return <Loading />;
 
   return (
@@ -207,7 +217,10 @@ export const BusinessAdminDashboard = () => {
         </CreateModal>
 
         <CreateModal openModal={pointsModal} setOpenModal={setPointsModal}>
-          <GrantPoints requestDetails={requestDetails} />{" "}
+          <GrantPoints
+            requestDetails={requestDetails}
+            setOpenModal={setPointsModal}
+          />{" "}
         </CreateModal>
         <div className="fixed w-32 h-screen p-4 bg-white flex flex-col justify-between">
           <div className="flex flex-col items-center">

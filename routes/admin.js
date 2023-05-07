@@ -31,7 +31,7 @@ router.route("/login").post(async (req, res) => {
   } catch (e) {
     res
       .status(e.status ? e.status : 400)
-      .json({ error: e.error ? e.error : e }); 
+      .json({ message: e.message ? e.message : e });
   }
 });
 
@@ -53,7 +53,7 @@ router.route("/business-login").post(async (req, res) => {
   } catch (e) {
     res
       .status(e.status ? e.status : 400)
-      .json({ error: e.error ? e.error : e });
+      .json({ message: e.message ? e.message : e });
   }
 });
 
@@ -67,7 +67,8 @@ router.route("/register-business-admin").post(async (req, res) => {
       !req.session.admin_role == process.env.MASTER_ADMIN_ROLE
     ) {
       errorObject.status = 403;
-      errorObject.error = "Unauthorized Access";
+      errorObject.message = "Unauthorized Access";
+      throw errorObject;
     }
     let result = req.body;
     let objKeys = ["email", "password", "name", "logo"];
@@ -92,23 +93,9 @@ router.route("/register-business-admin").post(async (req, res) => {
       admin: adminRow,
     });
   } catch (e) {
-    if (
-      typeof e === "object" &&
-      e !== null &&
-      !Array.isArray(e) &&
-      "status" in e &&
-      "error" in e
-    ) {
-      return res.status(e.status).json({
-        status: e.status,
-        message: e.error,
-      });
-    } else {
-      return res.status(400).json({
-        status: 400,
-        message: e.error,
-      });
-    }
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
   }
 });
 

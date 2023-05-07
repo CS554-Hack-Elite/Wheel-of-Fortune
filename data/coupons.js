@@ -86,30 +86,32 @@ const exportedMethods = {
     };
 
     id = helpers.checkInput("business_id", id, "Invalid Business Id");
-  
+
     const businessCollection = await business();
     const businessRow = await businessCollection.findOne({ _id: new ObjectId(id) });
 
-    if(!businessRow){
+    if (!businessRow) {
       errorObject.status = 404;
       errorObject.message = `Business with ID ${id} not found`;
       throw errorObject;
     }
     const couponsCollection = await coupons();
-    const couponsList = await couponsCollection
-      .find({ business_id: id })
-      .toArray();
+    const couponsList = await couponsCollection.find({ business_id: id }).toArray();
 
     if (!couponsList.length) {
       errorObject.message = "No coupons found for this business";
       throw errorObject;
     }
 
-    const couponsWithCounts = await Promise.all(couponsList.map(async coupon => {
+    const couponsWithCounts = [];
+
+    for (let i = 0; i < couponsList.length; i++) {
+      const coupon = couponsList[i];
       const unusedCouponCount = coupon.coupon_codes.filter(code => code.status === 1).length;
-      return { ...coupon, unused_coupon_count: unusedCouponCount };
-    }));
-  
+      const couponWithCount = { ...coupon, unused_coupon_count: unusedCouponCount };
+      couponsWithCounts.push(couponWithCount);
+    }
+
     return couponsWithCounts;
   },
 

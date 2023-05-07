@@ -53,10 +53,6 @@ const exportedMethods = {
     };
     const businessCollection = await business();
     const businessList = await businessCollection.find({}).toArray();
-    if (!businessList || businessList.length === 0) {
-      errorObject.message = "No businesses found";
-      throw errorObject;
-    }
     return businessList;
   },
 

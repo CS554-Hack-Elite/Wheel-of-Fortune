@@ -34,6 +34,16 @@ const exportedMethods = {
         element + " for the coupons"
       );
     });
+    let business_id = result.business_id;
+    console.log(business_id);
+    const businessCollection = await business();
+    const businessRow = await businessCollection.findOne({ _id: new ObjectId(business_id) });
+
+    if (!businessRow) {
+      errorObject.status = 404;
+      errorObject.message = `Business with ID ${business_id} not found`;
+      throw errorObject;
+    }
     const couponsCollection = await coupons();
     let duplicateCoupon = await couponsCollection.findOne({
       name: result.name,

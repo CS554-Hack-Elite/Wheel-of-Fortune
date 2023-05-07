@@ -108,11 +108,6 @@ const exportedMethods = {
     const couponsCollection = await coupons();
     const couponsList = await couponsCollection.find({ business_id: id }).toArray();
 
-    if (!couponsList.length) {
-      errorObject.message = "No coupons found for this business";
-      throw errorObject;
-    }
-
     const couponsWithCounts = [];
 
     for (let i = 0; i < couponsList.length; i++) {
@@ -132,10 +127,6 @@ const exportedMethods = {
     };
     const couponsCollection = await coupons();
     const couponsList = await couponsCollection.find({}).toArray();
-    if (!couponsList) {
-      errorObject.message = 'No coupons found';
-      throw errorObject;
-    }
     return couponsList;
   },
 

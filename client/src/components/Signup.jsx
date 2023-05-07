@@ -15,7 +15,7 @@ export const Signup = () => {
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
 
-  const { register } = useAuth();
+  const { register, deleteUser } = useAuth();
 
   const [loading, setLoading] = useState(true);
   const [errorModal, setErrorModal] = useState(false);
@@ -48,21 +48,24 @@ export const Signup = () => {
 
       console.log("data is valid");
 
-      await register(email, password);
+      const user = await register(email, password);
 
       await axios.post("/users/register", payload);
 
       setLoading(false);
-
       navigate("/customer/dashboard");
     } catch (e) {
       //TODO: delete user from db
 
       console.log("error in data");
       console.log(e);
-
+      // deleteUser();
       setErrorModal(true);
-      setErrorMessage(e && e.error ? e.error : e.toString());
+      setErrorMessage(
+        e && e.response && e.response.data
+          ? e.response.data.message
+          : e.toString()
+      );
     }
   };
 

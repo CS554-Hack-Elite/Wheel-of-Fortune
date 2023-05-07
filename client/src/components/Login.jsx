@@ -68,7 +68,7 @@ export const Login = () => {
       navigate("/customer/dashboard");
     } catch (e) {
       console.log(e);
-      deleteUser();
+      // deleteUser();
       setLoading(false);
       setErrorModal(true);
       setErrorMessage(e.toString());

@@ -5,12 +5,15 @@ import helpers from "../../auth/validation.js";
 import axios from "axios";
 import { CreateModal } from "../Reusables/CreateModal";
 import { Error } from "../Reusables/Error";
+import { TimeoutComponent } from "../Reusables/TimeoutComponent";
 
-export const CreateCoupon = ({ businessAdmin }) => {
+export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
   const [loading, setLoading] = useState(false);
   const [couponName, setCouponName] = useState("");
   const [couponDescription, setCouponDescription] = useState("");
-  const [couponMaxAllocation, setCouponMaxAllocation] = useState("");
+  const [couponMaxAllocation, setCouponMaxAllocation] = useState(0);
+
+  const [showCreated, setShowCreated] = useState(false);
 
   const [errorModal, setErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -44,9 +47,15 @@ export const CreateCoupon = ({ businessAdmin }) => {
 
       await axios.post("/business/generate_coupon", payload);
 
-      //TODO: Show message on creation and clear the input fields
+      console.log("created");
 
       setLoading(false);
+
+      setCouponName("");
+      setCouponDescription("");
+      setCouponMaxAllocation(0);
+
+      setShowCreated(true);
     } catch (e) {
       console.log(e);
       setErrorModal(true);
@@ -56,8 +65,16 @@ export const CreateCoupon = ({ businessAdmin }) => {
           : e.toString()
       );
     }
-    console.log("creating coupon");
   };
+
+  useEffect(() => {
+    setLoading(false);
+    setCouponName("");
+    setCouponDescription("");
+    setCouponMaxAllocation(0);
+    setErrorModal(false);
+    setErrorMessage("");
+  }, [modalChanged]);
 
   return (
     <div className="flex justify-center h-full">
@@ -106,7 +123,24 @@ export const CreateCoupon = ({ businessAdmin }) => {
           />
         </div>
 
-        <Button title="Create Coupon" clickAction={createCoupon} />
+        {/* <Button title="Create Coupon" clickAction={createCoupon} /> */}
+
+        {!loading ? (
+          <Button title="Create Coupon" clickAction={createCoupon} />
+        ) : (
+          <Button
+            title="Creating...."
+            disabled={true}
+            color="gray"
+            clickAction={createCoupon}
+          />
+        )}
+
+        <TimeoutComponent show={showCreated} setShow={setShowCreated}>
+          <div className="text-green-700 text-lg mb-1 mt-5 font-medium title-font">
+            Coupon Created!!
+          </div>
+        </TimeoutComponent>
       </div>
     </div>
   );

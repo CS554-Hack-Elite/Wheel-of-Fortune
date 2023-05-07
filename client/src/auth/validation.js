@@ -160,6 +160,7 @@ const exportedMethods = {
         }
         break;
 
+      case "proof_id":
       case "business_id":
         if (typeof val !== "string") {
           errorObject.error = `${
@@ -176,18 +177,50 @@ const exportedMethods = {
         }
         break;
 
-      case "business_id":
-        if (typeof val !== "string") {
+      case "points":
+        inputRegExp = /^[0-9]+$/;
+        valid = inputRegExp.test(val);
+        if (!valid) {
           errorObject.error = `${
             variableName || "Provided variable"
-          } must be a string.`;
+          } must be a valid points.`;
           throw errorObject;
         }
-        val = val.trim();
-        if (!val) {
+        if (isNaN(val)) {
           errorObject.error = `${
             variableName || "Provided variable"
-          } must not be empty.`;
+          }   must be a valid points.`;
+          throw errorObject;
+        }
+
+        if (val < 0) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          }  must be a valid points.`;
+          throw errorObject;
+        }
+        break;
+
+      case "status":
+        inputRegExp = /^[0-9]+$/;
+        valid = inputRegExp.test(val);
+        if (!valid) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          } must be a valid status.`;
+          throw errorObject;
+        }
+        if (isNaN(val)) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          }   must be a valid status.`;
+          throw errorObject;
+        }
+
+        if (val < 1 || val > 3) {
+          errorObject.error = `${
+            variableName || "Provided variable"
+          }  must be a valid status.`;
           throw errorObject;
         }
         break;

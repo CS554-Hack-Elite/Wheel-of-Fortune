@@ -114,7 +114,7 @@ export const AdminDashboard = () => {
   return (
     <div class="flex">
       <CreateModal openModal={openModal} setOpenModal={setOpenModal}>
-        <CreateBusinessAdmin />{" "}
+        <CreateBusinessAdmin modalChanged={openModal} />{" "}
       </CreateModal>
 
       <div class="fixed w-32 h-screen p-4 bg-white flex flex-col justify-between">

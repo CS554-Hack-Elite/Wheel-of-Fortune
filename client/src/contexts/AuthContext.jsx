@@ -35,9 +35,14 @@ export function AuthProvider({ children }) {
   }
 
   function deleteUser() {
-    auth.onAuthStateChanged((user) => {
-      if (user) user.delete();
-    });
+    // const unsubscribe = auth.onAuthStateChanged((user) => {
+    //   console.log("Calling Delete");
+    //   if (user) {
+    //     user.delete().then(() => {
+    //       unsubscribe();
+    //     });
+    //   }
+    // });
   }
 
   function logout() {

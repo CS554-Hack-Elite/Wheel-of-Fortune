@@ -137,7 +137,7 @@ router.route("/update-proof").post(async (req, res) => {
     };
     let result = req.body;
     let objKeys = [];
-    let email = req.user && req.user.email ? req.user.email : "";
+    let email = req.body.email;
     result.email = email;
     objKeys = ["proof_id", "status", "points", "email"];
     objKeys.forEach((element) => {

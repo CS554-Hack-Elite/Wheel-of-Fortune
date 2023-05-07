@@ -84,74 +84,78 @@ const exportedMethods = {
     const errorObject = {
       status: 400,
     };
-  
+
     id = helpers.checkInput("business_id", id, "Invalid Business Id");
-  
+
     const businessCollection = await business();
     const businessRow = await businessCollection.findOne({ _id: new ObjectId(id) });
 
-    if(!businessRow){
+    if (!businessRow) {
       errorObject.status = 404;
       errorObject.message = `Business with ID ${id} not found`;
       throw errorObject;
     }
     const couponsCollection = await coupons();
     const couponsList = await couponsCollection.find({ business_id: id }).toArray();
-  
-    if (!couponsList.length) { 
+
+    if (!couponsList.length) {
       errorObject.message = "No coupons found for this business";
       throw errorObject;
     }
 
-    const couponsWithCounts = await Promise.all(couponsList.map(async coupon => {
+    const couponsWithCounts = [];
+
+    for (let i = 0; i < couponsList.length; i++) {
+      const coupon = couponsList[i];
       const unusedCouponCount = coupon.coupon_codes.filter(code => code.status === 1).length;
-      return { ...coupon, unused_coupon_count: unusedCouponCount };
-    }));
-  
+      const couponWithCount = { ...coupon, unused_coupon_count: unusedCouponCount };
+      couponsWithCounts.push(couponWithCount);
+    }
+
     return couponsWithCounts;
   },
   async getAllCoupons() {
-   
-      const errorObject = {
-        status: 400,
-        message: 'Failed to get coupons'
-      };
-      const couponsCollection = await coupons();
-      const couponsList = await couponsCollection.find({}).toArray();
-      if (!couponsList) {
-        errorObject.message = 'No coupons found';
-        throw errorObject;
-      }
-      return couponsList;
-    },
 
-    async getAvailableCoupons() {
-      const couponCollection = await coupons();
-      const allCoupons = await couponCollection.find({ is_display: 1 }).toArray();
-      const couponsWithCodes = [];
-    
-      for (const coupon of allCoupons) {
-        const count = coupon.coupon_codes.filter((code) => code.status === 1).length;
-        if (count >= 1) {
-          couponsWithCodes.push({ _id: coupon._id, name: coupon.name });
-        }
+    const errorObject = {
+      status: 400,
+      message: 'Failed to get coupons'
+    };
+    const couponsCollection = await coupons();
+    const couponsList = await couponsCollection.find({}).toArray();
+    if (!couponsList) {
+      errorObject.message = 'No coupons found';
+      throw errorObject;
+    }
+    return couponsList;
+  },
+
+  async getAvailableCoupons() {
+    const couponCollection = await coupons();
+    const allCoupons = await couponCollection.find({ is_display: 1 }).toArray();
+    const couponsWithCodes = [];
+
+    for (const coupon of allCoupons) {
+      const count = coupon.coupon_codes.filter((code) => code.status === 1).length;
+      if (count >= 1) {
+        couponsWithCodes.push({ _id: coupon._id, name: coupon.name });
       }
-    
-      // If the length of the list is greater than 10, randomly select 10 coupons
-      if (couponsWithCodes.length > 10) {
-        const randomCoupons = [];
-        const copyCoupons = couponsWithCodes.slice(); // create a copy of the couponsWithCodes array
-        while (randomCoupons.length < 10) {
-          const randomIndex = Math.floor(Math.random() * copyCoupons.length);
-          randomCoupons.push(copyCoupons[randomIndex]);
-          copyCoupons.splice(randomIndex, 1); // remove the selected coupon from the copyCoupons array
-        }
-        return randomCoupons;
-      } else {
-        return couponsWithCodes;
+    }
+
+    // If the length of the list is greater than 10, randomly select 10 coupons
+    if (couponsWithCodes.length > 10) {
+      const randomCoupons = [];
+      const copyCoupons = couponsWithCodes.slice(); // create a copy of the couponsWithCodes array
+      while (randomCoupons.length < 10) {
+        const randomIndex = Math.floor(Math.random() * copyCoupons.length);
+        randomCoupons.push(copyCoupons[randomIndex]);
+        copyCoupons.splice(randomIndex, 1); // remove the selected coupon from the copyCoupons array
       }
-    },
-    
+      return randomCoupons;
+    } else {
+      return couponsWithCodes;
+    }
+  },
+
   async getCouponById(id, displayCoupon = false) {
     const errorObject = {
       status: 400,

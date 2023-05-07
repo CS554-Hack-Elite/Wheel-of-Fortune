@@ -53,22 +53,27 @@ export const CustomerProfile = () => {
 						<div className="flex justify-center text-4xl font-medium text-indigo-700 p-2">My Profile</div>
 						<div className="profile h-max mx-4 md:mx-20 lg:mx-24 mt-24 p-10 bg-white bg-opacity-40 rounded-lg overflow-x-auto">
 							<div className="name grid grid-cols-2">
-								<div className="nameLabel mx-4 text-lg md:text-2xl lg:text-2xl xl:text-3xl 2xl:text-3xl flex justify-end">Name:</div>
-								<div className="nameValue mx-4 text-lg md:text-2xl lg:text-2xl xl:text-3xl 2xl:text-3xl">
+								<div className="nameLabel mx-4 text-lg md:text-xl lg:text-xl xl:text-xl 2xl:text-xl flex justify-end">Name:</div>
+								<div className="nameValue mx-4 text-lg md:text-xl lg:text-xl xl:text-xl 2xl:text-xl">
 									{customerDetails.name ? customerDetails.name : "(Name not provided)"}
 								</div>
 							</div>
 							<div className="name grid grid-cols-2">
-								<div className="nameLabel mx-4 text-lg md:text-2xl lg:text-2xl xl:text-3xl 2xl:text-3xl flex justify-end">Email:</div>
-								<div className="nameValue mx-4 text-lg md:text-2xl lg:text-2xl xl:text-3xl 2xl:text-3xl">
+								<div className="nameLabel mx-4 text-lg md:text-xl lg:text-xl xl:text-xl 2xl:text-xl flex justify-end">Email:</div>
+								<div className="nameValue mx-4 text-lg md:text-xl lg:text-xl xl:text-xl 2xl:text-xl">
 									{customerDetails.email ? customerDetails.email : "(Email not provided)"}
 								</div>
 							</div>
 							<div className="name grid grid-cols-2">
-								<div className="nameLabel mx-4 text-lg md:text-2xl lg:text-2xl xl:text-3xl 2xl:text-3xl flex justify-end">Member Since:</div>
-								<div className="nameValue mx-4 text-lg md:text-2xl lg:text-2xl xl:text-3xl 2xl:text-3xl">
-									{/* {Date(currentUser.metadata.createdAt).toLocaleString("en-US").split(" ").slice(0, 4).join(" ")} */}
+								<div className="nameLabel mx-4 text-lg md:text-xl lg:text-xl xl:text-xl 2xl:text-xl flex justify-end">Member Since:</div>
+								<div className="nameValue mx-4 text-lg md:text-xl lg:text-xl xl:text-xl 2xl:text-xl">
 									{customerDetails.created_at ? customerDetails.created_at.split(",")[0] : "(Date not provided)"}
+								</div>
+							</div>
+							<div className="name grid grid-cols-2">
+								<div className="nameLabel mx-4 text-lg md:text-xl lg:text-xl xl:text-xl 2xl:text-xl flex justify-end">Total Proofs Uploaded:</div>
+								<div className="nameValue mx-4 text-lg md:text-xl lg:text-xl xl:text-xl 2xl:text-xl">
+									{customerDetails.proof ? customerDetails.proof.length : "N/A"}
 								</div>
 							</div>
 						</div>

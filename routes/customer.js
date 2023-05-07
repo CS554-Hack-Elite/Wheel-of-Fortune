@@ -6,6 +6,7 @@ import im from "imagemagick";
 import gm from "gm";
 import fs from "fs";
 import multer from "multer";
+import convert from "imagemagick";
 
 // Set up multer to handle multipart/form-data
 const upload = multer({ dest: "public/images/" });
@@ -71,33 +72,8 @@ router.route("/upload-proof").post(upload.single("proof"), async (req, res) => {
       );
     });
 
-    // console.log(req.file);
-    // const fileName = req.file.originalname;
-    // const fileExtension = fileName.split(".").pop();
-
-    // // Define the path where the file will be saved
-    // const filePath = `/path/to/save/${fileName}`;
-
-    // // Read the file and save it to the specified path
-    // fs.readFile(req.file.path, function (err, data) {
-    //   if (err) throw err;
-
-    //   // Write the file to the specified path
-    //   fs.writeFile(filePath, data, function (err) {
-    //     if (err) throw err;
-
-    //     // Perform any ImageMagick operations as required
-    //     im.convert(
-    //       [filePath, "-resize", "50%", filePath],
-    //       function (err, stdout) {
-    //         if (err) throw err;
-    //         console.log("Image saved successfully");
-    //       }
-    //     );
-    //   });
-    // });
-
-    // result.proof = filename;
+    const { path, filename } = req.file;
+    await convert(path, ["-resize", "200x200", `uploads/${filename}`]);
     const updatedCustomerRow = await customerData.uploadProof(result);
     return res.status(200).json({ customer: updatedCustomerRow });
   } catch (e) {

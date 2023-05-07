@@ -38,7 +38,7 @@ const exportedMethods = {
       name: result.name,
     });
     if (duplicateCoupon != null) {
-      errorObject.error = "Coupon with this name already exists.";
+      errorObject.message = "Coupon with this name already exists.";
       throw errorObject;
     }
     const date = new Date();
@@ -71,7 +71,7 @@ const exportedMethods = {
 
     if (couponRow.insertedCount !== 1) {
       errorObject.status = 500;
-      errorObject.error = "Could not add coupon";
+      errorObject.message = "Could not add coupon";
     }
     return {
       _id: couponRow.insertedId,
@@ -84,16 +84,13 @@ const exportedMethods = {
       status: 400,
     };
   
-    if (!id || typeof id !== "string") {
-      errorObject.error = "Invalid business ID";
-      throw errorObject;
-    }
+    id = helpers.checkInput("business_id", id, "Invalid Business Id");
   
     const couponsCollection = await coupons();
     const couponsList = await couponsCollection.find({ business_id: id }).toArray();
   
     if (!couponsList.length) { 
-      errorObject.error = "No coupons found for this business";
+      errorObject.message = "No coupons found for this business";
       throw errorObject;
     }
   
@@ -146,7 +143,6 @@ const exportedMethods = {
       status: 400,
       message: "Failed to get coupons",
     };
-    let objKeys = ["coupon_id"];
     id = helpers.checkInput("coupon_id", id, "Invalid Coupon Id");
     const couponsCollection = await coupons();
     let coupon = null;
@@ -166,7 +162,7 @@ const exportedMethods = {
       });
     }
     if (!coupon) {
-      errorObject.error = "Invalid Coupon Id provided";
+      errorObject.message = "Invalid Coupon Id provided";
       throw errorObject;
     }
     return coupon;

@@ -6,7 +6,7 @@ export const VerifyToken = async (req, res, next) => {
   console.log("middleware");
 
   // Special accesss for admin login
-  if (req.originalUrl.startsWith("/admin")) {
+  if (!req.originalUrl.startsWith("/users")) {
     return next();
   }
 

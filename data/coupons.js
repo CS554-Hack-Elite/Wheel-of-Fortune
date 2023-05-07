@@ -34,6 +34,16 @@ const exportedMethods = {
         element + " for the coupons"
       );
     });
+    let business_id = result.business_id;
+    console.log(business_id);
+    const businessCollection = await business();
+    const businessRow = await businessCollection.findOne({ _id: new ObjectId(business_id) });
+
+    if (!businessRow) {
+      errorObject.status = 404;
+      errorObject.message = `Business with ID ${business_id} not found`;
+      throw errorObject;
+    }
     const couponsCollection = await coupons();
     let duplicateCoupon = await couponsCollection.findOne({
       name: result.name,
@@ -98,11 +108,6 @@ const exportedMethods = {
     const couponsCollection = await coupons();
     const couponsList = await couponsCollection.find({ business_id: id }).toArray();
 
-    if (!couponsList.length) {
-      errorObject.message = "No coupons found for this business";
-      throw errorObject;
-    }
-
     const couponsWithCounts = [];
 
     for (let i = 0; i < couponsList.length; i++) {
@@ -122,10 +127,6 @@ const exportedMethods = {
     };
     const couponsCollection = await coupons();
     const couponsList = await couponsCollection.find({}).toArray();
-    if (!couponsList) {
-      errorObject.message = 'No coupons found';
-      throw errorObject;
-    }
     return couponsList;
   },
 

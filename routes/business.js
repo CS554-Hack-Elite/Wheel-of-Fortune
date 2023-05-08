@@ -7,6 +7,7 @@ import helpers from "../helpers/customerHelper.js";
 import redis from "redis";
 const client = redis.createClient();
 client.connect().then(() => {});
+import fs from "fs";
 
 router.route("/generate_coupon").post(async (req, res) => {
   try {
@@ -48,12 +49,7 @@ router.route("/generate_coupon").post(async (req, res) => {
 
     let result = req.body;
 
-    let objKeys = [
-      "name",
-      "description",
-      "max_allocation",
-      "business_id",
-    ];
+    let objKeys = ["name", "description", "max_allocation", "business_id"];
     objKeys.forEach((element) => {
       helpers.checkInput(
         element,
@@ -387,6 +383,14 @@ router.route("/most-accesed-coupons").get(async (req, res) => {
     const errorObject = {
       status: 400,
     };
+    if (
+      !req.session.admin_role ||
+      req.session.admin_role !== process.env.MASTER_ADMIN_ROLE
+    ) {
+      errorObject.status = 403;
+      errorObject.message = "Unauthorized Access";
+      throw errorObject;
+    }
     if (!(await client.exists("mostAccessed"))) {
       return res.status(200).json({ message: "No coupons found for top list" });
     } else {
@@ -396,8 +400,18 @@ router.route("/most-accesed-coupons").get(async (req, res) => {
       let mostAccessedCoupons = [];
       for (let coupon_id of topCoupons) {
         const coupon = await couponsData.getCouponById(coupon_id);
-        mostAccessedCoupons.push(coupon);
+        mostAccessedCoupons.push([
+          {
+            _id: coupon._id,
+            name: coupon.name,
+            description: coupon.description,
+            image: coupon.image,
+            max_allocation: coupon.max_allocation,
+            created_at: coupon.created_at,
+          },
+        ]);
       }
+
       return res.status(200).json(mostAccessedCoupons);
     }
   } catch (e) {

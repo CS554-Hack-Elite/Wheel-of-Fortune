@@ -1,14 +1,12 @@
 import { Router } from "express";
 const router = Router();
 import helpers from "../helpers/customerHelper.js";
-import multer from "multer";
 import bcrypt from "bcryptjs";
 import * as mongoCollections from "../config/mongoCollection.js";
 
 const admins = mongoCollections.admins;
 import { businessData, adminData } from "../data/index.js";
-
-const upload = multer({ dest: "uploads/" });
+import session from "express-session";
 
 router.route("/login").post(async (req, res) => {
   try {
@@ -50,13 +48,11 @@ router.route("/business-login").post(async (req, res) => {
     const businessRow = businessData.getBusinessById(adminRow.business_id);
     req.session.admin = adminRow;
     req.session.admin_role = process.env.BUSINESS_ADMIN_ROLE;
-    res
-      .status(200)
-      .json({
-        businessAdminKey: "Key1",
-        businessAdmin: adminRow,
-        businessData: businessRow,
-      });
+    res.status(200).json({
+      businessAdminKey: "Key1",
+      businessAdmin: adminRow,
+      businessData: businessRow,
+    });
   } catch (e) {
     res
       .status(e.status ? e.status : 400)
@@ -99,6 +95,20 @@ router.route("/register-business-admin").post(async (req, res) => {
       business: businessRow,
       admin: adminRow,
     });
+  } catch (e) {
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
+  }
+});
+
+router.route("/logout").get(async (req, res) => {
+  try {
+    const errorObject = {
+      status: 400,
+    };
+    req.session.destroy();
+    res.status(200).json({ success: "user Logged out successfully" });
   } catch (e) {
     res
       .status(e.status ? e.status : 400)

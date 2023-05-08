@@ -66,7 +66,6 @@ export const CustomerProof = () => {
 
 	const checkImageExists = (image) => {
 		try {
-			require("../../../images");
 			require("../../../images/proof/" + image);
 			return true;
 		} catch (error) {
@@ -213,7 +212,7 @@ export const CustomerProof = () => {
 			setTimeout(() => {
 				fetchCustomerDetails();
 			}, 2000);
-			setLoading(false);
+			// setLoading(false);
 		} catch (e) {
 			setUploadProof(false);
 			setLoading(false);

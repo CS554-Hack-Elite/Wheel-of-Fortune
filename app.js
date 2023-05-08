@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import session from "express-session";
 import bodyParser from "body-parser";
+import fileUpload from "express-fileupload";
 
 app.use(
   session({
@@ -15,9 +16,7 @@ app.use(
     saveUninitialized: true,
   })
 );
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(fileUpload());
 app.use(VerifyToken);
 
 app.use(express.json());

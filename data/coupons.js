@@ -45,9 +45,7 @@ const exportedMethods = {
       throw errorObject;
     }
     const couponsCollection = await coupons();
-    let duplicateCoupon = await couponsCollection.findOne({
-      name: result.name,
-    });
+    let duplicateCoupon = await couponsCollection.findOne({ name: result.name, business_id: business_id });
     if (duplicateCoupon != null) {
       errorObject.message = "Coupon with this name already exists.";
       throw errorObject;

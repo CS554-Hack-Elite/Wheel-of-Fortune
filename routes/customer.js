@@ -2,27 +2,8 @@ import { Router } from "express";
 const router = Router();
 import { customerData, couponsData, businessData } from "../data/index.js";
 import helpers from "../helpers/customerHelper.js";
-import im from "imagemagick";
-import gm from "gm";
 import fs from "fs";
-import multer from "multer";
-import convert from "imagemagick";
-import bodyParser from "body-parser";
-import path from "path";
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads");
-  },
-  filename: function (req, file, cb) {
-    cb(
-      null,
-      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
-    );
-  },
-});
-// Set up multer to handle multipart/form-data
-const upload = multer({ storage: storage });
+import { exec } from "child_process";
 
 router.route("/get-customer").get(async (req, res) => {
   try {
@@ -127,16 +108,45 @@ router.route("/coupons").get(async (req, res) => {
   }
 });
 
-router.route("/upload-proof").post(upload.single("proof"), async (req, res) => {
+router.route("/upload-proof").post(async (req, res) => {
   try {
     const errorObject = {
       status: 400,
     };
-    let result = req.body;
+    let result = {};
     let objKeys = [];
+    const imageData = req.files.proof.data; // Assuming you're using express-fileupload
+    const outputDirectory = "client/images/proof";
+    const outputFileName = Date.now() + "-" + req.files.proof.name;
+    const width = 200;
+    if (!fs.existsSync(outputDirectory)) {
+      await fs.mkdir(outputDirectory, { recursive: true }, (err) => {
+        if (err) {
+          errorObject.message = "File Upload Error";
+          throw errorObject;
+        }
+      });
+    }
+    // Write the image data to a file
+    const outputFilePath = `${outputDirectory}/${outputFileName}`;
+    fs.writeFileSync(outputFilePath, imageData);
+
+    // Build the command to resize the image
+    const command = `magick convert "${outputFilePath}" -resize ${width} "${outputFilePath}"`;
+
+    // Run the command using exec
+    await exec(command, (error, stdout, stderr) => {
+      if (error) {
+        errorObject.message = `exec error: ${error}`;
+        throw errorObject;
+      }
+    });
+
+    result = req.body;
+    result.proof = outputFileName;
     let email = req.user && req.user.email ? req.user.email : "";
     result.email = email;
-    objKeys = ["business_id", "email"];
+    objKeys = ["business_id", "email", "proof"];
 
     objKeys.forEach((element) => {
       result[element] = helpers.checkInput(
@@ -144,15 +154,6 @@ router.route("/upload-proof").post(upload.single("proof"), async (req, res) => {
         result[element],
         element + " for the proof"
       );
-    });
-
-    if (!req.file) {
-      console.log("UPLOAD IMAGE");
-    }
-    gm(req.file.path).write("output.jpg", function (err) {
-      if (err) {
-        console.log("ERRORR" + err);
-      }
     });
     const updatedCustomerRow = await customerData.uploadProof(result);
     return res.status(200).json({ customer: updatedCustomerRow });

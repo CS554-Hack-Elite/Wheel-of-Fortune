@@ -22,8 +22,8 @@ export const AdminDashboard = () => {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
   const [loading, setLoading] = useState(false);
-  const [errorModal, setErrorModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  // const [errorModal, setErrorModal] = useState(false);
+  // const [errorMessage, setErrorMessage] = useState("");
 
   // individual states
 
@@ -167,9 +167,6 @@ export const AdminDashboard = () => {
 
   useEffect(() => {
     if (!localStorage.getItem("adminToken")) navigate("/admin-login");
-  }, []);
-
-  useEffect(() => {
     getData();
   }, []);
 
@@ -183,27 +180,8 @@ export const AdminDashboard = () => {
 
   if (loading) return <Loading />;
 
-  if (errorModal)
-    return (
-      <div class="flex flex-col items-center justify-around ">
-        <Error message={errorMessage} />
-        <div
-          class="bg-gray-100 hover:bg-gray-200 cursor-pointer my-4 p-3 rounded-lg inline-block"
-          onClick={() => {
-            logoutAdmin();
-          }}
-        >
-          Logout
-        </div>
-      </div>
-    );
-
   return (
     <div class="flex">
-      <CreateModal openModal={errorModal} setOpenModal={setErrorModal}>
-        <Error message={errorMessage} />
-      </CreateModal>
-
       <CreateModal openModal={openModal} setOpenModal={setOpenModal}>
         <CreateBusinessAdmin modalChanged={openModal} />{" "}
       </CreateModal>

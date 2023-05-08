@@ -13,10 +13,7 @@ import { ImageView } from "../Reusables/ImageView";
 export const BusinessAdminDashboard = () => {
   const navigate = useNavigate();
 
-  const businessToken = localStorage.getItem("businessAdminToken");
-  if (!businessToken) navigate("/admin-login");
-
-  const [business, setBusiness] = useState(JSON.parse(businessToken));
+  const [business, setBusiness] = useState({});
 
   const [openModal, setOpenModal] = useState(false);
   const [pointsModal, setPointsModal] = useState(false);
@@ -29,16 +26,22 @@ export const BusinessAdminDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [error, setError] = useState(false);
+  // const [error, setError] = useState(false);
 
   const [requestsNotFound, setRequestsNotFound] = useState(true);
   const [couponsNotFound, setCouponsNotFound] = useState(true);
 
-  const payload = {
-    business_id: business.businessAdmin.business_id,
+  const buildLocalToken = () => {
+    const businessToken = localStorage.getItem("businessAdminToken");
+    console.log(businessToken);
+    if (!businessToken) navigate("/admin-login");
+    else {
+      const parsedToken = JSON.parse(businessToken);
+      setBusiness(parsedToken.businessAdmin);
+    }
   };
 
-  console.log(business);
+  // console.log(business);
 
   const buildProofs = (customers) => {
     const allProofs = [];
@@ -59,11 +62,11 @@ export const BusinessAdminDashboard = () => {
   const getCouponData = async () => {
     try {
       const couponData = await axios.get(
-        "business/coupons/" + payload.business_id
+        "business/coupons/" + business.business_id
       );
       setCoupons(couponData.data.ListOfCoupons);
       setCouponsNotFound(false);
-    } catch (error) {
+    } catch (e) {
       setCouponsNotFound(true);
     }
   };
@@ -71,12 +74,12 @@ export const BusinessAdminDashboard = () => {
   const getRequestData = async () => {
     try {
       const requestData = await axios.get(
-        "/business/get-proof/" + payload.business_id
+        "/business/get-proof/" + business.business_id
       );
 
       setRequests(buildProofs(requestData.data.proof));
       setRequestsNotFound(false);
-    } catch (error) {
+    } catch (e) {
       setRequestsNotFound(true);
     }
   };
@@ -119,18 +122,14 @@ export const BusinessAdminDashboard = () => {
 
   const toggleCouponStatus = async (coupon) => {
     try {
-      const payload = {
-        business_id: business.businessAdmin.business_id,
-      };
-
       await axios.get(
         "/business/update-coupon-status/" +
-          payload.business_id +
+          business.business_id +
           "/" +
           coupon._id
       );
 
-      getData();
+      getCouponData();
     } catch (e) {
       setLoading(false);
       setErrorModal(true);
@@ -286,9 +285,12 @@ export const BusinessAdminDashboard = () => {
   };
 
   useEffect(() => {
-    getData();
-    if (!business) setError(true);
+    buildLocalToken();
   }, []);
+
+  useEffect(() => {
+    getData();
+  }, [business]);
 
   useEffect(() => {
     if (!pointsModal) getRequestData();
@@ -300,20 +302,20 @@ export const BusinessAdminDashboard = () => {
 
   if (loading) return <Loading />;
 
-  if (error)
-    return (
-      <div class="flex flex-col items-center justify-around ">
-        <Error message={errorMessage} />
-        <div
-          class="bg-gray-100 hover:bg-gray-200 cursor-pointer my-4 p-3 rounded-lg inline-block"
-          onClick={() => {
-            logoutAdmin();
-          }}
-        >
-          Logout
-        </div>
-      </div>
-    );
+  // if (error)
+  //   return (
+  //     <div class="flex flex-col items-center justify-around ">
+  //       <Error message={errorMessage} />
+  //       <div
+  //         class="bg-gray-100 hover:bg-gray-200 cursor-pointer my-4 p-3 rounded-lg inline-block"
+  //         onClick={() => {
+  //           logoutAdmin();
+  //         }}
+  //       >
+  //         Logout
+  //       </div>
+  //     </div>
+  //   );
 
   return (
     <div>
@@ -323,10 +325,7 @@ export const BusinessAdminDashboard = () => {
         </CreateModal>
 
         <CreateModal openModal={openModal} setOpenModal={setOpenModal}>
-          <CreateCoupon
-            modalChanged={openModal}
-            businessAdmin={business.businessAdmin}
-          />{" "}
+          <CreateCoupon modalChanged={openModal} businessAdmin={business} />{" "}
         </CreateModal>
 
         <CreateModal openModal={pointsModal} setOpenModal={setPointsModal}>
@@ -364,7 +363,7 @@ export const BusinessAdminDashboard = () => {
               title="Name of the business"
             ></StastisticsCard>
             <StastisticsCard
-              value={business.businessAdmin.email}
+              value={business.email}
               title="Email"
             ></StastisticsCard>
           </div>

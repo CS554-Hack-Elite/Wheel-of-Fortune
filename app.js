@@ -5,7 +5,6 @@ import { VerifyToken } from "./middlewares/auth.js";
 import dotenv from "dotenv";
 dotenv.config();
 import session from "express-session";
-import bodyParser from "body-parser";
 import fileUpload from "express-fileupload";
 import fs from "fs";
 
@@ -17,6 +16,7 @@ app.use(
     saveUninitialized: true,
   })
 );
+app.use(express.static("client/src/images"));
 app.use(fileUpload());
 app.use(VerifyToken);
 

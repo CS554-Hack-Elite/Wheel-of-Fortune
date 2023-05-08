@@ -10,7 +10,7 @@ import axios from "axios";
 export const CustomerProof = () => {
 	const [errorModal, setErrorModal] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const [customerDetails, setCustomerDetails] = useState({});
 	const [customerProofList, setCustomerProofList] = useState([]);
 	const [businessList, setBusinessList] = useState([]);
@@ -22,11 +22,9 @@ export const CustomerProof = () => {
 
 	async function fetchBusinessList() {
 		try {
-			setLoading(true);
 			const payloadHeader = await buildToken();
 			const businessArray = await axios.get("/users/business-list", payloadHeader);
 			setBusinessList(businessArray.data.businessData);
-			// console.log(businessArray.data.businessData);
 			setLoading(false);
 		} catch (e) {
 			setLoading(false);
@@ -42,7 +40,7 @@ export const CustomerProof = () => {
 
 	async function fetchCustomerDetails() {
 		try {
-			setLoading(true);
+			// setLoading(true);
 			const payloadHeader = await buildToken();
 			const response = await axios.get("/users/get-customer", payloadHeader);
 			setCustomerDetails(response.data);
@@ -66,17 +64,32 @@ export const CustomerProof = () => {
 		return business && business.name ? business.name : "N/A";
 	};
 
+	const checkImageExists = (image) => {
+		try {
+			require("../../../images/proof/" + image);
+			return true;
+		} catch (error) {
+			return false;
+		}
+	};
+
 	const renderProofList = (proofList) => {
 		if (proofList && proofList.length > 0) {
 			return proofList.map((proof) => {
 				return (
 					<div key={proof.name} className="h-fit col-span-1 coupon bg-indigo-800 text-slate-200 rounded-lg my-4">
-						{/* {console.log("PUBLIC URL :", process.env.PUBLIC_URL)}
-						{console.log("PRocess.env: ", process.env)} */}
-						{proof.proof && proof.proof.length > 0 ? (
-							<img src={`../../../images/proof/${proof.proof}`} className="w-full" alt={proof.coupon_name} />
+						{proof.proof && checkImageExists(proof.proof) ? (
+							<img
+								src={require("../../../images/proof/" + proof.proof)}
+								className="w-full h-80 object-cover rounded-t-lg hover:pointer"
+								alt={proof.coupon_name}
+							/>
 						) : (
-							<img src="https://placehold.co/3000@3x?text=No+Image+Available&font=open-sans" alt={proof.coupon_name} />
+							<img
+								src="https://placehold.co/320@3x?text=Image+Unavailable&font=open-sans"
+								className="w-full h-80 object-cover rounded-t-lg"
+								alt={proof.coupon_name}
+							/>
 						)}
 						<div className="flex justify-center pb-2 pt-2 text-xl">Uploaded for: {getBusinessName(proof.business_id)}</div>
 						<div className="proofStatus px-4 py-2">
@@ -196,8 +209,10 @@ export const CustomerProof = () => {
 			// console.log(businessId);
 			// console.log(uploadedImage);
 			setUploadProof(false);
-			setLoading(false);
-			fetchCustomerDetails();
+			setTimeout(() => {
+				fetchCustomerDetails();
+			}, 2000);
+			// setLoading(false);
 		} catch (e) {
 			setUploadProof(false);
 			setLoading(false);
@@ -245,6 +260,7 @@ export const CustomerProof = () => {
 					</div>
 				</div>
 			</main>
+			  
 		</div>
 	);
 };

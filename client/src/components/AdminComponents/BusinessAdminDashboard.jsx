@@ -26,14 +26,19 @@ export const BusinessAdminDashboard = () => {
 
   const [openImageModal, setOpenImageModal] = useState(false);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [error, setError] = useState(false);
 
-  // console.log(business);
+  const [requestsNotFound, setRequestsNotFound] = useState(true);
+  const [couponsNotFound, setCouponsNotFound] = useState(true);
 
-  // console.log(requests);
+  const payload = {
+    business_id: business.businessAdmin.business_id,
+  };
+
+  console.log(business);
 
   const buildProofs = (customers) => {
     const allProofs = [];
@@ -51,38 +56,65 @@ export const BusinessAdminDashboard = () => {
     return allProofs;
   };
 
-  const getData = async () => {
+  const getCouponData = async () => {
     try {
-      setLoading(true);
+      const couponData = await axios.get(
+        "business/coupons/" + payload.business_id
+      );
+      setCoupons(couponData.data.ListOfCoupons);
+      setCouponsNotFound(false);
+    } catch (error) {
+      setCouponsNotFound(true);
+    }
+  };
 
-      const payload = {
-        business_id: business.businessAdmin.business_id,
-      };
-
+  const getRequestData = async () => {
+    try {
       const requestData = await axios.get(
         "/business/get-proof/" + payload.business_id
       );
 
-      const couponData = await axios.get(
-        "business/coupons/" + payload.business_id
-      );
-
-      console.log(couponData.data.ListOfCoupons);
-
       setRequests(buildProofs(requestData.data.proof));
-      setCoupons(couponData.data.ListOfCoupons);
-
-      setLoading(false);
-    } catch (e) {
-      setLoading(false);
-      setError(true);
-      // setErrorModal(true);
-      // setErrorMessage(
-      //   e && e.response && e.response.data
-      //     ? e.response.data.message
-      //     : e.toString()
-      // );
+      setRequestsNotFound(false);
+    } catch (error) {
+      setRequestsNotFound(true);
     }
+  };
+
+  const getData = async () => {
+    getCouponData();
+    getRequestData();
+    // try {
+    //   setLoading(true);
+
+    //   const payload = {
+    //     business_id: business.businessAdmin.business_id,
+    //   };
+
+    //   const requestData = await axios.get(
+    //     "/business/get-proof/" + payload.business_id
+    //   );
+
+    //   const couponData = await axios.get(
+    //     "business/coupons/" + payload.business_id
+    //   );
+
+    //   console.log(couponData.data.ListOfCoupons);
+
+    //   setRequests(buildProofs(requestData.data.proof));
+    //   setCoupons(couponData.data.ListOfCoupons);
+
+    //   setLoading(false);
+    // } catch (e) {
+    //   setLoading(false);
+    //   setError(true);
+    //   // setErrorModal(true);
+    //   // setErrorMessage(
+    //   //   e && e.response && e.response.data
+    //   //     ? e.response.data.message
+    //   //     : e.toString()
+    //   // );
+    // }
   };
 
   const toggleCouponStatus = async (coupon) => {
@@ -237,8 +269,7 @@ export const BusinessAdminDashboard = () => {
         <span className="lg:flex md:hidden ml-auto right-6 text-md font-medium">
           {couponVisibilityButton(coupon)}
           <div className="px-3 py-2 ml-2 bg-gray-600 text-white text-lg rounded-lg ">
-            Coupons Remaining: {coupon.unused_coupon_count} /
-            {coupon.max_allocation}
+            Available: {coupon.unused_coupon_count}/{coupon.max_allocation}
           </div>
         </span>
       </li>
@@ -256,14 +287,15 @@ export const BusinessAdminDashboard = () => {
 
   useEffect(() => {
     getData();
+    if (!business) setError(true);
   }, []);
 
   useEffect(() => {
-    if (!pointsModal) getData();
+    if (!pointsModal) getRequestData();
   }, [pointsModal]);
 
   useEffect(() => {
-    if (!openModal) getData();
+    if (!openModal) getCouponData();
   }, [openModal]);
 
   if (loading) return <Loading />;
@@ -353,14 +385,21 @@ export const BusinessAdminDashboard = () => {
                   Create Coupon
                 </div>
               </div>
-
-              <ul>{renderCoupons()}</ul>
+              {couponsNotFound ? (
+                <div class="text-xl text-teal-600 p-2">Not Found</div>
+              ) : (
+                renderCoupons()
+              )}
             </div>
             <div className="md:col-span-2 p-4 lg:h-[80vh] h-[50vh] rounded-lg bg-white overflow-y-auto">
               <div className="text-3xl font-medium text-teal-600 p-2">
                 Customer Requests
               </div>
-              <ul>{renderRequests()}</ul>
+              {requestsNotFound ? (
+                <div class="text-xl text-teal-600 p-2">Not Found</div>
+              ) : (
+                renderRequests()
+              )}
             </div>
           </div>
         </main>

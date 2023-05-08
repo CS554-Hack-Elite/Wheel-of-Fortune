@@ -25,29 +25,71 @@ export const AdminDashboard = () => {
   const [errorModal, setErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const getData = async () => {
+  // individual states
+
+  const [couponsNotFetched, setCouponsNotFetched] = useState(true);
+  const [businessesNotFetched, setBusinessesNotFetched] = useState(true);
+  const [customersNotFetched, setCustomersNotFetched] = useState(true);
+
+  const getCouponData = async () => {
     try {
-      setLoading(true);
-
+      // throw "qweqwe";
       const couponData = await axios.get("/business/coupons/");
-
-      const businessData = await axios.get("/business/list/");
-
-      const customerData = await axios.get("/business/customer/list");
-
       setCoupons(couponData.data.ListOfCoupons);
-      setBusinesses(businessData.data.businessData);
-      setCustomers(customerData.data.ListOfCustomer);
-      setLoading(false);
+      setCouponsNotFetched(false);
     } catch (e) {
-      setLoading(false);
-      setErrorModal(true);
-      setErrorMessage(
-        e && e.response && e.response.data
-          ? e.response.data.message
-          : e.toString()
-      );
+      setCouponsNotFetched(true);
     }
+  };
+
+  const getBusinessData = async () => {
+    try {
+      // throw "qweqewwqe";
+      const businessData = await axios.get("/business/list/");
+      setBusinesses(businessData.data.businessData);
+      setBusinessesNotFetched(false);
+    } catch (e) {
+      setBusinessesNotFetched(true);
+    }
+  };
+
+  const getCustomerData = async () => {
+    try {
+      // throw "qewqwe";
+      const customerData = await axios.get("/business/customer/list");
+      setCustomers(customerData.data.ListOfCustomer);
+      setCustomersNotFetched(false);
+    } catch (e) {
+      setCustomersNotFetched(true);
+    }
+  };
+
+  const getData = async () => {
+    getCouponData();
+    getBusinessData();
+    getCustomerData();
+    // try {
+    //   setLoading(true);
+
+    //   // const couponData = await axios.get("/business/coupons/");
+
+    //   // const businessData = await axios.get("/business/list/");
+
+    //   // const customerData = await axios.get("/business/customer/list");
+
+    //   // setCoupons(couponData.data.ListOfCoupons);
+    //   // setBusinesses(businessData.data.businessData);
+    //   // setCustomers(customerData.data.ListOfCustomer);
+    //   // setLoading(false);
+    // } catch (e) {
+    //   setLoading(false);
+    //   setErrorModal(true);
+    //   setErrorMessage(
+    //     e && e.response && e.response.data
+    //       ? e.response.data.message
+    //       : e.toString()
+    //   );
+    // }
   };
 
   const deleteBusiness = (business) => {
@@ -132,11 +174,11 @@ export const AdminDashboard = () => {
   }, []);
 
   useEffect(() => {
-    if (!openModal) getData();
+    if (!openModal) getBusinessData();
   }, [openModal]);
 
   useEffect(() => {
-    if (!openDeleteModal) getData();
+    if (!openDeleteModal) getBusinessData();
   }, [openDeleteModal]);
 
   if (loading) return <Loading />;
@@ -203,15 +245,15 @@ export const AdminDashboard = () => {
       <main class=" ml-32 w-full">
         <div class="grid lg:grid-cols-3 gap-5 p-4">
           <StastisticsCard
-            value={coupons ? coupons.length : "Error getting data"}
+            value={couponsNotFetched ? "Not Found" : coupons.length}
             title="Number of Coupons"
           ></StastisticsCard>
           <StastisticsCard
-            value={customers ? customers.length : "Error getting data"}
+            value={customersNotFetched ? "Not Found" : customers.length}
             title="Number of Customers"
           ></StastisticsCard>
           <StastisticsCard
-            value={businesses ? businesses.length : "Error getting data"}
+            value={businessesNotFetched ? "Not Found" : businesses.length}
             title="Number of Businesses"
           ></StastisticsCard>
         </div>
@@ -221,11 +263,23 @@ export const AdminDashboard = () => {
             <div class="text-3xl font-medium text-teal-600 p-2">
               Top 10 Coupons
             </div>
-            <ul>{renderCoupons()}</ul>
+            <ul>
+              {couponsNotFetched ? (
+                <div class="text-xl text-teal-600 p-2">Not Found</div>
+              ) : (
+                renderCoupons()
+              )}
+            </ul>
           </div>
           <div class="md:col-span-2 p-4 lg:h-[80vh] h-[50vh] rounded-lg bg-white overflow-y-auto">
             <div class="text-3xl font-medium text-teal-600 p-2">Businesses</div>
-            <ul>{renderbusinesses()}</ul>
+            <ul>
+              {businessesNotFetched ? (
+                <div class="text-xl text-teal-600 p-2">Not Found</div>
+              ) : (
+                renderbusinesses()
+              )}
+            </ul>
           </div>
         </div>
       </main>

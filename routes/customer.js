@@ -4,7 +4,7 @@ import { customerData, couponsData, businessData } from "../data/index.js";
 import helpers from "../helpers/customerHelper.js";
 import fs from "fs";
 import { exec } from "child_process";
-const redis = require("redis");
+import redis from "redis";
 const client = redis.createClient();
 client.connect().then(() => {});
 

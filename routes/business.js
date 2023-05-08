@@ -4,7 +4,7 @@ import { businessData } from "../data/index.js";
 import { couponsData } from "../data/index.js";
 import { customerData } from "../data/index.js";
 import helpers from "../helpers/customerHelper.js";
-const redis = require("redis");
+import redis from "redis";
 const client = redis.createClient();
 client.connect().then(() => {});
 
@@ -29,8 +29,6 @@ router.route("/generate_coupon").post(async (req, res) => {
     const outputDirectory = "client/images/coupon_logo";
     const outputFileName = Date.now() + "-" + req.files.image.name;
     const width = 200;
-
-
 
     const outputFilePath = `${outputDirectory}/${outputFileName}`;
     fs.writeFileSync(outputFilePath, imageData);
@@ -410,6 +408,5 @@ router.route("/most-accesed-coupons").get(async (req, res) => {
       .json({ message: e.message ? e.message : e });
   }
 });
-
 
 export default router;

@@ -4,6 +4,9 @@ import { businessData } from "../data/index.js";
 import { couponsData } from "../data/index.js";
 import { customerData } from "../data/index.js";
 import helpers from "../helpers/customerHelper.js";
+const redis = require("redis");
+const client = redis.createClient();
+client.connect().then(() => {});
 
 router.route("/generate_coupon").post(async (req, res) => {
   try {
@@ -381,5 +384,32 @@ router.route("/update-proof").post(async (req, res) => {
       .json({ message: e.message ? e.message : e });
   }
 });
+
+router.route("/most-accesed-coupons").get(async (req, res) => {
+  try {
+    const errorObject = {
+      status: 400,
+    };
+    if (!(await client.exists("mostAccessed"))) {
+      return res.status(200).json({ message: "No coupons found for top list" });
+    } else {
+      const topCoupons = await client.zRange("mostAccessed", 0, 9, {
+        REV: true,
+      });
+      let mostAccessedCoupons = [];
+      for (let coupon_id of topCoupons) {
+        const coupon = await couponsData.getCouponById(coupon_id);
+        mostAccessedCoupons.push(coupon);
+      }
+      return res.status(200).json(mostAccessedCoupons);
+    }
+  } catch (e) {
+    console.log(e);
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
+  }
+});
+
 
 export default router;

@@ -45,7 +45,7 @@ router.route("/business-login").post(async (req, res) => {
       );
     });
     const adminRow = await adminData.checkAdmin(result);
-    const businessRow = businessData.getBusinessById(adminRow.business_id);
+    const businessRow = await businessData.getBusinessById(adminRow.business_id);
     req.session.admin = adminRow;
     req.session.admin_role = process.env.BUSINESS_ADMIN_ROLE;
     res.status(200).json({

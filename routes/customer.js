@@ -4,6 +4,9 @@ import { customerData, couponsData, businessData } from "../data/index.js";
 import helpers from "../helpers/customerHelper.js";
 import fs from "fs";
 import { exec } from "child_process";
+import redis from "redis";
+const client = redis.createClient();
+client.connect().then(() => {});
 
 router.route("/get-customer").get(async (req, res) => {
   try {
@@ -63,7 +66,7 @@ router.route("/business-list").get(async (req, res) => {
   }
 });
 
-router.route("/update-points").post(async (req, res) => {
+router.route("/update-points").get(async (req, res) => {
   try {
     const errorObject = {
       status: 400,
@@ -82,6 +85,7 @@ router.route("/update-points").post(async (req, res) => {
     });
 
     const updatedCustomerRow = await customerData.updatePoints(result);
+    client.zIncrBy("mostAccessed", 1, result.coupon_id);
     return res.status(200).json({ customer: updatedCustomerRow });
   } catch (e) {
     res
@@ -143,7 +147,7 @@ router.route("/upload-proof").post(async (req, res) => {
     result.proof = outputFileName;
     let email = req.user && req.user.email ? req.user.email : "";
     result.email = email;
-    objKeys = ["business_id", "email", "proof"];
+    objKeys = ["business_id", "email"];
 
     objKeys.forEach((element) => {
       result[element] = helpers.checkInput(

@@ -21,7 +21,7 @@ export const AdminDashboard = () => {
     useState({});
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   // const [errorModal, setErrorModal] = useState(false);
   // const [errorMessage, setErrorMessage] = useState("");
 
@@ -65,9 +65,11 @@ export const AdminDashboard = () => {
   };
 
   const getData = async () => {
-    getCouponData();
-    getBusinessData();
-    getCustomerData();
+    setLoading(true);
+    await getCouponData();
+    await getBusinessData();
+    await getCustomerData();
+    setLoading(false);
     // try {
     //   setLoading(true);
 
@@ -133,7 +135,10 @@ export const AdminDashboard = () => {
     return (
       <li className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
         <div className="bg-teal-100 rounded-lg p-5">
-          <img src={business.logo} className="text-purple-800 w-[40px]" />
+          <img
+          // src={"../images/1683567288478-AOT.jpg"}
+          // className="text-purple-800 w-[40px]"
+          />
         </div>
         <div className="pl-4">
           <p className="text-gray-800 font-bold">{business.name} </p>
@@ -161,6 +166,7 @@ export const AdminDashboard = () => {
   };
 
   const logoutAdmin = () => {
+    // TODO: send logout to server
     clearLocalTokens();
     navigate("/admin-login");
   };
@@ -215,7 +221,6 @@ export const AdminDashboard = () => {
               logoutAdmin();
             }}
           >
-            {/* <img src="public/img/logout.svg" style="width:20px" /> */}
             Logout
           </div>
         </div>

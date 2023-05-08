@@ -85,8 +85,10 @@ export const BusinessAdminDashboard = () => {
   };
 
   const getData = async () => {
-    getCouponData();
-    getRequestData();
+    setLoading(true);
+    await getCouponData();
+    await getRequestData();
+    setLoading(false);
     // try {
     //   setLoading(true);
 
@@ -147,6 +149,7 @@ export const BusinessAdminDashboard = () => {
   };
 
   const logoutAdmin = () => {
+    // TODO: send logout to server
     localStorage.removeItem("adminToken");
     localStorage.removeItem("businessAdminToken");
     navigate("/admin-login");

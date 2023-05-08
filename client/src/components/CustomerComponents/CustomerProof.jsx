@@ -11,7 +11,7 @@ export const CustomerProof = () => {
 	const [errorModal, setErrorModal] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [loading, setLoading] = useState(false);
-	// const [customerDetails, setCustomerDetails] = useState({});
+	const [customerDetails, setCustomerDetails] = useState({});
 	const [customerProofList, setCustomerProofList] = useState([]);
 	const [businessList, setBusinessList] = useState([]);
 	const [uploadProof, setUploadProof] = useState(false);
@@ -45,7 +45,7 @@ export const CustomerProof = () => {
 			setLoading(true);
 			const payloadHeader = await buildToken();
 			const response = await axios.get("/users/get-customer", payloadHeader);
-			// setCustomerDetails(response.data);
+			setCustomerDetails(response.data);
 			setCustomerProofList(response.data.proof);
 			// console.log(response.data);
 			setLoading(false);
@@ -193,11 +193,15 @@ export const CustomerProof = () => {
 		const formData = new FormData();
 		formData.append("business_id", businessId);
 		formData.append("proof", uploadedImage);
+		console.log(uploadedImage);
+		console.log(formData);
 
 		try {
 			const payloadHeader = await buildToken();
+			payloadHeader.headers["Content-Type"] = "multipart/form-data";
+			console.log(payloadHeader);
 			const res = await axios.post("/users/upload-proof", formData, payloadHeader);
-			// console.log(res);
+			console.log(res);
 			setBusinessId(null);
 			setUploadedImage(null);
 			// console.log(businessId);

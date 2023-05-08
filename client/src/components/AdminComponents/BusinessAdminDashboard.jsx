@@ -7,6 +7,8 @@ import { GrantPoints } from "./GrantPoints";
 import axios from "axios";
 import { Loading } from "../Reusables/Loading";
 import { Error } from "../Reusables/Error";
+import { Button } from "../Reusables/Button";
+import { ImageView } from "../Reusables/ImageView";
 
 export const BusinessAdminDashboard = () => {
   const navigate = useNavigate();
@@ -22,11 +24,14 @@ export const BusinessAdminDashboard = () => {
   const [requestDetails, setRequestDetails] = useState({});
   const [coupons, setCoupons] = useState([]);
 
+  const [openImageModal, setOpenImageModal] = useState(false);
+
   const [loading, setLoading] = useState(true);
   const [errorModal, setErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [error, setError] = useState(false);
 
-  console.log(business);
+  // console.log(business);
 
   // console.log(requests);
 
@@ -54,7 +59,6 @@ export const BusinessAdminDashboard = () => {
         business_id: business.businessAdmin.business_id,
       };
 
-      // // TODO: add the buisness_id to the payload
       const requestData = await axios.get(
         "/business/get-proof/" + payload.business_id
       );
@@ -63,12 +67,38 @@ export const BusinessAdminDashboard = () => {
         "business/coupons/" + payload.business_id
       );
 
-      console.log(couponData);
+      console.log(couponData.data.ListOfCoupons);
 
       setRequests(buildProofs(requestData.data.proof));
       setCoupons(couponData.data.ListOfCoupons);
 
       setLoading(false);
+    } catch (e) {
+      setLoading(false);
+      setError(true);
+      // setErrorModal(true);
+      // setErrorMessage(
+      //   e && e.response && e.response.data
+      //     ? e.response.data.message
+      //     : e.toString()
+      // );
+    }
+  };
+
+  const toggleCouponStatus = async (coupon) => {
+    try {
+      const payload = {
+        business_id: business.businessAdmin.business_id,
+      };
+
+      await axios.get(
+        "/business/update-coupon-status/" +
+          payload.business_id +
+          "/" +
+          coupon._id
+      );
+
+      getData();
     } catch (e) {
       setLoading(false);
       setErrorModal(true);
@@ -128,7 +158,12 @@ export const BusinessAdminDashboard = () => {
         key={request._id}
         className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center"
       >
-        <div className="bg-yellow-100 rounded-lg p-5">
+        <div
+          className="bg-yellow-100 rounded-lg p-5"
+          onClick={() => {
+            setOpenImageModal(true);
+          }}
+        >
           <img
           // src="../public/img/solar-panel.svg"
           // className="text-purple-800 w-[40px]"
@@ -157,8 +192,33 @@ export const BusinessAdminDashboard = () => {
     return allRequest;
   };
 
+  const couponVisibilityButton = (coupon) => {
+    if (coupon.unused_coupon_count) {
+      if (coupon.is_display === 2) {
+        return (
+          <Button
+            title="Show Coupon"
+            color="indigo"
+            clickAction={() => {
+              toggleCouponStatus(coupon);
+            }}
+          />
+        );
+      } else {
+        return (
+          <Button
+            title="Hide Coupon"
+            color="red"
+            clickAction={() => {
+              toggleCouponStatus(coupon);
+            }}
+          />
+        );
+      }
+    }
+  };
+
   const buildCouponCard = (coupon) => {
-    // TODO: Remaining coupons
     return (
       <li
         key={coupon._id}
@@ -175,7 +235,8 @@ export const BusinessAdminDashboard = () => {
           <p className="text-gray-400 text-sm">{coupon.description}</p>
         </div>
         <span className="lg:flex md:hidden ml-auto right-6 text-md font-medium">
-          <div className="px-3 py-2 bg-gray-600 text-white text-lg rounded-lg ">
+          {couponVisibilityButton(coupon)}
+          <div className="px-3 py-2 ml-2 bg-gray-600 text-white text-lg rounded-lg ">
             Coupons Remaining: {coupon.unused_coupon_count} /
             {coupon.max_allocation}
           </div>
@@ -207,7 +268,7 @@ export const BusinessAdminDashboard = () => {
 
   if (loading) return <Loading />;
 
-  if (errorModal)
+  if (error)
     return (
       <div class="flex flex-col items-center justify-around ">
         <Error message={errorMessage} />
@@ -241,6 +302,13 @@ export const BusinessAdminDashboard = () => {
             requestDetails={requestDetails}
             setOpenModal={setPointsModal}
           />{" "}
+        </CreateModal>
+
+        <CreateModal
+          openModal={openImageModal}
+          setOpenModal={setOpenImageModal}
+        >
+          <ImageView imageSrc="" />
         </CreateModal>
         <div className="fixed w-32 h-screen p-4 bg-white flex flex-col justify-between">
           <div className="flex flex-col items-center">

@@ -160,7 +160,7 @@ const exportedMethods = {
           } must be a valid number.`;
           throw errorObject;
         }
-        if (val < 0 && val > 5) {
+        if (val < 0 || val > 5) {
           throw `${
             variableName || "Provided variable"
           }  must be a valid number.`;

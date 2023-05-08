@@ -171,7 +171,7 @@ export const AdminDashboard = () => {
       >
         <DeleteBusinessConfirmationModal
           business={selectedBusinessForDeletion}
-          modalChanged={openModal}
+          modalChanged={openDeleteModal}
           setOpenModal={setOpenDeleteModal}
         />{" "}
       </CreateModal>

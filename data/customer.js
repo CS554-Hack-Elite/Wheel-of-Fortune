@@ -198,7 +198,7 @@ const exportedMethods = {
     if (result.status == 3) {
       result.points = 0;
     }
-    if (result.status === 2 && result.points < 1) {
+    if (result.status == 2 && result.points < 1) {
       errorObject.message = "Should allocate points if status is approved";
       throw errorObject;
     }

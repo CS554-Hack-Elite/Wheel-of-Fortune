@@ -107,9 +107,7 @@ router.route("/create").post(async (req, res) => {
       errorObject.message = "Unauthorized Access";
       throw errorObject;
     }
-
     let result = req.body;
-
     let objKeys = ["name", "logo"];
     objKeys.forEach((element) => {
       result[element] = helpers.checkInput(
@@ -166,6 +164,48 @@ router.route("/list").get(async (req, res) => {
       .json({ message: e.message ? e.message : e });
   }
 });
+
+router
+  .route("/update-coupon-status/:business_id/:coupon_id")
+  .get(async (req, res) => {
+    try {
+      const errorObject = {
+        status: 400,
+      };
+      if (
+        !req.session.admin_role ||
+        !req.session.admin_role == process.env.BUSINESS_ADMIN_ROLE
+      ) {
+        errorObject.status = 403;
+        errorObject.message = "Unauthorized Access";
+        throw errorObject;
+      }
+      let business_id = req.params.business_id;
+      let coupon_id = req.params.coupon_id;
+      business_id = helpers.checkInput(
+        "business_id",
+        business_id,
+        "Invalid Business ID"
+      );
+      coupon_id = helpers.checkInput(
+        "coupon_id",
+        coupon_id,
+        "Invalid Coupon ID"
+      );
+      let couponList = await couponsData.updateCouponStatus(
+        business_id,
+        coupon_id
+      );
+      const couponsList = await couponsData.getCouponsByBusinessId(business_id);
+      return res.status(200).json({
+        ListOfCoupons: couponsList,
+      });
+    } catch (e) {
+      res
+        .status(e.status ? e.status : 400)
+        .json({ message: e.message ? e.message : e });
+    }
+  });
 
 router.route("/delete/:_id").delete(async (req, res) => {
   try {

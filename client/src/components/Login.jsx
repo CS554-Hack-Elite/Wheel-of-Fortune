@@ -49,6 +49,18 @@ export const Login = () => {
       setLoading(false);
       setErrorModal(true);
       setErrorMessage(e && e.error ? e.error : e.toString());
+
+      if (e.toString().includes("Firebase: Error (auth/wrong-password)")) {
+        setErrorMessage(
+          "You entered the wrong password please try again / If you have logged in using a google account before click on log in via google"
+        );
+      } else {
+        setErrorMessage(
+          e && e.response && e.response.data
+            ? e.response.data.message
+            : e.toString()
+        );
+      }
     }
   };
 

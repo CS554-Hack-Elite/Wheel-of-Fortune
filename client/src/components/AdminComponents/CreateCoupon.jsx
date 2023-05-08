@@ -20,8 +20,6 @@ export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
 
   const objKeys = ["name", "description", "max_allocation", "business_id"];
 
-  // console.log(couponMaxAllocation);
-
   const createCoupon = async () => {
     try {
       setLoading(true);

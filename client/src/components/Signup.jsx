@@ -13,7 +13,7 @@ export const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [age, setAge] = useState("");
+  const [age, setAge] = useState(13);
 
   const { register, deleteUser } = useAuth();
 
@@ -32,10 +32,12 @@ export const Signup = () => {
       const payload = {
         name,
         email,
-        age,
+        age: parseInt(age),
         password,
         google_authenticated: 2,
       };
+
+      console.log(payload);
 
       objKeys.forEach((element) => {
         payload[element] = helpers.checkInput(
@@ -55,18 +57,23 @@ export const Signup = () => {
       setLoading(false);
       navigate("/customer/dashboard");
     } catch (e) {
-      //TODO: Handle firebase exist error gracefully
       //TODO: delete user from db
 
       console.log("error in data");
       console.log(e);
       // deleteUser();
       setErrorModal(true);
-      setErrorMessage(
-        e && e.response && e.response.data
-          ? e.response.data.message
-          : e.toString()
-      );
+      if (
+        e.toString().includes("Firebase: Error (auth/email-already-in-use).")
+      ) {
+        setErrorMessage("Email is already in use");
+      } else {
+        setErrorMessage(
+          e && e.response && e.response.data
+            ? e.response.data.message
+            : e.toString()
+        );
+      }
     }
   };
 
@@ -91,7 +98,12 @@ export const Signup = () => {
           changeAction={setName}
         />
 
-        <FormInput title="Age" type="age" value={age} changeAction={setAge} />
+        <FormInput
+          title="Age"
+          type="number"
+          value={age}
+          changeAction={setAge}
+        />
 
         <FormInput
           title="Email"

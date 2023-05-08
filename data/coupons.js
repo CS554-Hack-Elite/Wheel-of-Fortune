@@ -23,7 +23,6 @@ const exportedMethods = {
     let objKeys = [
       "name",
       "description",
-      "image",
       "max_allocation",
       "business_id",
     ];

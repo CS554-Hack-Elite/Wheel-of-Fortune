@@ -4,6 +4,9 @@ import { businessData } from "../data/index.js";
 import { couponsData } from "../data/index.js";
 import { customerData } from "../data/index.js";
 import helpers from "../helpers/customerHelper.js";
+import redis from "redis";
+const client = redis.createClient();
+client.connect().then(() => {});
 
 router.route("/generate_coupon").post(async (req, res) => {
   try {
@@ -27,8 +30,6 @@ router.route("/generate_coupon").post(async (req, res) => {
     const outputFileName = Date.now() + "-" + req.files.image.name;
     const width = 200;
 
-
-
     const outputFilePath = `${outputDirectory}/${outputFileName}`;
     fs.writeFileSync(outputFilePath, imageData);
 
@@ -50,7 +51,6 @@ router.route("/generate_coupon").post(async (req, res) => {
     let objKeys = [
       "name",
       "description",
-      "image",
       "max_allocation",
       "business_id",
     ];
@@ -126,11 +126,11 @@ router.route("/create").post(async (req, res) => {
     const errorObject = {
       status: 400,
     };
-    if (!req.files || !req.files.business) {
+    if (!req.files || !req.files.logo) {
       errorObject.message = "Please upload image for business";
       throw errorObject;
     }
-    const imageData = req.files.business.data; // Assuming you're using express-fileupload
+    const imageData = req.files.logo.data; // Assuming you're using express-fileupload
     const outputDirectory = "client/images/business_logo";
     const outputFileName = Date.now() + "-" + req.files.logo.name;
     const width = 200;
@@ -157,7 +157,7 @@ router.route("/create").post(async (req, res) => {
     });
     let result = req.body;
     result.logo = outputFileName;
-    let objKeys = ["name", "logo"];
+    let objKeys = ["name"];
     objKeys.forEach((element) => {
       result[element] = helpers.checkInput(
         element,
@@ -167,7 +167,7 @@ router.route("/create").post(async (req, res) => {
       );
     });
     businessData = await businessData.createBusiness(result);
-    objKeys = ["email", "password", "name", "age"];
+    objKeys = ["email", "password", "age"];
     objKeys.forEach((element) => {
       result[element] = helpers.checkInput(
         element,
@@ -376,6 +376,32 @@ router.route("/update-proof").post(async (req, res) => {
     const updatedCustomerRow = await customerData.updateProof(result);
     return res.status(200).json({ customer: updatedCustomerRow });
   } catch (e) {
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
+  }
+});
+
+router.route("/most-accesed-coupons").get(async (req, res) => {
+  try {
+    const errorObject = {
+      status: 400,
+    };
+    if (!(await client.exists("mostAccessed"))) {
+      return res.status(200).json({ message: "No coupons found for top list" });
+    } else {
+      const topCoupons = await client.zRange("mostAccessed", 0, 9, {
+        REV: true,
+      });
+      let mostAccessedCoupons = [];
+      for (let coupon_id of topCoupons) {
+        const coupon = await couponsData.getCouponById(coupon_id);
+        mostAccessedCoupons.push(coupon);
+      }
+      return res.status(200).json(mostAccessedCoupons);
+    }
+  } catch (e) {
+    console.log(e);
     res
       .status(e.status ? e.status : 400)
       .json({ message: e.message ? e.message : e });

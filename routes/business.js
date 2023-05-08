@@ -27,8 +27,6 @@ router.route("/generate_coupon").post(async (req, res) => {
     const outputFileName = Date.now() + "-" + req.files.image.name;
     const width = 200;
 
-
-
     const outputFilePath = `${outputDirectory}/${outputFileName}`;
     fs.writeFileSync(outputFilePath, imageData);
 

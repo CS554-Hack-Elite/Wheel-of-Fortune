@@ -1,21 +1,86 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FormInput } from "../Reusables/FormInput";
 import { Button } from "../Reusables/Button";
+import helpers from "../../auth/validation.js";
+import axios from "axios";
+import { CreateModal } from "../Reusables/CreateModal";
+import { Error } from "../Reusables/Error";
+import { TimeoutComponent } from "../Reusables/TimeoutComponent";
 
-export const CreateCoupon = () => {
+export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
+  const [loading, setLoading] = useState(false);
   const [couponName, setCouponName] = useState("");
   const [couponDescription, setCouponDescription] = useState("");
+  const [couponMaxAllocation, setCouponMaxAllocation] = useState(0);
 
-  const createCoupon = () => {
+  const [showCreated, setShowCreated] = useState(false);
+
+  const [errorModal, setErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const objKeys = ["name", "description", "max_allocation", "business_id"];
+
+  const createCoupon = async () => {
     try {
-      // TODO: Validate Credentials
-      //TODO: Axios Request
-    } catch (e) {}
-    console.log("creating coupon");
+      setLoading(true);
+
+      //TODO: Handle image
+      const payload = {
+        name: couponName,
+        description: couponDescription,
+        max_allocation: parseInt(couponMaxAllocation),
+        image: "qweqwe",
+        business_id: businessAdmin.business_id,
+      };
+      console.log(payload);
+
+      objKeys.forEach((element) => {
+        payload[element] = helpers.checkInput(
+          element,
+          payload[element],
+          element + " of the coupon",
+          true
+        );
+      });
+
+      await axios.post("/business/generate_coupon", payload);
+
+      console.log("created");
+
+      setLoading(false);
+
+      setCouponName("");
+      setCouponDescription("");
+      setCouponMaxAllocation(0);
+
+      setShowCreated(true);
+    } catch (e) {
+      console.log(e);
+      setLoading(false);
+      setErrorModal(true);
+      setErrorMessage(
+        e && e.response && e.response.data
+          ? e.response.data.message
+          : e.toString()
+      );
+    }
   };
+
+  useEffect(() => {
+    setLoading(false);
+    setCouponName("");
+    setCouponDescription("");
+    setCouponMaxAllocation(0);
+    setErrorModal(false);
+    setErrorMessage("");
+  }, [modalChanged]);
 
   return (
     <div className="flex justify-center h-full">
+      <CreateModal openModal={errorModal} setOpenModal={setErrorModal}>
+        <Error message={errorMessage} />
+      </CreateModal>
+
       <div className="bg-white flex flex-col w-full md:py-8 my-auto justify-center items-center rounded">
         <div className="text-gray-900 text-lg mb-1 font-medium title-font">
           Generate A Coupon
@@ -32,7 +97,14 @@ export const CreateCoupon = () => {
           title="Coupon Description"
           type="text"
           value={couponDescription}
-          changeAction={setCouponName}
+          changeAction={setCouponDescription}
+        />
+
+        <FormInput
+          title="Coupon Max Allocation"
+          type="number"
+          value={couponMaxAllocation}
+          changeAction={setCouponMaxAllocation}
         />
 
         <div className="relative mb-4 w-4/5">
@@ -50,7 +122,24 @@ export const CreateCoupon = () => {
           />
         </div>
 
-        <Button title="Create Coupon" clickAction={createCoupon} />
+        {/* <Button title="Create Coupon" clickAction={createCoupon} /> */}
+
+        {!loading ? (
+          <Button title="Create Coupon" clickAction={createCoupon} />
+        ) : (
+          <Button
+            title="Creating...."
+            disabled={true}
+            color="gray"
+            clickAction={createCoupon}
+          />
+        )}
+
+        <TimeoutComponent show={showCreated} setShow={setShowCreated}>
+          <div className="text-green-700 text-lg mb-1 mt-5 font-medium title-font">
+            Coupon Created!!
+          </div>
+        </TimeoutComponent>
       </div>
     </div>
   );

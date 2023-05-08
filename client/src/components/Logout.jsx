@@ -23,7 +23,7 @@ export const Logout = () => {
     } catch (e) {
       setLoading(false);
       setErrorModal(true);
-      setErrorMessage(e.toString(e.toString()));
+      setErrorMessage(e.toString());
     }
   };
 

@@ -5,8 +5,8 @@ const exportedMethods = {
     const errorObject = {
       status: 400,
     };
-    if (!val && required) {
-      errorObject.error = `${variableName || "Provided variable"} is required.`;
+    if (typeof val !== "number" && !val && required) {
+      throw `${variableName || "Provided variable"} is required.`;
       throw errorObject;
     }
     let inputRegExp = "";
@@ -14,22 +14,18 @@ const exportedMethods = {
     switch (input) {
       case "email":
         if (typeof val !== "string") {
-          errorObject.error = `${
-            variableName || "Provided variable"
-          } must be a string.`;
+          throw `${variableName || "Provided variable"} must be a string.`;
           throw errorObject;
         }
         val = val.toLowerCase().trim();
         if (!val) {
-          errorObject.error = `${
-            variableName || "Provided variable"
-          } must not be empty.`;
+          throw `${variableName || "Provided variable"} must not be empty.`;
           throw errorObject;
         }
         inputRegExp = /^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
         valid = inputRegExp.test(val);
         if (!valid) {
-          errorObject.error = `${
+          throw `${
             variableName || "Provided variable"
           }   must be a valid email.`;
           throw errorObject;
@@ -38,23 +34,19 @@ const exportedMethods = {
 
       case "password":
         if (typeof val !== "string") {
-          errorObject.error = `${
-            variableName || "Provided variable"
-          } must be a string.`;
+          throw `${variableName || "Provided variable"} must be a string.`;
           throw errorObject;
         }
         val = val.trim();
         if (!val && required) {
-          errorObject.error = `${
-            variableName || "Provided variable"
-          } must not be empty.`;
+          throw `${variableName || "Provided variable"} must not be empty.`;
           throw errorObject;
         }
         inputRegExp =
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{4,20}$/;
         valid = inputRegExp.test(val);
         if (!valid && val) {
-          errorObject.error = `${
+          throw `${
             variableName || "Provided variable"
           }  must have a small letter, a capital letter, a digit and a special character and must have between 4-20 characters.`;
           throw errorObject;
@@ -63,22 +55,68 @@ const exportedMethods = {
 
       case "name":
         if (typeof val !== "string") {
-          errorObject.error = `${
-            variableName || "Provided variable"
-          } must be a string.`;
+          throw `${variableName || "Provided variable"} must be a string.`;
           throw errorObject;
         }
         val = val.trim();
         if (!val) {
-          errorObject.error = `${
-            variableName || "Provided variable"
-          } must not be empty.`;
+          throw `${variableName || "Provided variable"} must not be empty.`;
           throw errorObject;
         }
-        inputRegExp = /\d*[a-zA-Z][a-zA-Z0-9 ]*$/;
+        if (val.length > 15) {
+          throw `${
+            variableName || "Provided variable"
+          } must not exceed 15 characters.`;
+          throw errorObject;
+        }
+
+        inputRegExp = /\d*[a-zA-Z][a-zA-Z0-9. ]*$/;
         valid = inputRegExp.test(val);
         if (!valid) {
-          errorObject.error = `${
+          throw `${
+            variableName || "Provided variable"
+          }   must be a valid Name.`;
+          throw errorObject;
+        }
+        break;
+
+      case "image":
+      case "logo":
+        if (typeof val !== "string") {
+          throw `${variableName || "Provided variable"} must be a string.`;
+          throw errorObject;
+        }
+        val = val.trim();
+        if (!val) {
+          throw `${variableName || "Provided variable"} must not be empty.`;
+          throw errorObject;
+        }
+
+        inputRegExp = /\d*[a-zA-Z][a-zA-Z0-9. ]*$/;
+        valid = inputRegExp.test(val);
+        if (!valid) {
+          throw `${
+            variableName || "Provided variable"
+          }   must be a valid Name.`;
+          throw errorObject;
+        }
+        break;
+
+      case "proof":
+        if (typeof val !== "string") {
+          throw `${variableName || "Provided variable"} must be a string.`;
+          throw errorObject;
+        }
+        val = val.trim();
+        if (!val) {
+          throw `${variableName || "Provided variable"} must not be empty.`;
+          throw errorObject;
+        }
+
+        inputRegExp = /\d*[a-zA-Z][a-zA-Z0-9. ]*$/;
+        valid = inputRegExp.test(val);
+        if (!valid) {
+          throw `${
             variableName || "Provided variable"
           }   must be a valid Name.`;
           throw errorObject;
@@ -86,55 +124,104 @@ const exportedMethods = {
         break;
 
       case "age":
-        if (routeFlag) {
-          inputRegExp = /^[0-9]+$/;
-          valid = inputRegExp.test(val);
-          if (!valid) {
-            errorObject.error = `${
-              variableName || "Provided variable"
-            }   must be a valid Age.`;
-            throw errorObject;
-          }
-
-          val = parseInt(val);
-        }
-
-        if (isNaN(val)) {
-          errorObject.error = `${
+        if (typeof val !== "number" || isNaN(val)) {
+          throw `${
             variableName || "Provided variable"
-          }   must be a valid Age.`;
+          } must be a valid number.`;
           throw errorObject;
         }
-
         if (val < 13 || val > 120) {
-          errorObject.error = `${
+          throw `${
             variableName || "Provided variable"
-          }  must be a valid Age.`;
+          } must be between 13 and 120.`;
           throw errorObject;
         }
         break;
 
-      //   case "id":
-      //     if (typeof val !== "string") {
-      //       errorObject.error = `${
-      //         variableName || "Provided variable"
-      //       } must be a string.`;
-      //       throw errorObject;
-      //     }
-      //     val = val.trim();
-      //     if (!val) {
-      //       errorObject.error = `${
-      //         variableName || "Provided variable"
-      //       } must not be empty.`;
-      //       throw errorObject;
-      //     }
-      //     if (!ObjectId.isValid(val)) {
-      //       throw "Invalid Customer.";
-      //     }
-      //     break;
+      case "status":
+        if (typeof val !== "number" || isNaN(val)) {
+          throw `${
+            variableName || "Provided variable"
+          } must be a valid number.`;
+          throw errorObject;
+        }
+        if (val < 1 || val > 3) {
+          throw `${
+            variableName || "Provided variable"
+          } must be between 1 and 3.`;
+          throw errorObject;
+        }
+        break;
+
+      case "points":
+        if (typeof val !== "number" || isNaN(val)) {
+          throw `${
+            variableName || "Provided variable"
+          } must be a valid number.`;
+          throw errorObject;
+        }
+        if (val < 0 || val > 5) {
+          throw `${
+            variableName || "Provided variable"
+          }  must be a valid number.`;
+          throw errorObject;
+        }
+        break;
+
+      case "description":
+        if (typeof val !== "string") {
+          throw `${variableName || "Provided variable"} must be a string.`;
+          throw errorObject;
+        }
+        val = val.trim();
+        if (!val) {
+          throw `${variableName || "Provided variable"} must not be empty.`;
+          throw errorObject;
+        }
+        inputRegExp = /\d*[a-zA-Z][a-zA-Z0-9 ]*$/;
+        valid = inputRegExp.test(val);
+        if (!valid) {
+          throw `${
+            variableName || "Provided variable"
+          }   must be a valid description.`;
+          throw errorObject;
+        }
+        break;
+
+      case "max_allocation":
+        if (typeof val !== "number" || isNaN(val)) {
+          throw `${
+            variableName || "Provided variable"
+          } must be a valid number.`;
+          throw errorObject;
+        }
+        if (val <= 0 || val > 50) {
+          throw `${
+            variableName || "Provided variable"
+          } must be between 1 and 10.`;
+          throw errorObject;
+        }
+        break;
+
+      case "id":
+      case "coupon_id":
+      case "admin_id":
+      case "business_id":
+      case "proof_id":
+      case "customer_id":
+        if (typeof val !== "string") {
+          throw `${variableName || "Provided variable"} must be a string.`;
+          throw errorObject;
+        }
+        val = val.trim();
+        if (!val) {
+          throw `${variableName || "Provided variable"} must not be empty.`;
+          throw errorObject;
+        }
+        break;
 
       default:
-        errorObject.error = "Invalid Data encountered";
+        throw "Invalid Data encountered";
         throw errorObject;
     }
     return val;

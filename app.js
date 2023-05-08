@@ -16,6 +16,7 @@ app.use(
 		saveUninitialized: true,
 	})
 );
+app.use(express.static("client/src/images"));
 app.use(fileUpload());
 app.use(VerifyToken);
 

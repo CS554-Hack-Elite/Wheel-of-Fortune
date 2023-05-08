@@ -6,131 +6,160 @@ import fs from "fs";
 import { exec } from "child_process";
 
 router.route("/get-customer").get(async (req, res) => {
-	try {
-		let email = req.user && req.user.email ? req.user.email : "";
-		const user = await customerData.getCustomerByEmail(email);
-		res.status(200).json(user);
-	} catch (e) {
-		res.status(e.status ? e.status : 400).json({ message: e.message ? e.message : e });
-	}
+  try {
+    let email = req.user && req.user.email ? req.user.email : "";
+    const user = await customerData.getCustomerByEmail(email);
+    res.status(200).json(user);
+  } catch (e) {
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
+  }
 });
 
 router.route("/register").post(async (req, res) => {
-	try {
-		const errorObject = {
-			status: 400,
-		};
-		let result = req.body;
-		let objKeys = [];
-		if (result.google_authenticated && result.google_authenticated == 1) {
-			objKeys = ["email", "name"];
-		} else {
-			objKeys = ["email", "password", "name", "age"];
-		}
-		objKeys.forEach((element) => {
-			result[element] = helpers.checkInput(element, result[element], element + " of the customer", true);
-		});
-		const customerRow = await customerData.createCustomer(result);
+  try {
+    const errorObject = {
+      status: 400,
+    };
+    let result = req.body;
+    let objKeys = [];
+    if (result.google_authenticated && result.google_authenticated == 1) {
+      objKeys = ["email", "name"];
+    } else {
+      objKeys = ["email", "password", "name", "age"];
+    }
+    objKeys.forEach((element) => {
+      result[element] = helpers.checkInput(
+        element,
+        result[element],
+        element + " of the customer",
+        true
+      );
+    });
+    const customerRow = await customerData.createCustomer(result);
 
-		return res.status(200).json({ data: customerRow });
-	} catch (e) {
-		res.status(e.status ? e.status : 400).json({ message: e.message ? e.message : e });
-	}
+    return res.status(200).json({ data: customerRow });
+  } catch (e) {
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
+  }
 });
 
 router.route("/business-list").get(async (req, res) => {
-	try {
-		const errorObject = {
-			status: 400,
-		};
-		const businessList = await businessData.getBusinessList();
-		return res.status(200).json({
-			businessData: businessList,
-		});
-	} catch (e) {
-		res.status(e.status ? e.status : 400).json({ message: e.message ? e.message : e });
-	}
+  try {
+    const errorObject = {
+      status: 400,
+    };
+    const businessList = await businessData.getBusinessList();
+    return res.status(200).json({
+      businessData: businessList,
+    });
+  } catch (e) {
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
+  }
 });
 
 router.route("/update-points").post(async (req, res) => {
-	try {
-		const errorObject = {
-			status: 400,
-		};
-		let result = req.body;
-		let objKeys = [];
-		let email = req.user && req.user.email ? req.user.email : "";
-		result.email = email;
-		objKeys = ["coupon_id", "email"];
-		objKeys.forEach((element) => {
-			result[element] = helpers.checkInput(element, result[element], element + " for the proof");
-		});
+  try {
+    const errorObject = {
+      status: 400,
+    };
+    let result = req.body;
+    let objKeys = [];
+    let email = req.user && req.user.email ? req.user.email : "";
+    result.email = email;
+    objKeys = ["coupon_id", "email"];
+    objKeys.forEach((element) => {
+      result[element] = helpers.checkInput(
+        element,
+        result[element],
+        element + " for the proof"
+      );
+    });
 
-		const updatedCustomerRow = await customerData.updatePoints(result);
-		return res.status(200).json({ customer: updatedCustomerRow });
-	} catch (e) {
-		res.status(e.status ? e.status : 400).json({ message: e.message ? e.message : e });
-	}
+    const updatedCustomerRow = await customerData.updatePoints(result);
+    return res.status(200).json({ customer: updatedCustomerRow });
+  } catch (e) {
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
+  }
 });
 
 router.route("/coupons").get(async (req, res) => {
-	try {
-		const errorObject = {
-			status: 400,
-		};
+  try {
+    const errorObject = {
+      status: 400,
+    };
 
-		const availableCouponsList = await couponsData.getAvailableCoupons();
+    const availableCouponsList = await couponsData.getAvailableCoupons();
 
-		return res.status(200).json({
-			availableCoupons: availableCouponsList,
-		});
-	} catch (e) {
-		res.status(e.status ? e.status : 400).json({ message: e.message ? e.message : e });
-	}
+    return res.status(200).json({
+      availableCoupons: availableCouponsList,
+    });
+  } catch (e) {
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
+  }
 });
 
 router.route("/upload-proof").post(async (req, res) => {
-	try {
-		const errorObject = {
-			status: 400,
-		};
-		let result = {};
-		let objKeys = [];
-		const imageData = req.files.proof.data; // Assuming you're using express-fileupload
-		const outputDirectory = "client/images/proof";
-		const outputFileName = Date.now() + "-" + req.files.proof.name;
-		const width = 200;
+  try {
+    const errorObject = {
+      status: 400,
+    };
+    if (!req.files || !req.files.proof) {
+      errorObject.message = "Please upload image for proof";
+      throw errorObject;
+    }
+    let result = {};
+    let objKeys = [];
+    const imageData = req.files.proof.data; // Assuming you're using express-fileupload
+    const outputDirectory = "client/images/proof";
+    const outputFileName = Date.now() + "-" + req.files.proof.name;
+    const width = 200;
 
-		// Write the image data to a file
-		const outputFilePath = `${outputDirectory}/${outputFileName}`;
-		fs.writeFileSync(outputFilePath, imageData);
+    // Write the image data to a file
+    const outputFilePath = `${outputDirectory}/${outputFileName}`;
+    fs.writeFileSync(outputFilePath, imageData);
 
-		// Build the command to resize the image
-		const command = `magick convert "${outputFilePath}" -resize ${width} "${outputFilePath}"`;
+    // Build the command to resize the image
+    const command = `magick  convert "${outputFilePath}" label:Wheel_of_Fortune -gravity Center -append "${outputFilePath}"`;
 
-		// Run the command using exec
-		exec(command, (error, stdout, stderr) => {
-			if (error) {
-				errorObject.message = `exec error: ${error}`;
-				throw errorObject;
-			}
-		});
+    // Run the command using exec
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        errorObject.message = `exec error: ${error.toString()}`;
+        console.log(errorObject);
+      }
+    });
 
-		result = req.body;
-		result.proof = outputFileName;
-		let email = req.user && req.user.email ? req.user.email : "";
-		result.email = email;
-		objKeys = ["business_id", "email", "proof"];
+    result = req.body;
+    result.proof = outputFileName;
+    let email = req.user && req.user.email ? req.user.email : "";
+    result.email = email;
+    objKeys = ["business_id", "email", "proof"];
 
-		objKeys.forEach((element) => {
-			result[element] = helpers.checkInput(element, result[element], element + " for the proof");
-		});
-		const updatedCustomerRow = await customerData.uploadProof(result);
-		return res.status(200).json({ customer: updatedCustomerRow });
-	} catch (e) {
-		console.log(e);
-		res.status(e.status ? e.status : 400).json({ message: e.message ? e.message : e });
-	}
+    objKeys.forEach((element) => {
+      result[element] = helpers.checkInput(
+        element,
+        result[element],
+        element + " for the proof"
+      );
+    });
+    const updatedCustomerRow = await customerData.uploadProof(result);
+    return res.status(200).json({ customer: updatedCustomerRow });
+  } catch (e) {
+    console.log(e);
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
+  }
 });
 
 export default router;

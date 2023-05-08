@@ -39,7 +39,7 @@ export const CustomerCoupons = () => {
 			return coupons.map((coupon) => {
 				return (
 					<div key={coupon._id} className="coupon col-span-1 bg-indigo-800 text-slate-200 rounded-lg my-4 overflow-x-auto">
-						<div className="flex justify-center pt-2 text-xl">{coupon.business_name}</div>
+						<div className="flex justify-center pt-2 text-xl">{coupon.name}</div>
 						<span>
 							<div className="px-4 py-2 text-lg">Offer: {coupon.coupon_name}</div>
 						</span>

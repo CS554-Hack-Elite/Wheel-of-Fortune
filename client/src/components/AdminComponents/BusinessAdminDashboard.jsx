@@ -148,8 +148,10 @@ export const BusinessAdminDashboard = () => {
     setRequestDetails(customerRequest);
   };
 
-  const logoutAdmin = () => {
+  const logoutAdmin = async () => {
     // TODO: send logout to server
+    await axios.get("/admin/logout");
+
     localStorage.removeItem("adminToken");
     localStorage.removeItem("businessAdminToken");
     navigate("/admin-login");

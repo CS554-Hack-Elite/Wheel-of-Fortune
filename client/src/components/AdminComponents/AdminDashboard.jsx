@@ -22,8 +22,8 @@ export const AdminDashboard = () => {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
   const [loading, setLoading] = useState(true);
-  // const [errorModal, setErrorModal] = useState(false);
-  // const [errorMessage, setErrorMessage] = useState("");
+  const [errorModal, setErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   // individual states
 
@@ -165,8 +165,10 @@ export const AdminDashboard = () => {
     return allBusinesses;
   };
 
-  const logoutAdmin = () => {
+  const logoutAdmin = async () => {
     // TODO: send logout to server
+
+    await axios.get("/admin/logout");
     clearLocalTokens();
     navigate("/admin-login");
   };

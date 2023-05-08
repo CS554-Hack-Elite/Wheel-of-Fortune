@@ -4,8 +4,6 @@ import { Button } from "../Reusables/Button";
 import { Error } from "../Reusables/Error";
 
 export const DeleteBusinessConfirmationModal = ({ business, setOpenModal }) => {
-  console.log(business);
-
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 

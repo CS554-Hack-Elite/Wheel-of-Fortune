@@ -13,7 +13,10 @@ import { ImageView } from "../Reusables/ImageView";
 export const BusinessAdminDashboard = () => {
   const navigate = useNavigate();
 
-  const [business, setBusiness] = useState({});
+  const businessToken = localStorage.getItem("businessAdminToken");
+  if (!businessToken) navigate("/admin-login");
+  const parsedToken = JSON.parse(businessToken);
+  const [business, setBusiness] = useState(parsedToken.businessAdmin);
 
   const [openModal, setOpenModal] = useState(false);
   const [pointsModal, setPointsModal] = useState(false);
@@ -31,15 +34,15 @@ export const BusinessAdminDashboard = () => {
   const [requestsNotFound, setRequestsNotFound] = useState(true);
   const [couponsNotFound, setCouponsNotFound] = useState(true);
 
-  const buildLocalToken = () => {
-    const businessToken = localStorage.getItem("businessAdminToken");
-    console.log(businessToken);
-    if (!businessToken) navigate("/admin-login");
-    else {
-      const parsedToken = JSON.parse(businessToken);
-      setBusiness(parsedToken.businessAdmin);
-    }
-  };
+  // const buildLocalToken = () => {
+  //   const businessToken = localStorage.getItem("businessAdminToken");
+  //   console.log(businessToken);
+  //   if (!businessToken) navigate("/admin-login");
+  //   else {
+  //     const parsedToken = JSON.parse(businessToken);
+  //     setBusiness(parsedToken.businessAdmin);
+  //   }
+  // };
 
   // console.log(business);
 
@@ -288,10 +291,6 @@ export const BusinessAdminDashboard = () => {
     }
     return allCoupons;
   };
-
-  useEffect(() => {
-    buildLocalToken();
-  }, []);
 
   useEffect(() => {
     getData();

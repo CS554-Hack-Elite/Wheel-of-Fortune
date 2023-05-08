@@ -5,16 +5,18 @@ import { VerifyToken } from "./middlewares/auth.js";
 import dotenv from "dotenv";
 dotenv.config();
 import session from "express-session";
+import bodyParser from "body-parser";
+import fileUpload from "express-fileupload";
 
 app.use(
   session({
-	name: "AuthCookie",
+    name: "AuthCookie",
     secret: "some secret string!",
     resave: false,
     saveUninitialized: true,
   })
 );
-
+app.use(fileUpload());
 app.use(VerifyToken);
 
 app.use(express.json());

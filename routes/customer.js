@@ -2,167 +2,167 @@ import { Router } from "express";
 const router = Router();
 import { customerData, couponsData, businessData } from "../data/index.js";
 import helpers from "../helpers/customerHelper.js";
-import im from "imagemagick";
-import gm from "gm";
 import fs from "fs";
-import multer from "multer";
-import imagemagick from "imagemagick";
-import bodyParser from "body-parser";
-import path from "path";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
 import { exec } from "child_process";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-gm.subClass({ imageMagick: true });
-
-const storage = multer.diskStorage({
-	destination: function (req, file, cb) {
-		cb(null, "uploads");
-	},
-	filename: function (req, file, cb) {
-		cb(null, file.fieldname + "-" + Date.now() + path.extname(file.originalname));
-	},
-});
-// Set up multer to handle multipart/form-data
-const upload = multer({ storage: storage }).single("proof");
-
 router.route("/get-customer").get(async (req, res) => {
-	try {
-		let email = req.user && req.user.email ? req.user.email : "";
-		const user = await customerData.getCustomerByEmail(email);
-		res.status(200).json(user);
-	} catch (e) {
-		res.status(e.status ? e.status : 400).json({ message: e.message ? e.message : e });
-	}
+  try {
+    let email = req.user && req.user.email ? req.user.email : "";
+    const user = await customerData.getCustomerByEmail(email);
+    res.status(200).json(user);
+  } catch (e) {
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
+  }
 });
 
 router.route("/register").post(async (req, res) => {
-	try {
-		const errorObject = {
-			status: 400,
-		};
-		let result = req.body;
-		let objKeys = [];
-		if (result.google_authenticated && result.google_authenticated == 1) {
-			objKeys = ["email", "name"];
-		} else {
-			objKeys = ["email", "password", "name", "age"];
-		}
-		objKeys.forEach((element) => {
-			result[element] = helpers.checkInput(element, result[element], element + " of the customer", true);
-		});
-		const customerRow = await customerData.createCustomer(result);
+  try {
+    const errorObject = {
+      status: 400,
+    };
+    let result = req.body;
+    let objKeys = [];
+    if (result.google_authenticated && result.google_authenticated == 1) {
+      objKeys = ["email", "name"];
+    } else {
+      objKeys = ["email", "password", "name", "age"];
+    }
+    objKeys.forEach((element) => {
+      result[element] = helpers.checkInput(
+        element,
+        result[element],
+        element + " of the customer",
+        true
+      );
+    });
+    const customerRow = await customerData.createCustomer(result);
 
-		return res.status(200).json({ data: customerRow });
-	} catch (e) {
-		res.status(e.status ? e.status : 400).json({ message: e.message ? e.message : e });
-	}
+    return res.status(200).json({ data: customerRow });
+  } catch (e) {
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
+  }
 });
 
 router.route("/business-list").get(async (req, res) => {
-	try {
-		const errorObject = {
-			status: 400,
-		};
-		const businessList = await businessData.getBusinessList();
-		return res.status(200).json({
-			businessData: businessList,
-		});
-	} catch (e) {
-		res.status(e.status ? e.status : 400).json({ message: e.message ? e.message : e });
-	}
+  try {
+    const errorObject = {
+      status: 400,
+    };
+    const businessList = await businessData.getBusinessList();
+    return res.status(200).json({
+      businessData: businessList,
+    });
+  } catch (e) {
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
+  }
 });
 
 router.route("/update-points").post(async (req, res) => {
-	try {
-		const errorObject = {
-			status: 400,
-		};
-		let result = req.body;
-		let objKeys = [];
-		let email = req.user && req.user.email ? req.user.email : "";
-		result.email = email;
-		objKeys = ["coupon_id", "email"];
-		objKeys.forEach((element) => {
-			result[element] = helpers.checkInput(element, result[element], element + " for the proof");
-		});
+  try {
+    const errorObject = {
+      status: 400,
+    };
+    let result = req.body;
+    let objKeys = [];
+    let email = req.user && req.user.email ? req.user.email : "";
+    result.email = email;
+    objKeys = ["coupon_id", "email"];
+    objKeys.forEach((element) => {
+      result[element] = helpers.checkInput(
+        element,
+        result[element],
+        element + " for the proof"
+      );
+    });
 
-		const updatedCustomerRow = await customerData.updatePoints(result);
-		return res.status(200).json({ customer: updatedCustomerRow });
-	} catch (e) {
-		res.status(e.status ? e.status : 400).json({ message: e.message ? e.message : e });
-	}
+    const updatedCustomerRow = await customerData.updatePoints(result);
+    return res.status(200).json({ customer: updatedCustomerRow });
+  } catch (e) {
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
+  }
 });
 
 router.route("/coupons").get(async (req, res) => {
-	try {
-		const errorObject = {
-			status: 400,
-		};
+  try {
+    const errorObject = {
+      status: 400,
+    };
 
-		const availableCouponsList = await couponsData.getAvailableCoupons();
+    const availableCouponsList = await couponsData.getAvailableCoupons();
 
-		return res.status(200).json({
-			availableCoupons: availableCouponsList,
-		});
-	} catch (e) {
-		res.status(e.status ? e.status : 400).json({ message: e.message ? e.message : e });
-	}
+    return res.status(200).json({
+      availableCoupons: availableCouponsList,
+    });
+  } catch (e) {
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
+  }
 });
 
 router.route("/upload-proof").post(async (req, res) => {
-	try {
-		const errorObject = {
-			status: 400,
-		};
-		upload(req, res, async (err) => {
-			if (err) {
-				console.log("ERRORORROROR" + err);
-			} else {
-				exec(`magick width 200 height 200 -scale 10% -scale 1000% ${req.file.path} output.png`, (error, stdout, stderr) => {
-					if (error) {
-						console.log(`error: ${error.message}`);
-					}
-				});
-			}
-		});
-		let result = req.body;
-		let objKeys = [];
-		let email = req.user && req.user.email ? req.user.email : "";
-		result.email = email;
-		objKeys = ["business_id", "email"];
+  try {
+    const errorObject = {
+      status: 400,
+    };
+    let result = {};
+    let objKeys = [];
+    const imageData = req.files.proof.data; // Assuming you're using express-fileupload
+    const outputDirectory = "client/images/proof";
+    const outputFileName = Date.now() + "-" + req.files.proof.name;
+    const width = 200;
+    if (!fs.existsSync(outputDirectory)) {
+      await fs.mkdir(outputDirectory, { recursive: true }, (err) => {
+        if (err) {
+          errorObject.message = "File Upload Error";
+          throw errorObject;
+        }
+      });
+    }
+    // Write the image data to a file
+    const outputFilePath = `${outputDirectory}/${outputFileName}`;
+    fs.writeFileSync(outputFilePath, imageData);
 
-		objKeys.forEach((element) => {
-			result[element] = helpers.checkInput(element, result[element], element + " for the proof");
-		});
+    // Build the command to resize the image
+    const command = `magick convert "${outputFilePath}" -resize ${width} "${outputFilePath}"`;
 
-		if (!req.file) {
-			console.log("UPLOAD IMAGE");
-		}
-		// gm(req.file.path).write("output.jpg", function (err) {
-		// 	if (err) {
-		// 		console.log("ERRORR" + err);
-		// 	}
-		// });
+    // Run the command using exec
+    await exec(command, (error, stdout, stderr) => {
+      if (error) {
+        errorObject.message = `exec error: ${error}`;
+        throw errorObject;
+      }
+    });
 
-		const srcPath = path.resolve(__dirname, "../uploads/proof-1683507064485.png");
-		const dstPath = path.resolve(__dirname, "../uploads/proof-16835035-resize.png");
-		// gm(srcPath)
-		// 	.resize(200, 200)
-		// 	.write(dstPath, function (err) {
-		// 		if (err) {
-		// 			console.log(err);
-		// 		} else {
-		// 			console.log("Image resized successfully");
-		// 		}
-		// 	});
-		const updatedCustomerRow = await customerData.uploadProof(result);
-		return res.status(200).json({ customer: updatedCustomerRow });
-	} catch (e) {
-		console.log(e);
-		res.status(e.status ? e.status : 400).json({ message: e.message ? e.message : e });
-	}
+    result = req.body;
+    result.proof = outputFileName;
+    let email = req.user && req.user.email ? req.user.email : "";
+    result.email = email;
+    objKeys = ["business_id", "email", "proof"];
+
+    objKeys.forEach((element) => {
+      result[element] = helpers.checkInput(
+        element,
+        result[element],
+        element + " for the proof"
+      );
+    });
+    const updatedCustomerRow = await customerData.uploadProof(result);
+    return res.status(200).json({ customer: updatedCustomerRow });
+  } catch (e) {
+    console.log(e);
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
+  }
 });
 
 export default router;

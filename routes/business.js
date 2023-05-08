@@ -51,7 +51,6 @@ router.route("/generate_coupon").post(async (req, res) => {
     let objKeys = [
       "name",
       "description",
-      "image",
       "max_allocation",
       "business_id",
     ];
@@ -127,11 +126,11 @@ router.route("/create").post(async (req, res) => {
     const errorObject = {
       status: 400,
     };
-    if (!req.files || !req.files.business) {
+    if (!req.files || !req.files.logo) {
       errorObject.message = "Please upload image for business";
       throw errorObject;
     }
-    const imageData = req.files.business.data; // Assuming you're using express-fileupload
+    const imageData = req.files.logo.data; // Assuming you're using express-fileupload
     const outputDirectory = "client/images/business_logo";
     const outputFileName = Date.now() + "-" + req.files.logo.name;
     const width = 200;
@@ -158,7 +157,7 @@ router.route("/create").post(async (req, res) => {
     });
     let result = req.body;
     result.logo = outputFileName;
-    let objKeys = ["name", "logo"];
+    let objKeys = ["name"];
     objKeys.forEach((element) => {
       result[element] = helpers.checkInput(
         element,
@@ -168,7 +167,7 @@ router.route("/create").post(async (req, res) => {
       );
     });
     businessData = await businessData.createBusiness(result);
-    objKeys = ["email", "password", "name", "age"];
+    objKeys = ["email", "password", "age"];
     objKeys.forEach((element) => {
       result[element] = helpers.checkInput(
         element,

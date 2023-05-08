@@ -16,7 +16,7 @@ const exportedMethods = {
     const errorObject = {
       status: 400,
     };
-    let objKeys = ["name", "logo"];
+    let objKeys = ["name"];
     objKeys.forEach((element) => {
       result[element] = helpers.checkInput(
         element,

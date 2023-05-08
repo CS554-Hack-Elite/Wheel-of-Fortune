@@ -66,7 +66,7 @@ router.route("/business-list").get(async (req, res) => {
   }
 });
 
-router.route("/update-points").post(async (req, res) => {
+router.route("/update-points").get(async (req, res) => {
   try {
     const errorObject = {
       status: 400,
@@ -112,7 +112,7 @@ router.route("/coupons").get(async (req, res) => {
   }
 });
 
-router.route("/upload-proof").get(async (req, res) => {
+router.route("/upload-proof").post(async (req, res) => {
   try {
     const errorObject = {
       status: 400,

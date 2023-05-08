@@ -7,9 +7,22 @@ import gm from "gm";
 import fs from "fs";
 import multer from "multer";
 import convert from "imagemagick";
+import bodyParser from "body-parser";
+import path from "path";
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads");
+  },
+  filename: function (req, file, cb) {
+    cb(
+      null,
+      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+    );
+  },
+});
 // Set up multer to handle multipart/form-data
-const upload = multer({ dest: "public/images/" });
+const upload = multer({ storage: storage });
 
 router.route("/get-customer").get(async (req, res) => {
   try {
@@ -46,36 +59,6 @@ router.route("/register").post(async (req, res) => {
     const customerRow = await customerData.createCustomer(result);
 
     return res.status(200).json({ data: customerRow });
-  } catch (e) {
-    res
-      .status(e.status ? e.status : 400)
-      .json({ message: e.message ? e.message : e });
-  }
-});
-
-router.route("/upload-proof").post(upload.single("proof"), async (req, res) => {
-  try {
-    const errorObject = {
-      status: 400,
-    };
-    let result = req.body;
-    let objKeys = [];
-    let email = req.user && req.user.email ? req.user.email : "";
-    result.email = email;
-    objKeys = ["business_id", "email"];
-
-    objKeys.forEach((element) => {
-      result[element] = helpers.checkInput(
-        element,
-        result[element],
-        element + " for the proof"
-      );
-    });
-
-    const { path, filename } = req.file;
-    await convert(path, ["-resize", "200x200", `uploads/${filename}`]);
-    const updatedCustomerRow = await customerData.uploadProof(result);
-    return res.status(200).json({ customer: updatedCustomerRow });
   } catch (e) {
     res
       .status(e.status ? e.status : 400)
@@ -138,6 +121,43 @@ router.route("/coupons").get(async (req, res) => {
       availableCoupons: availableCouponsList,
     });
   } catch (e) {
+    res
+      .status(e.status ? e.status : 400)
+      .json({ message: e.message ? e.message : e });
+  }
+});
+
+router.route("/upload-proof").post(upload.single("proof"), async (req, res) => {
+  try {
+    const errorObject = {
+      status: 400,
+    };
+    let result = req.body;
+    let objKeys = [];
+    let email = req.user && req.user.email ? req.user.email : "";
+    result.email = email;
+    objKeys = ["business_id", "email"];
+
+    objKeys.forEach((element) => {
+      result[element] = helpers.checkInput(
+        element,
+        result[element],
+        element + " for the proof"
+      );
+    });
+
+    if (!req.file) {
+      console.log("UPLOAD IMAGE");
+    }
+    gm(req.file.path).write("output.jpg", function (err) {
+      if (err) {
+        console.log("ERRORR" + err);
+      }
+    });
+    const updatedCustomerRow = await customerData.uploadProof(result);
+    return res.status(200).json({ customer: updatedCustomerRow });
+  } catch (e) {
+    console.log(e);
     res
       .status(e.status ? e.status : 400)
       .json({ message: e.message ? e.message : e });

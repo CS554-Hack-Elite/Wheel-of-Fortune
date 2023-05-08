@@ -196,6 +196,7 @@ export const CustomerProof = () => {
 
 		try {
 			const payloadHeader = await buildToken();
+			payloadHeader.headers["Content-Type"] = "multipart/form-data";
 			const res = await axios.post("/users/upload-proof", formData, payloadHeader);
 			// console.log(res);
 			setBusinessId(null);

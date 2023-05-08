@@ -5,16 +5,19 @@ import { VerifyToken } from "./middlewares/auth.js";
 import dotenv from "dotenv";
 dotenv.config();
 import session from "express-session";
+import bodyParser from "body-parser";
 
 app.use(
   session({
-	name: "AuthCookie",
+    name: "AuthCookie",
     secret: "some secret string!",
     resave: false,
     saveUninitialized: true,
   })
 );
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(VerifyToken);
 
 app.use(express.json());

@@ -18,6 +18,33 @@ router.route("/generate_coupon").post(async (req, res) => {
       errorObject.message = "Unauthorized Access";
       throw errorObject;
     }
+    if (!req.files || !req.files.image) {
+      errorObject.message = "Please upload image for coupon";
+      throw errorObject;
+    }
+    const imageData = req.files.image.data; // Assuming you're using express-fileupload
+    const outputDirectory = "client/images/coupon_logo";
+    const outputFileName = Date.now() + "-" + req.files.image.name;
+    const width = 200;
+
+
+
+    const outputFilePath = `${outputDirectory}/${outputFileName}`;
+    fs.writeFileSync(outputFilePath, imageData);
+
+    // Build the command to resize the image
+    const command = `magick convert "${outputFilePath}" -resize ${width} "${outputFilePath}"`;
+
+    // Run the command using exec
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        errorObject.message = `exec error: ${error}`;
+        throw errorObject;
+      }
+    });
+
+    result.image = outputFileName;
+
     let result = req.body;
 
     let objKeys = [
@@ -99,6 +126,14 @@ router.route("/create").post(async (req, res) => {
     const errorObject = {
       status: 400,
     };
+    if (!req.files || !req.files.business) {
+      errorObject.message = "Please upload image for business";
+      throw errorObject;
+    }
+    const imageData = req.files.business.data; // Assuming you're using express-fileupload
+    const outputDirectory = "client/images/business_logo";
+    const outputFileName = Date.now() + "-" + req.files.logo.name;
+    const width = 200;
     if (
       !req.session.admin_role ||
       !req.session.admin_role == process.env.MASTER_ADMIN_ROLE
@@ -107,7 +142,21 @@ router.route("/create").post(async (req, res) => {
       errorObject.message = "Unauthorized Access";
       throw errorObject;
     }
+    const outputFilePath = `${outputDirectory}/${outputFileName}`;
+    fs.writeFileSync(outputFilePath, imageData);
+
+    // Build the command to resize the image
+    const command = `magick convert "${outputFilePath}" -resize ${width} "${outputFilePath}"`;
+
+    // Run the command using exec
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        errorObject.message = `exec error: ${error}`;
+        throw errorObject;
+      }
+    });
     let result = req.body;
+    result.logo = outputFileName;
     let objKeys = ["name", "logo"];
     objKeys.forEach((element) => {
       result[element] = helpers.checkInput(

@@ -115,6 +115,10 @@ router.route("/upload-proof").post(async (req, res) => {
     };
     let result = {};
     let objKeys = [];
+    if (!req.files || !req.files.proof) {
+      errorObject.message = "Please upload image for proof";
+      throw errorObject;
+    }
     const imageData = req.files.proof.data; // Assuming you're using express-fileupload
     const outputDirectory = "client/images/proof";
     const outputFileName = Date.now() + "-" + req.files.proof.name;

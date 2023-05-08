@@ -129,7 +129,6 @@ const exportedMethods = {
     // await sgMail.send(msg);
 
     let objKeys = [];
-    result.proof = "abc";
     objKeys = ["business_id", "proof", "email"];
     objKeys.forEach((element) => {
       result[element] = helpers.checkInput(

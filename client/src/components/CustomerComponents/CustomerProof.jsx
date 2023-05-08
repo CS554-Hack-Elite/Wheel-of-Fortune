@@ -71,24 +71,13 @@ export const CustomerProof = () => {
 			return proofList.map((proof) => {
 				return (
 					<div key={proof.name} className="h-fit col-span-1 coupon bg-indigo-800 text-slate-200 rounded-lg my-4">
-						{/* {console.log("proof", proof)} */}
-						<div
-							to="https://placehold.co/3000@3x?text=No+Image+Available&font=open-sans"
-							className="imageOverview cursor-pointer"
-							onClick={() => {
-								setReceiptViewSrc("https://placehold.co/300@3x?text=No+Image+Available&font=open-sans");
-								setReceiptView(true);
-							}}
-						>
-							{/* {proof.image ? proof.image : "https://placehold.co/300@3x?text=No+Image+Available&font=open-sans"} */}
-							{
-								<img
-									src={"https://placehold.co/300@3x?text=No+Image+Available&font=open-sans"}
-									className="h-60 w-full object-cover rounded-t-lg"
-									alt={proof.name}
-								/>
-							}
-						</div>
+						{/* {console.log("PUBLIC URL :", process.env.PUBLIC_URL)}
+						{console.log("PRocess.env: ", process.env)} */}
+						{proof.proof && proof.proof.length > 0 ? (
+							<img src={`../../../images/proof/${proof.proof}`} className="w-full" alt={proof.coupon_name} />
+						) : (
+							<img src="https://placehold.co/3000@3x?text=No+Image+Available&font=open-sans" alt={proof.coupon_name} />
+						)}
 						<div className="flex justify-center pb-2 pt-2 text-xl">Uploaded for: {getBusinessName(proof.business_id)}</div>
 						<div className="proofStatus px-4 py-2">
 							Current status:{" "}
@@ -193,11 +182,15 @@ export const CustomerProof = () => {
 		const formData = new FormData();
 		formData.append("business_id", businessId);
 		formData.append("proof", uploadedImage);
+		console.log(uploadedImage);
+		console.log(formData);
 
 		try {
 			const payloadHeader = await buildToken();
+			payloadHeader.headers["Content-Type"] = "multipart/form-data";
+			console.log(payloadHeader);
 			const res = await axios.post("/users/upload-proof", formData, payloadHeader);
-			// console.log(res);
+			console.log(res);
 			setBusinessId(null);
 			setUploadedImage(null);
 			// console.log(businessId);

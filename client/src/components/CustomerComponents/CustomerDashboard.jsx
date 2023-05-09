@@ -33,17 +33,14 @@ export const CustomerDashboard = () => {
 				for (let coupon of response.data.availableCoupons) {
 					wheelCouponNames.push({ option: coupon.name.toString() });
 				}
-				console.log(response.data.availableCoupons);
 				setCoupons(response.data.availableCoupons);
 			}
 			setCouponOptions(wheelCouponNames);
-			console.log("coupons", wheelCouponNames);
 			setLoading(false);
 		} catch (e) {
 			setLoading(false);
 			setErrorModal(true);
-			setErrorMessage(e && e.error ? e.error : e.toString());
-			console.log(e);
+			setErrorMessage(e && e.response && e.response.data ? e.response.data.message : e.toString());
 		}
 	}
 	useEffect(() => {
@@ -65,8 +62,7 @@ export const CustomerDashboard = () => {
 		} catch (e) {
 			setLoading(false);
 			setErrorModal(true);
-			setErrorMessage(e && e.data && e.data.error ? e.data.error : e.toString());
-			console.log(e);
+			setErrorMessage(e && e.response && e.response.data ? e.response.data.message : e.toString());
 		}
 	}
 	useEffect(() => {
@@ -76,8 +72,6 @@ export const CustomerDashboard = () => {
 	const handleSpinClick = () => {
 		if (!mustSpin) {
 			const newPrizeNumber = Math.floor(Math.random() * couponOptions.length);
-			console.log("newPrizeNumber", newPrizeNumber);
-			console.log("couponsObjects", coupons);
 			if (isNaN(newPrizeNumber)) {
 				setPrizeNumber(1);
 			} else {
@@ -109,7 +103,6 @@ export const CustomerDashboard = () => {
 							setMustSpin(false);
 							setAllowSpin(false);
 							setReward(data[prizeNumber]);
-							console.log("prize number id", prizeNumberId);
 							try {
 								const payloadHeader = await buildToken();
 								await axios.post("/users/update-points", { coupon_id: prizeNumberId }, payloadHeader);
@@ -118,8 +111,7 @@ export const CustomerDashboard = () => {
 							} catch (e) {
 								setLoading(false);
 								setErrorModal(true);
-								setErrorMessage(e && e.error ? e.error : e.toString());
-								console.log(e);
+								setErrorMessage(e && e.response && e.response.data ? e.response.data.message : e.toString());
 							}
 							setShowReward(true);
 						}}
@@ -182,7 +174,6 @@ export const CustomerDashboard = () => {
 				</CreateModal>
 				<div className="grid lg:grid-cols-2 gap-5 p-4">
 					<StastisticsCard value={customerDetails.points && customerDetails.points ? customerDetails.points : 0} title="Points"></StastisticsCard>
-					{console.log("customer points", customerDetails.points)}
 					<StastisticsCard
 						value={customerDetails.coupons && customerDetails.coupons ? customerDetails.coupons.length : "N/A"}
 						title="Total Coupons Won"
@@ -191,7 +182,6 @@ export const CustomerDashboard = () => {
 
 				<div className="h-[85vh] pt-4 px-4 pb-0 grid grid-cols-1 gap-4">
 					<div className="max-w-full col-span-1 p-4 h-full rounded-lg bg-white bg-opacity-40 overflow-x-auto">
-						{console.log(customerDetails)}
 						<div className="flex justify-center text-3xl font-medium text-indigo-600 p-2">Spin the Wheel:</div>
 						<div className="wheel flex justify-center mt-10">{couponOptions && handleWheel(couponOptions)}</div>
 						<TimeoutComponent show={showReward} setShow={setShowReward} seconds={3000}>

@@ -45,7 +45,6 @@ router.route("/generate_coupon").post(async (req, res) => {
         throw errorObject;
       }
     });
-
     let result = req.body;
     result.image = outputFileName;
     result.max_allocation = parseInt(result.max_allocation);

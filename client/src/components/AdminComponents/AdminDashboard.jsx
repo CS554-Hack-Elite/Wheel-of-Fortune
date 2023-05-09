@@ -100,14 +100,32 @@ export const AdminDashboard = () => {
     setOpenDeleteModal(true);
   };
 
+  const checkImageExists = (image) => {
+    try {
+      require("../../../images/coupon_logo/" + image);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
   const buildCouponCard = (coupon) => {
     return (
       <li className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
-        <div className="bg-teal-100 rounded-lg p-5">
-          <img
-            src="../public/img/solar.svg"
-            className="text-purple-800 w-[40px]"
-          />
+        <div className="w-14 h-14">
+          {coupon.image && checkImageExists(coupon.image) ? (
+            <img
+              src={require("../../../images/coupon_logo/" + coupon.image)}
+              className="w-full h-14 object-cover rounded-lg hover:pointer"
+              alt={coupon.name}
+            />
+          ) : (
+            <img
+              src="https://placehold.co/320@3x?text=Image+Unavailable&font=open-sans"
+              className="w-full h-14 object-cover rounded-lg"
+              alt={coupon.name}
+            />
+          )}
         </div>
         <div className="pl-4">
           <p className="text-gray-800 font-bold">{coupon.name} </p>
@@ -132,14 +150,33 @@ export const AdminDashboard = () => {
     return allCoupons;
   };
 
+  const checkBusinessExists = (image) => {
+    try {
+      require("../../../images/business_logo/" + image);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
   const buildbusinessCard = (business) => {
+    console.log(business);
     return (
       <li className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
-        <div className="bg-teal-100 rounded-lg p-5">
-          <img
-          // src={"../images/1683567288478-AOT.jpg"}
-          // className="text-purple-800 w-[40px]"
-          />
+        <div className="w-14 h-14">
+          {business.logo && checkBusinessExists(business.logo) ? (
+            <img
+              src={require("../../../images/business_logo/" + business.logo)}
+              className="w-full h-14 object-cover rounded-lg hover:pointer"
+              alt={business.name}
+            />
+          ) : (
+            <img
+              src="https://placehold.co/320@3x?text=Image+Unavailable&font=open-sans"
+              className="w-full h-14 object-cover rounded-lg"
+              alt={business.name}
+            />
+          )}
         </div>
         <div className="pl-4">
           <p className="text-gray-800 font-bold">{business.name} </p>

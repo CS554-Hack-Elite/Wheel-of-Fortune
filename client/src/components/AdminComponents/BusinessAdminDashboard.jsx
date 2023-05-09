@@ -18,6 +18,8 @@ export const BusinessAdminDashboard = () => {
   const parsedToken = JSON.parse(businessToken);
   const [business, setBusiness] = useState(parsedToken.businessAdmin);
 
+  // console.log(parsedToken);
+
   const [openModal, setOpenModal] = useState(false);
   const [pointsModal, setPointsModal] = useState(false);
   const [requests, setRequests] = useState([]);
@@ -25,6 +27,7 @@ export const BusinessAdminDashboard = () => {
   const [coupons, setCoupons] = useState([]);
 
   const [openImageModal, setOpenImageModal] = useState(false);
+  const [proofImage, setProofImage] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
@@ -68,6 +71,7 @@ export const BusinessAdminDashboard = () => {
         "business/coupons/" + business.business_id
       );
       setCoupons(couponData.data.ListOfCoupons);
+      console.log(coupons);
       setCouponsNotFound(false);
     } catch (e) {
       setCouponsNotFound(true);
@@ -191,22 +195,46 @@ export const BusinessAdminDashboard = () => {
     }
   };
 
+  const checkProofExists = (image) => {
+    try {
+      require("../../../images/proof/" + image);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  const showProof = (proof) => {
+    setProofImage(require("../../../images/proof/" + proof));
+    setOpenImageModal(true);
+  };
+
   const buildRequestCard = (request) => {
+    console.log(request);
     return (
       <li
         key={request._id}
         className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center"
       >
         <div
-          className="bg-yellow-100 rounded-lg p-5"
+          className="w-14 h-14"
           onClick={() => {
-            setOpenImageModal(true);
+            showProof(request.proof);
           }}
         >
-          <img
-          // src="../public/img/solar-panel.svg"
-          // className="text-purple-800 w-[40px]"
-          />
+          {request.proof && checkProofExists(request.proof) ? (
+            <img
+              src={require("../../../images/proof/" + request.proof)}
+              className="w-full h-14 object-cover rounded-lg hover:pointer"
+              alt={request.proof}
+            />
+          ) : (
+            <img
+              src="https://placehold.co/320@3x?text=Image+Unavailable&font=open-sans"
+              className="w-full h-14 object-cover rounded-lg"
+              alt={request.customer_name}
+            />
+          )}
         </div>
         <div className="pl-4">
           <div className="text-gray-800 font-bold">
@@ -257,13 +285,36 @@ export const BusinessAdminDashboard = () => {
     }
   };
 
+  const checkImageExists = (image) => {
+    try {
+      require("../../../images/coupon_logo/" + image);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
   const buildCouponCard = (coupon) => {
     return (
       <li
         key={coupon._id}
         className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center"
       >
-        <div className="bg-teal-100 rounded-lg p-5">
+        <div className="w-14 h-14">
+          {coupon.image && checkImageExists(coupon.image) ? (
+            <img
+              src={require("../../../images/coupon_logo/" + coupon.image)}
+              className="w-full h-14 object-cover rounded-lg hover:pointer"
+              alt={coupon.name}
+            />
+          ) : (
+            <img
+              src="https://placehold.co/320@3x?text=Image+Unavailable&font=open-sans"
+              className="w-full h-14 object-cover rounded-lg"
+              alt={coupon.name}
+            />
+          )}
+
           <img
           // src="../public/img/solar.svg"
           // className="text-purple-800 w-[40px]"
@@ -343,7 +394,7 @@ export const BusinessAdminDashboard = () => {
           openModal={openImageModal}
           setOpenModal={setOpenImageModal}
         >
-          <ImageView imageSrc="" />
+          <ImageView imageSrc={proofImage} />
         </CreateModal>
         <div className="fixed w-32 h-screen p-4 bg-white flex flex-col justify-between">
           <div className="flex flex-col items-center">
@@ -363,7 +414,11 @@ export const BusinessAdminDashboard = () => {
         <main className=" ml-32 w-full">
           <div className="grid lg:grid-cols-3 gap-5 p-4">
             <StastisticsCard
-              value="Business Name"
+              value={
+                parsedToken &&
+                parsedToken.businessData &&
+                parsedToken.businessData.name
+              }
               title="Name of the business"
             ></StastisticsCard>
             <StastisticsCard

@@ -40,12 +40,10 @@ export const CustomerProof = () => {
 
 	async function fetchCustomerDetails() {
 		try {
-			// setLoading(true);
 			const payloadHeader = await buildToken();
 			const response = await axios.get("/users/get-customer", payloadHeader);
 			setCustomerDetails(response.data);
 			setCustomerProofList(response.data.proof);
-			// console.log(response.data);
 			setLoading(false);
 		} catch (e) {
 			setLoading(false);
@@ -60,7 +58,6 @@ export const CustomerProof = () => {
 
 	const getBusinessName = (businessId) => {
 		let business = businessList.find((business) => business._id === businessId);
-		// console.log(business);
 		return business && business.name ? business.name : "N/A";
 	};
 
@@ -141,7 +138,6 @@ export const CustomerProof = () => {
 								onChange={(e) => setBusinessId(e.target.value)}
 								required
 							>
-								{/* {console.log(businessId)} */}
 								<option key="" value="">
 									Select an option
 								</option>

@@ -1,4 +1,3 @@
-// Referenced from: https://github.com/effectussoftware/react-custom-roulette/blob/master/README.md
 import React from "react";
 import { useState, useEffect } from "react";
 import { StastisticsCard } from "../Reusables/StastisticsCard";
@@ -20,13 +19,11 @@ export const CustomerDashboard = () => {
 	const [coupons, setCoupons] = useState([]);
 	const [reward, setReward] = useState({});
 	const [showReward, setShowReward] = useState(false);
-	const [timer, setTimer] = useState(0);
 	const [mustSpin, setMustSpin] = useState(false);
 	const [allowSpin, setAllowSpin] = useState(false);
 	const [prizeNumber, setPrizeNumber] = useState(0);
 	const [prizeNumberId, setPrizeNumberId] = useState("");
 
-	// axios call to fetch coupons from /api/coupons route using useEffect hook
 	async function fetchAvailableCoupons() {
 		try {
 			const payloadHeader = await buildToken();
@@ -57,7 +54,7 @@ export const CustomerDashboard = () => {
 	async function fetchCustomerDetails() {
 		try {
 			const payloadHeader = await buildToken();
-			console.log("payload header", payloadHeader);
+			console.log("Payload header: ", payloadHeader);
 			const response = await axios.get("/users/get-customer", payloadHeader);
 			if (response.data.points > 0) {
 				setAllowSpin(true);

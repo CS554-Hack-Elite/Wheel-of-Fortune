@@ -23,7 +23,7 @@ export const CustomerProfile = () => {
 			} catch (e) {
 				setLoading(false);
 				setErrorModal(true);
-				setErrorMessage(e && e.error ? e.error : e.toString());
+				setErrorMessage(e && e.response && e.response.data ? e.response.data.message : e.toString());
 				console.log(e);
 			}
 		}

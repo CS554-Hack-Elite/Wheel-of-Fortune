@@ -51,13 +51,13 @@ export const CustomerCoupons = () => {
 							<img
 								src={require("../../../images/coupon_logo/" + coupon.image)}
 								className="w-full h-40 object-cover rounded-t-lg hover:pointer"
-								alt={coupon.coupon_name}
+								alt="coupon"
 							/>
 						) : (
 							<img
 								src="https://placehold.co/320@3x?text=Image+Unavailable&font=open-sans"
 								className="w-full h-40 object-cover rounded-t-lg"
-								alt={coupon.coupon_name}
+								alt="coupon"
 							/>
 						)}
 						<div className="flex justify-center pt-2 text-xl">{coupon.name}</div>

@@ -8,6 +8,7 @@ import { Loading } from "../Reusables/Loading";
 import { Error } from "../Reusables/Error";
 import { CreateModal } from "../Reusables/CreateModal";
 import { buildToken } from "../../auth/tokenBuilder";
+import { TimeoutComponent } from "../Reusables/TimeoutComponent";
 import axios from "axios";
 
 export const CustomerDashboard = () => {
@@ -156,17 +157,15 @@ export const CustomerDashboard = () => {
 		}
 	};
 
-	const handleShowReward = (showReward) => {
-		if (showReward) {
-			return (
-				<div className="prize-won flex justify-center mt-12">
-					<div className="text-2xl py-2 px-4">Congratulations! You've won: </div>
-					<div className="py-2 px-4 border-2 border-indigo-500 rounded-lg">
-						<div className="text-gray-800 text-xl">{reward.option}</div>
-					</div>
+	const handleShowReward = () => {
+		return (
+			<div className="prize-won flex justify-center mt-12">
+				<div className="text-2xl py-2 px-4">Congratulations! You've won: </div>
+				<div className="py-2 px-4 border-2 border-indigo-500 rounded-lg">
+					<div className="text-gray-800 text-xl">{reward.option}</div>
 				</div>
-			);
-		}
+			</div>
+		);
 	};
 
 	if (loading) return <Loading />;
@@ -198,7 +197,9 @@ export const CustomerDashboard = () => {
 						{console.log(customerDetails)}
 						<div className="flex justify-center text-3xl font-medium text-indigo-600 p-2">Spin the Wheel:</div>
 						<div className="wheel flex justify-center mt-10">{couponOptions && handleWheel(couponOptions)}</div>
-						{handleShowReward(showReward)}
+						<TimeoutComponent show={showReward} setShow={setShowReward} seconds={3000}>
+							{handleShowReward()}
+						</TimeoutComponent>
 					</div>
 				</div>
 			</main>

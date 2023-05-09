@@ -34,16 +34,7 @@ export function AuthProvider({ children }) {
     return signInWithPopup(auth, provider);
   }
 
-  function deleteUser() {
-    // const unsubscribe = auth.onAuthStateChanged((user) => {
-    //   console.log("Calling Delete");
-    //   if (user) {
-    //     user.delete().then(() => {
-    //       unsubscribe();
-    //     });
-    //   }
-    // });
-  }
+  function deleteUser() {}
 
   function logout() {
     return signOut(auth);

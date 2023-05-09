@@ -55,20 +55,15 @@ export const AdminLogin = () => {
         adminCreds["email"] = trimmedUsername;
         adminCreds["password"] = trimmedPassword;
 
-        console.log(adminCreds);
-
         // sending request
 
         const { data } = await axios.post("/admin/login", adminCreds);
-
-        console.log(data);
 
         setLoading(false);
 
         setLocalToken("adminToken", JSON.stringify(data));
         navigate("/admin-dashboard");
       } catch (e) {
-        console.log(e);
         setLoading(false);
         setErrorModal(true);
         setErrorMessage(

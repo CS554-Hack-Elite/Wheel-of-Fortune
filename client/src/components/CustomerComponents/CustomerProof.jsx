@@ -29,7 +29,7 @@ export const CustomerProof = () => {
 		} catch (e) {
 			setLoading(false);
 			setErrorModal(true);
-			setErrorMessage(e && e.error ? e.error : e.toString());
+			setErrorMessage(e && e.response && e.response.data ? e.response.data.message : e.toString());
 			console.log(e);
 		}
 	}
@@ -50,7 +50,7 @@ export const CustomerProof = () => {
 		} catch (e) {
 			setLoading(false);
 			setErrorModal(true);
-			setErrorMessage(e && e.error ? e.error : e.toString());
+			setErrorMessage(e && e.response && e.response.data ? e.response.data.message : e.toString());
 			console.log(e);
 		}
 	}
@@ -81,14 +81,18 @@ export const CustomerProof = () => {
 						{proof.proof && checkImageExists(proof.proof) ? (
 							<img
 								src={require("../../../images/proof/" + proof.proof)}
-								className="w-full h-80 object-cover rounded-t-lg hover:pointer"
-								alt={proof.coupon_name}
+								className="w-full h-40 object-cover rounded-t-lg hover:cursor-pointer"
+								alt={proof.name}
+								onClick={() => {
+									setReceiptView(true);
+									setReceiptViewSrc(require("../../../images/proof/" + proof.proof));
+								}}
 							/>
 						) : (
 							<img
 								src="https://placehold.co/320@3x?text=Image+Unavailable&font=open-sans"
-								className="w-full h-80 object-cover rounded-t-lg"
-								alt={proof.coupon_name}
+								className="w-full h-40 object-cover rounded-t-lg"
+								alt={proof.name}
 							/>
 						)}
 						<div className="flex justify-center pb-2 pt-2 text-xl">Uploaded for: {getBusinessName(proof.business_id)}</div>
@@ -117,7 +121,7 @@ export const CustomerProof = () => {
 	const handleUploadProof = () => {
 		return (
 			<div className="z-10 fixed inset-0 h-screen bg-black bg-opacity-30">
-				<div className="form absolute h-fit w-1/2 left-1/4 right-1/4 mt-24 py-8 bg-white bg-opacity-80 backdrop-blur-md rounded-lg">
+				<div className="form absolute h-fit w-1/2 left-1/4 right-1/4 mt-32 py-8 bg-white bg-opacity-80 backdrop-blur-md rounded-lg">
 					<div className="m-4 flex justify-center text-xl md:text-3xl lg:text-3xl xl:text-4xl">Upload a receipt</div>
 					<div className="formFields grid grid-cols-1">
 						<button
@@ -206,18 +210,15 @@ export const CustomerProof = () => {
 			console.log(res);
 			setBusinessId(null);
 			setUploadedImage(null);
-			// console.log(businessId);
-			// console.log(uploadedImage);
 			setUploadProof(false);
 			setTimeout(() => {
 				fetchCustomerDetails();
 			}, 2000);
-			// setLoading(false);
 		} catch (e) {
 			setUploadProof(false);
 			setLoading(false);
 			setErrorModal(true);
-			setErrorMessage(e && e.error ? e.error : e.toString());
+			setErrorMessage(e && e.response && e.response.data ? e.response.data.message : e.toString());
 			console.log(e);
 		}
 	};
@@ -260,7 +261,6 @@ export const CustomerProof = () => {
 					</div>
 				</div>
 			</main>
-			  
 		</div>
 	);
 };

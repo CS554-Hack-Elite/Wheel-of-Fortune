@@ -16,6 +16,7 @@ const exportedMethods = {
   async getCustomerDetails() {
     return "CUSTOMER 1";
   },
+
   async getCustomerByEmail(email) {
     const errorObject = {
       status: 400,

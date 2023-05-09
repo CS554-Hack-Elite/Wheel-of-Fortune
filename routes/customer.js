@@ -132,16 +132,14 @@ router.route("/upload-proof").post(async (req, res) => {
 		}
 		let result = {};
 		let objKeys = [];
-		const imageData = req.files.proof.data; // Assuming you're using express-fileupload
+		const imageData = req.files.proof.data;
 		const outputDirectory = "client/images/proof";
 		const outputFileName = Date.now() + "-" + req.files.proof.name;
 		const width = 500;
 
-		// Write the image data to a file
 		const outputFilePath = `${outputDirectory}/${outputFileName}`;
 		fs.writeFileSync(outputFilePath, imageData);
 
-		// Build the command to resize the image
 		let command = "";
 		if (osName === "win32") {
 			command = `magick  convert "${outputFilePath}" -resize ${width} label:Wheel_of_Fortune -gravity Center -append "${outputFilePath}"`;
@@ -149,7 +147,6 @@ router.route("/upload-proof").post(async (req, res) => {
 			command = `convert "${outputFilePath}" -resize ${width} label:Wheel_of_Fortune -gravity Center -append "${outputFilePath}"`;
 		}
 
-		// Run the command using exec
 		exec(command, (error, stdout, stderr) => {
 			if (error) {
 				errorObject.message = `exec error: ${error.toString()}`;

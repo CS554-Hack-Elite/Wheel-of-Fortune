@@ -63,7 +63,7 @@ router.route("/register-business-admin").post(async (req, res) => {
 			errorObject.message = "Please upload image for business";
 			throw errorObject;
 		}
-		const imageData = req.files.logo.data; // Assuming you're using express-fileupload
+		const imageData = req.files.logo.data;
 		const outputDirectory = "client/images/business_logo";
 		const outputFileName = Date.now() + "-" + req.files.logo.name;
 		const width = 200;
@@ -74,8 +74,6 @@ router.route("/register-business-admin").post(async (req, res) => {
 		}
 		const outputFilePath = `${outputDirectory}/${outputFileName}`;
 		fs.writeFileSync(outputFilePath, imageData);
-
-		// Build the command to resize the image
 		let command = "";
 		if (osName === "win32") {
 			console.log("Found windows");
@@ -83,7 +81,6 @@ router.route("/register-business-admin").post(async (req, res) => {
 		} else {
 			command = `convert "${outputFilePath}" -resize ${width} "${outputFilePath}"`;
 		}
-		// Run the command using exec
 		exec(command, (error, stdout, stderr) => {
 			if (error) {
 				errorObject.message = `exec error: ${error}`;

@@ -234,6 +234,7 @@ const exportedMethods = {
       .find({
         "proof.business_id": business_id,
       })
+      .sort({ "proof.created_at": -1 })
       .toArray();
     let data = [];
     let proofArray = [];
@@ -250,6 +251,17 @@ const exportedMethods = {
         proof: proofArray,
       });
     });
+    if (data.length > 0) {
+      data.sort((a, b) => {
+        const aProof = a.proof[a.proof.length - 1];
+        const bProof = b.proof[b.proof.length - 1];
+        return (
+          new Date(bProof.created_at).getTime() -
+          new Date(aProof.created_at).getTime()
+        );
+      });
+    }
+
     return data;
   },
 

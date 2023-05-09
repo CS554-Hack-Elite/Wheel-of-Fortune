@@ -26,7 +26,7 @@ router.route("/generate_coupon").post(async (req, res) => {
 			errorObject.message = "Please upload image for coupon";
 			throw errorObject;
 		}
-		const imageData = req.files.image.data; // Assuming you're using express-fileupload
+		const imageData = req.files.image.data;
 		const outputDirectory = "client/images/coupon_logo";
 		const outputFileName = Date.now() + "-" + req.files.image.name;
 		const width = 200;
@@ -34,7 +34,6 @@ router.route("/generate_coupon").post(async (req, res) => {
 		const outputFilePath = `${outputDirectory}/${outputFileName}`;
 		fs.writeFileSync(outputFilePath, imageData);
 
-		// Build the command to resize the image
 		let command = "";
 		if (osName === "win32") {
 			command = `magick convert "${outputFilePath}" -resize ${width} "${outputFilePath}"`;
@@ -42,7 +41,6 @@ router.route("/generate_coupon").post(async (req, res) => {
 			command = `convert "${outputFilePath}" -resize ${width} "${outputFilePath}"`;
 		}
 
-		// Run the command using exec
 		exec(command, (error, stdout, stderr) => {
 			if (error) {
 				errorObject.message = `exec error: ${error}`;
@@ -103,44 +101,6 @@ router.route("/coupons/:business_id").get(async (req, res) => {
 	}
 });
 
-// router.route("/create").post(async (req, res) => {
-//   try {
-//     const errorObject = {
-//       status: 400,
-//     };
-//     let objKeys = ["name"];
-//     objKeys.forEach((element) => {
-//       result[element] = helpers.checkInput(
-//         element,
-//         result[element],
-//         element + " of the business",
-//         true
-//       );
-//     });
-//     businessData = await businessData.createBusiness(result);
-//     objKeys = ["email", "password", "age"];
-//     objKeys.forEach((element) => {
-//       result[element] = helpers.checkInput(
-//         element,
-//         result[element],
-//         element + " of the admin",
-//         true
-//       );
-//       if (element === "age") {
-//         result[element] = parseInt(result[element]);
-//       }
-//     });
-//     let customerData = await userData.createUser(result);
-//     return res.status(200).json({
-//       customer: customerData,
-//     });
-//   } catch (e) {
-//     res
-//       .status(e.status ? e.status : 400)
-//       .json({ message: e.message ? e.message : e });
-//   }
-// });
-
 router.route("/list").get(async (req, res) => {
 	try {
 		const errorObject = {
@@ -195,16 +155,13 @@ router.route("/delete/:_id").delete(async (req, res) => {
 			throw errorObject;
 		}
 		let businessId = req.params._id;
-		console.log("Business ID:", businessId); // Add a console.log here
 		if (!businessId) {
 			errorObject.status = 400;
 			errorObject.message = "Business ID is required";
 			throw errorObject;
 		}
 		businessId = businessId.toString();
-		console.log("Business ID (string):", businessId); // Add a console.log here
 		const deletedBusinessDetails = await businessData.deleteBusinessById(businessId);
-		console.log("Deleted Business:", deletedBusinessDetails); // Add a console.log here
 		res.status(200).json({
 			message: "Business deleted successfully",
 			deletedBusinessDetails,

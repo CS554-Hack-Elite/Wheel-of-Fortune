@@ -373,7 +373,7 @@ export const BusinessAdminDashboard = () => {
 					</div>
 				</div>
 				<main className=" ml-32 w-full">
-					<div className="grid lg:grid-cols-3 gap-5 p-4">
+					<div className="grid lg:grid-cols-2 gap-5 p-4">
 						<StastisticsCard
 							value={parsedToken && parsedToken.businessData && parsedToken.businessData.name}
 							title="Name of the business"

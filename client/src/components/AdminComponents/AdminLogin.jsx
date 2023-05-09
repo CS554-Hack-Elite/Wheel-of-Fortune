@@ -121,7 +121,7 @@ export const AdminLogin = () => {
         </div>
 
         <FormInput
-          title="Username"
+          title="Email"
           type="name"
           value={email}
           changeAction={setEmail}

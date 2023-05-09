@@ -111,7 +111,7 @@ export const AdminDashboard = () => {
 
   const buildCouponCard = (coupon) => {
     return (
-      <li className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
+      <li className="bg-indigo-800 rounded-lg my-3 p-4 flex items-center">
         <div className="w-14 h-14">
           {coupon.image && checkImageExists(coupon.image) ? (
             <img
@@ -121,18 +121,18 @@ export const AdminDashboard = () => {
             />
           ) : (
             <img
-              src="https://placehold.co/320@3x?text=Image+Unavailable&font=open-sans"
+              src="https://placehold.co/320@3x?text=N/A&font=open-sans"
               className="w-full h-14 object-cover rounded-lg"
               alt={coupon.name}
             />
           )}
         </div>
         <div className="pl-4">
-          <p className="text-gray-800 font-bold">{coupon.name} </p>
-          <p className="text-gray-400 text-sm">{coupon.description}</p>
+          <p className="text-white font-bold">{coupon.name} </p>
+          <p className="text-white text-sm">{coupon.description}</p>
         </div>
         <span className="lg:flex md:hidden ml-auto right-6 text-md font-medium">
-          <div className="px-3 py-2 bg-gray-600 text-white text-lg rounded-lg ">
+          <div className="px-3 py-2 bg-slate-800 text-white text-lg rounded-lg ">
             Max Coupons: {coupon.max_allocation}
           </div>
         </span>
@@ -162,7 +162,7 @@ export const AdminDashboard = () => {
   const buildbusinessCard = (business) => {
     console.log(business);
     return (
-      <li className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
+      <li className="bg-indigo-800 rounded-lg my-3 p-4 flex items-center">
         <div className="w-14 h-14">
           {business.logo && checkBusinessExists(business.logo) ? (
             <img
@@ -172,14 +172,14 @@ export const AdminDashboard = () => {
             />
           ) : (
             <img
-              src="https://placehold.co/320@3x?text=Image+Unavailable&font=open-sans"
+              src="https://placehold.co/320@3x?text=N/A&font=open-sans"
               className="w-full h-14 object-cover rounded-lg"
               alt={business.name}
             />
           )}
         </div>
         <div className="pl-4">
-          <p className="text-gray-800 font-bold">{business.name} </p>
+          <p className="text-white font-bold">{business.name} </p>
         </div>
         <button
           className="px-3 py-2 bg-red-600 ml-auto text-white text-lg rounded-lg hover:bg-red-700 active:bg-emerald-500"
@@ -224,7 +224,7 @@ export const AdminDashboard = () => {
     if (!openDeleteModal) getBusinessData();
   }, [openDeleteModal]);
 
-  if (loading) return <Loading />;
+  // if (loading) return <Loading />;
 
   return (
     <div class="flex">
@@ -241,28 +241,28 @@ export const AdminDashboard = () => {
           setOpenModal={setOpenDeleteModal}
         />{" "}
       </CreateModal>
-      <div class="fixed w-32 h-screen p-4 bg-white flex flex-col justify-between">
+      <div class="fixed w-32 h-screen p-4 bg-white bg-opacity-70 flex flex-col justify-between">
         <div class="flex flex-col items-center">
-          <div
-            class="bg-teal-600 text-white p-3 rounded-lg inline-block"
+          <button
+            class="bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-600 text-white p-3 rounded-lg inline-block"
             onClick={() => {
               setOpenModal(true);
             }}
           >
             {/* <img src="public/img/logo_white.svg" style="width:20px" /> */}
             Create Admin
-          </div>
+          </button>
 
-          <span class="border-b-2 border-gray-200 w-full p-2"></span>
+          <span class="border-b-2 border-indigo-600 w-full p-2"></span>
 
-          <div
-            class="bg-gray-100 hover:bg-gray-200 cursor-pointer my-4 p-3 rounded-lg inline-block"
+          <button
+            class="bg-gray-100 hover:bg-gray-200 my-4 p-3 rounded-lg inline-block"
             onClick={() => {
               logoutAdmin();
             }}
           >
             Logout
-          </div>
+          </button>
         </div>
       </div>
       <main class=" ml-32 w-full">
@@ -282,8 +282,8 @@ export const AdminDashboard = () => {
         </div>
 
         <div class="p-4 grid md:grid-cols-4 grid-cols-1 gap-4">
-          <div class="md:col-span-2 p-4 lg:h-[80vh] h-[50vh] rounded-lg bg-white overflow-y-auto">
-            <div class="text-3xl font-medium text-teal-600 p-2">
+          <div class="md:col-span-2 p-4 lg:h-[80vh] h-[50vh] rounded-lg bg-white bg-opacity-40 overflow-y-auto">
+            <div class="text-3xl font-medium text-indigo-600 p-2">
               Top 10 Coupons
             </div>
             <ul>
@@ -294,8 +294,10 @@ export const AdminDashboard = () => {
               )}
             </ul>
           </div>
-          <div class="md:col-span-2 p-4 lg:h-[80vh] h-[50vh] rounded-lg bg-white overflow-y-auto">
-            <div class="text-3xl font-medium text-teal-600 p-2">Businesses</div>
+          <div class="md:col-span-2 p-4 lg:h-[80vh] h-[50vh] rounded-lg bg-white bg-opacity-40 overflow-y-auto">
+            <div class="text-3xl font-medium text-indigo-600 p-2">
+              Businesses
+            </div>
             <ul>
               {businessesNotFetched ? (
                 <div class="text-xl text-teal-600 p-2">Not Found</div>

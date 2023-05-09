@@ -31,9 +31,6 @@ export const CustomerDashboard = () => {
 			const payloadHeader = await buildToken();
 			const response = await axios.get("/users/coupons", payloadHeader);
 			const wheelCouponNames = [];
-			// response.data.availableCoupons.map((coupon) => {
-			// 	wheelCouponNames.push({ option: coupon.name.toString() });
-			// });
 			if (response.data.availableCoupons.length > 0) {
 				for (let coupon of response.data.availableCoupons) {
 					wheelCouponNames.push({ option: coupon.name.toString() });
@@ -41,8 +38,6 @@ export const CustomerDashboard = () => {
 				console.log(response.data.availableCoupons);
 				setCoupons(response.data.availableCoupons);
 			}
-			// wheelCouponNames.push({ option: "none" });
-			// console.log("wheelCouponNames", wheelCouponNames);
 			setCouponOptions(wheelCouponNames);
 			console.log("coupons", wheelCouponNames);
 			setLoading(false);
@@ -116,7 +111,6 @@ export const CustomerDashboard = () => {
 							setMustSpin(false);
 							setAllowSpin(false);
 							setReward(data[prizeNumber]);
-							// fetchCustomerDetails();
 							console.log("prize number id", prizeNumberId);
 							try {
 								const payloadHeader = await buildToken();
@@ -206,7 +200,6 @@ export const CustomerDashboard = () => {
 						<div className="wheel flex justify-center mt-10">{couponOptions && handleWheel(couponOptions)}</div>
 						{handleShowReward(showReward)}
 					</div>
-					{/* <div className="md:col-span-2 p-4 lg:h-[80vh] h-[50vh] rounded-lg bg-white overflow-y-auto"></div> */}
 				</div>
 			</main>
 		</div>

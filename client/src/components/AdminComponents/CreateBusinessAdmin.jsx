@@ -14,6 +14,7 @@ export const CreateBusinessAdmin = ({ modalChanged }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [businessImage, setBusinessImage] = useState("");
+  const [imageInputValue, setImageInputValue] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
@@ -61,6 +62,12 @@ export const CreateBusinessAdmin = ({ modalChanged }) => {
         payloadHeader
       );
       setLoading(false);
+      setName("");
+      setBusinessName("");
+      setBusinessImage(null);
+      setImageInputValue(!imageInputValue);
+      setEmail("");
+      setPassword("");
       setShowCreated(true);
     } catch (e) {
       console.log("error in data");
@@ -79,6 +86,8 @@ export const CreateBusinessAdmin = ({ modalChanged }) => {
     setLoading(false);
     setName("");
     setBusinessName("");
+    setBusinessImage(null);
+    setImageInputValue(!imageInputValue);
     setEmail("");
     setPassword("");
     setErrorModal(false);
@@ -125,6 +134,7 @@ export const CreateBusinessAdmin = ({ modalChanged }) => {
               name="logo"
               type="file"
               onChange={(e) => setBusinessImage(e.target.files[0])}
+              key={imageInputValue}
               required
             />
           </label>

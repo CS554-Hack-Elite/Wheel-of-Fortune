@@ -86,6 +86,14 @@ router.route("/update-points").get(async (req, res) => {
 
     const updatedCustomerRow = await customerData.updatePoints(result);
     client.zIncrBy("mostAccessed", 1, result.coupon_id);
+    let data = null;
+    data = await client.get(`customer-coupon-${updatedCustomerRow._id}`);
+    if (data) {
+      return res.status(200).json({ data: JSON.parse(data) });
+    } else {
+      data = await marvelData.getMarvelData(pagenum);
+      await client.set(`page-${pagenum}`, JSON.stringify(data));
+    }
     return res.status(200).json({ customer: updatedCustomerRow });
   } catch (e) {
     res

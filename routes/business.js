@@ -44,9 +44,7 @@ router.route("/generate_coupon").post(async (req, res) => {
         throw errorObject;
       }
     });
-
     result.image = outputFileName;
-
     let result = req.body;
 
     let objKeys = ["name", "description", "max_allocation", "business_id"];

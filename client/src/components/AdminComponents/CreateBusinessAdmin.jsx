@@ -13,6 +13,7 @@ export const CreateBusinessAdmin = ({ modalChanged }) => {
   const [businessName, setBusinessName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [businessImage, setBusinessImage] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
@@ -42,7 +43,23 @@ export const CreateBusinessAdmin = ({ modalChanged }) => {
         );
       });
 
-      await axios.post("/admin/register-business-admin", payload);
+      const formData = new FormData();
+      formData.append("name", payload.name);
+      formData.append("email", payload.email);
+      formData.append("password", payload.password);
+      formData.append("logo", businessImage);
+
+      const payloadHeader = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
+
+      await axios.post(
+        "/admin/register-business-admin",
+        formData,
+        payloadHeader
+      );
       setLoading(false);
       setShowCreated(true);
     } catch (e) {
@@ -100,16 +117,17 @@ export const CreateBusinessAdmin = ({ modalChanged }) => {
         />
 
         <div className="relative mb-4 w-4/5">
-          <label for="file" className="leading-7 text-sm text-gray-600">
+          <label htmlFor="BusinessLogo" className="text-sm col-span-1">
             Business Logo
+            <input
+              className="text-base text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 mx-4"
+              id="image"
+              name="logo"
+              type="file"
+              onChange={(e) => setBusinessImage(e.target.files[0])}
+              required
+            />
           </label>
-          <input
-            type="file"
-            id="file"
-            name="file"
-            className="w-full bg-white rounded border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 leading-8 transition-colors duration-200 ease-in-out"
-            onChange={(e) => {}}
-          />
         </div>
 
         {!loading ? (

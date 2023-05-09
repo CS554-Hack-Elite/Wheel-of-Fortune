@@ -34,7 +34,8 @@ export const AdminDashboard = () => {
   const getCouponData = async () => {
     try {
       // throw "qweqwe";
-      const couponData = await axios.get("/business/coupons/");
+      const couponData = await axios.get("/business/most-accessed-coupons/");
+      console.log(couponData);
       setCoupons(couponData.data.ListOfCoupons);
       setCouponsNotFetched(false);
     } catch (e) {

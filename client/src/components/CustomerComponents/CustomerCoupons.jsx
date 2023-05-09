@@ -46,7 +46,7 @@ export const CustomerCoupons = () => {
 		if (coupons && coupons.length > 0) {
 			return coupons.map((coupon) => {
 				return (
-					<div key={coupon._id} className="coupon col-span-1 bg-indigo-800 text-slate-200 rounded-lg my-4 overflow-x-auto">
+					<div key={coupon._id} className="coupon col-span-1 bg-indigo-800 text-slate-200 rounded-lg my-4 hover:cursor-default overflow-x-auto">
 						{coupon.image && checkImageExists(coupon.image) ? (
 							<img
 								src={require("../../../images/coupon_logo/" + coupon.image)}
@@ -64,7 +64,7 @@ export const CustomerCoupons = () => {
 						<span>
 							<div className="px-4 py-2 text-lg">Offer: {coupon.coupon_name}</div>
 						</span>
-						<div className="w-full bg-gray-200 text-black rounded-b-lg">
+						<div className="w-full bg-gray-200 text-black rounded-b-lg hover:cursor-text">
 							<div className="p-4">{coupon.coupon_code}</div>
 						</div>
 					</div>

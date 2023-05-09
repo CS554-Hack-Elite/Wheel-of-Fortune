@@ -12,6 +12,7 @@ export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
   const [couponName, setCouponName] = useState("");
   const [couponDescription, setCouponDescription] = useState("");
   const [couponMaxAllocation, setCouponMaxAllocation] = useState(0);
+  const [couponImage, setCouponImage] = useState("");
 
   const [showCreated, setShowCreated] = useState(false);
 
@@ -29,10 +30,8 @@ export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
         name: couponName,
         description: couponDescription,
         max_allocation: parseInt(couponMaxAllocation),
-        image: "qweqwe",
         business_id: businessAdmin.business_id,
       };
-      console.log(payload);
 
       objKeys.forEach((element) => {
         payload[element] = helpers.checkInput(
@@ -43,9 +42,28 @@ export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
         );
       });
 
-      await axios.post("/business/generate_coupon", payload);
+      const formData = new FormData();
+      formData.append("name", payload.name);
+      formData.append("description", payload.description);
+      formData.append("max_allocation", payload.max_allocation);
+      formData.append("business_id", payload.business_id);
+      formData.append("image", couponImage);
 
-      console.log("created");
+      const payloadHeader = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
+
+      console.log("payload");
+      console.log(payload);
+
+      console.log("Cimage");
+      console.log(couponImage);
+
+      // console.log(formData);
+
+      await axios.post("/business/generate_coupon", formData, payloadHeader);
 
       setLoading(false);
 
@@ -108,10 +126,22 @@ export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
         />
 
         <div className="relative mb-4 w-4/5">
-          <label for="file" className="leading-7 text-sm text-gray-600">
+          {/* <label for="file" className="leading-7 text-sm text-gray-600">
             Coupon Image
+          </label> */}
+
+          <label htmlFor="couponImage" className="text-xl col-span-1 m-4">
+            Coupon
+            <input
+              className="text-base text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 mx-4"
+              id="image"
+              name="image"
+              type="file"
+              onChange={(e) => setCouponImage(e.target.files[0])}
+              required
+            />
           </label>
-          <input
+          {/* <input
             type="file"
             id="file"
             name="file"
@@ -119,7 +149,7 @@ export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
             // onChange={(e) => {
             //   changeAction(e.target.value);
             // }}
-          />
+          /> */}
         </div>
 
         {/* <Button title="Create Coupon" clickAction={createCoupon} /> */}

@@ -18,6 +18,8 @@ export const BusinessAdminDashboard = () => {
 	const parsedToken = JSON.parse(businessToken);
 	const [business, setBusiness] = useState(parsedToken.businessAdmin);
 
+	// console.log(parsedToken);
+
 	const [openModal, setOpenModal] = useState(false);
 	const [pointsModal, setPointsModal] = useState(false);
 	const [requests, setRequests] = useState([]);
@@ -25,6 +27,7 @@ export const BusinessAdminDashboard = () => {
 	const [coupons, setCoupons] = useState([]);
 
 	const [openImageModal, setOpenImageModal] = useState(false);
+	const [proofImage, setProofImage] = useState("");
 
 	const [loading, setLoading] = useState(false);
 	const [errorModal, setErrorModal] = useState(false);
@@ -66,6 +69,7 @@ export const BusinessAdminDashboard = () => {
 		try {
 			const couponData = await axios.get("business/coupons/" + business.business_id);
 			setCoupons(couponData.data.ListOfCoupons);
+			console.log(coupons);
 			setCouponsNotFound(false);
 		} catch (e) {
 			setCouponsNotFound(true);
@@ -151,7 +155,7 @@ export const BusinessAdminDashboard = () => {
 		if (status === 1) {
 			return (
 				<button
-					className="px-3 py-2 mr-4 bg-sky-600 text-white text-lg rounded-lg hover:bg-sky-500 active:bg-sky-600 w-full"
+					className="px-3 py-2 bg-blue-600 text-white text-lg rounded-lg hover:bg-emerald-700 active:bg-emerald-500 w-full"
 					onClick={() => {
 						assignPoints(request);
 					}}
@@ -161,36 +165,60 @@ export const BusinessAdminDashboard = () => {
 			);
 		} else if (status === 2) {
 			return (
-				<span className="lg:flex justify-center md:hidden ml-auto text-md font-medium w-full">
-					<div className="px-3 py-2 mr-4 bg-emerald-600 text-white text-lg rounded-lg w-full text-center hover:cursor-default">Approved</div>
+				<span className="lg:flex md:hidden ml-auto text-md font-medium w-full">
+					<div className="px-3 py-2 bg-green-600 text-white text-lg rounded-lg w-full text-center">Approved</div>
 				</span>
 			);
 		} else {
 			return (
-				<span className="lg:flex md:hidden mx-auto right-6 text-md font-medium">
-					<div className="px-3 py-2 mr-4 bg-red-500 text-white text-lg rounded-lg w-full text-center hover:cursor-default">Rejected</div>
+				<span className="lg:flex md:hidden ml-auto right-6 text-md font-medium">
+					<div className="px-3 py-2 bg-red-600 text-white text-lg rounded-lg w-full text-center">Rejected</div>
 				</span>
 			);
 		}
 	};
 
+	const checkProofExists = (image) => {
+		try {
+			require("../../../images/proof/" + image);
+			return true;
+		} catch (error) {
+			return false;
+		}
+	};
+
+	const showProof = (proof) => {
+		setProofImage(require("../../../images/proof/" + proof));
+		setOpenImageModal(true);
+	};
+
 	const buildRequestCard = (request) => {
+		console.log(request);
 		return (
-			<li key={request._id} className="bg-indigo-800 rounded-lg my-3 px-2 py-6 flex items-center">
+			<li key={request._id} className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
 				<div
-					className="rounded-lg p-5"
+					className="w-14 h-14"
 					onClick={() => {
-						setOpenImageModal(true);
+						showProof(request.proof);
 					}}
 				>
-					<img
-					// src="../public/img/solar-panel.svg"
-					// className="text-purple-800 w-[40px]"
-					/>
+					{request.proof && checkProofExists(request.proof) ? (
+						<img
+							src={require("../../../images/proof/" + request.proof)}
+							className="w-full h-14 object-cover rounded-lg hover:pointer"
+							alt={request.proof}
+						/>
+					) : (
+						<img
+							src="https://placehold.co/320@3x?text=Image+Unavailable&font=open-sans"
+							className="w-full h-14 object-cover rounded-lg"
+							alt={request.customer_name}
+						/>
+					)}
 				</div>
 				<div className="pl-4">
-					<div className="text-white font-bold">{request.customer_name}'s Request </div>
-					<div className="text-white text-sm">{request.customer_email}</div>
+					<div className="text-gray-800 font-bold">{request.customer_name}'s Request </div>
+					<div className="text-gray-400 text-sm">{request.customer_email}</div>
 				</div>
 				<div className="lg:flex md:hidden ml-auto right-6 text-md font-medium w-40">{checkStatus(request.status, request)}</div>
 			</li>
@@ -233,22 +261,45 @@ export const BusinessAdminDashboard = () => {
 		}
 	};
 
+	const checkImageExists = (image) => {
+		try {
+			require("../../../images/coupon_logo/" + image);
+			return true;
+		} catch (error) {
+			return false;
+		}
+	};
+
 	const buildCouponCard = (coupon) => {
 		return (
-			<li key={coupon._id} className="bg-indigo-800 rounded-lg my-3 px-2 py-6 flex items-center">
-				<div className="bg-teal-100 rounded-lg p-5 text-white">
+			<li key={coupon._id} className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
+				<div className="w-14 h-14">
+					{coupon.image && checkImageExists(coupon.image) ? (
+						<img
+							src={require("../../../images/coupon_logo/" + coupon.image)}
+							className="w-full h-14 object-cover rounded-lg hover:pointer"
+							alt={coupon.name}
+						/>
+					) : (
+						<img
+							src="https://placehold.co/320@3x?text=Image+Unavailable&font=open-sans"
+							className="w-full h-14 object-cover rounded-lg"
+							alt={coupon.name}
+						/>
+					)}
+
 					<img
 					// src="../public/img/solar.svg"
 					// className="text-purple-800 w-[40px]"
 					/>
 				</div>
 				<div className="pl-4">
-					<p className="text-white font-bold">{coupon.name}</p>
-					<p className="text-white text-sm">{coupon.description}</p>
+					<p className="text-gray-800 font-bold">{coupon.name}</p>
+					<p className="text-gray-400 text-sm">{coupon.description}</p>
 				</div>
 				<span className="lg:flex md:hidden ml-auto right-6 text-md font-medium">
 					{couponVisibilityButton(coupon)}
-					<div className="px-3 py-2 mx-4 bg-white bg-opacity-70 text-black text-lg rounded-lg ">
+					<div className="px-3 py-2 ml-2 bg-gray-600 text-white text-lg rounded-lg ">
 						Available: {coupon.unused_coupon_count}/{coupon.max_allocation}
 					</div>
 				</span>
@@ -310,14 +361,14 @@ export const BusinessAdminDashboard = () => {
 				</CreateModal>
 
 				<CreateModal openModal={openImageModal} setOpenModal={setOpenImageModal}>
-					<ImageView imageSrc="" />
+					<ImageView imageSrc={proofImage} />
 				</CreateModal>
-				<div className="fixed w-32 h-screen p-4 bg-white bg-opacity-60 flex flex-col justify-between">
+				<div className="fixed w-32 h-screen p-4 bg-white flex flex-col justify-between">
 					<div className="flex flex-col items-center">
 						{/* <span className="border-b-2 border-gray-200 w-full p-2"></span> */}
 
 						<div
-							className="w-24 flex justify-center bg-gray-100 hover:bg-gray-200 cursor-pointer my-4 px-4 py-2 rounded-lg "
+							className="bg-gray-100 hover:bg-gray-200 cursor-pointer my-4 p-3 rounded-lg inline-block"
 							onClick={() => {
 								logoutAdmin();
 							}}
@@ -328,8 +379,11 @@ export const BusinessAdminDashboard = () => {
 					</div>
 				</div>
 				<main className=" ml-32 w-full">
-					<div className="grid lg:grid-cols-2 gap-5 p-4">
-						<StastisticsCard value="Business Name" title="Name of the business"></StastisticsCard>
+					<div className="grid lg:grid-cols-3 gap-5 p-4">
+						<StastisticsCard
+							value={parsedToken && parsedToken.businessData && parsedToken.businessData.name}
+							title="Name of the business"
+						></StastisticsCard>
 						<StastisticsCard value={business.email} title="Email"></StastisticsCard>
 					</div>
 

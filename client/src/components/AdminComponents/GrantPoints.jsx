@@ -38,8 +38,6 @@ export const GrantPoints = ({ requestDetails, setOpenModal }) => {
         );
       });
 
-      console.log(payload);
-
       const proofRequest = await axios.post("/business/update-proof", payload);
 
       setLoading(false);

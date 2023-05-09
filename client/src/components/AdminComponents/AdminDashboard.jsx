@@ -35,7 +35,6 @@ export const AdminDashboard = () => {
     try {
       // throw "qweqwe";
       const couponData = await axios.get("/business/most-accessed-coupons/");
-      console.log(couponData);
       setCoupons(couponData.data.ListOfCoupons);
       setCouponsNotFetched(false);
     } catch (e) {
@@ -71,28 +70,6 @@ export const AdminDashboard = () => {
     await getBusinessData();
     await getCustomerData();
     setLoading(false);
-    // try {
-    //   setLoading(true);
-
-    //   // const couponData = await axios.get("/business/coupons/");
-
-    //   // const businessData = await axios.get("/business/list/");
-
-    //   // const customerData = await axios.get("/business/customer/list");
-
-    //   // setCoupons(couponData.data.ListOfCoupons);
-    //   // setBusinesses(businessData.data.businessData);
-    //   // setCustomers(customerData.data.ListOfCustomer);
-    //   // setLoading(false);
-    // } catch (e) {
-    //   setLoading(false);
-    //   setErrorModal(true);
-    //   setErrorMessage(
-    //     e && e.response && e.response.data
-    //       ? e.response.data.message
-    //       : e.toString()
-    //   );
-    // }
   };
 
   const deleteBusiness = (business) => {
@@ -160,7 +137,6 @@ export const AdminDashboard = () => {
   };
 
   const buildbusinessCard = (business) => {
-    console.log(business);
     return (
       <li className="bg-indigo-800 rounded-lg my-3 p-4 flex items-center">
         <div className="w-14 h-14">

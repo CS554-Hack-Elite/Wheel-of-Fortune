@@ -132,21 +132,27 @@ router.route("/upload-proof").post(async (req, res) => {
       errorObject.message = "Please upload image for proof";
       throw errorObject;
     }
+    if (
+      !req.files.proof.mimetype ||
+      (req.files.proof.mimetype !== "image/png" &&
+        req.files.proof.mimetype !== "image/jpeg" &&
+        req.files.proof.mimetype !== "image/jpg")
+    ) {
+      errorObject.message = "Uploaded file must be jpeg, png or jpg";
+      throw errorObject;
+    }
     let result = {};
     let objKeys = [];
-    const imageData = req.files.proof.data; // Assuming you're using express-fileupload
+    const imageData = req.files.proof.data;
     const outputDirectory = "client/images/proof";
     const outputFileName = Date.now() + "-" + req.files.proof.name;
     const width = 200;
 
-    // Write the image data to a file
     const outputFilePath = `${outputDirectory}/${outputFileName}`;
     fs.writeFileSync(outputFilePath, imageData);
 
-    // Build the command to resize the image
     const command = `magick  convert "${outputFilePath}" label:Wheel_of_Fortune -gravity Center -append "${outputFilePath}"`;
 
-    // Run the command using exec
     exec(command, (error, stdout, stderr) => {
       if (error) {
         errorObject.message = `exec error: ${error.toString()}`;
@@ -174,7 +180,6 @@ router.route("/upload-proof").post(async (req, res) => {
     );
     return res.status(200).json({ customer: updatedCustomerRow });
   } catch (e) {
-    console.log(e);
     res
       .status(e.status ? e.status : 400)
       .json({ message: e.message ? e.message : e });

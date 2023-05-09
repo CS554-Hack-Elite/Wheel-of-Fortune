@@ -8,7 +8,6 @@ import { buildToken } from "../../auth/tokenBuilder";
 import axios from "axios";
 
 export const CustomerCoupons = () => {
-	const [selfCoupons, setSelfCoupons] = useState([]);
 	const [errorModal, setErrorModal] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [loading, setLoading] = useState(false);
@@ -48,7 +47,7 @@ export const CustomerCoupons = () => {
 			return coupons.map((coupon) => {
 				return (
 					<div key={coupon._id} className="coupon col-span-1 bg-indigo-800 text-slate-200 rounded-lg my-4 overflow-x-auto">
-						{coupon.image && checkImageExists(coupon) ? (
+						{coupon.image && checkImageExists(coupon.image) ? (
 							<img
 								src={require("../../../images/coupon_logo/" + coupon.image)}
 								className="w-full h-40 object-cover rounded-t-lg hover:pointer"

@@ -261,7 +261,6 @@ export const CustomerProof = () => {
 					</div>
 				</div>
 			</main>
-			  
 		</div>
 	);
 };

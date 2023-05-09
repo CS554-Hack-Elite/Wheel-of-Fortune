@@ -133,14 +133,14 @@ router.route("/upload-proof").post(async (req, res) => {
 		const imageData = req.files.proof.data; // Assuming you're using express-fileupload
 		const outputDirectory = "client/images/proof";
 		const outputFileName = Date.now() + "-" + req.files.proof.name;
-		const width = 200;
+		const width = 500;
 
 		// Write the image data to a file
 		const outputFilePath = `${outputDirectory}/${outputFileName}`;
 		fs.writeFileSync(outputFilePath, imageData);
 
 		// Build the command to resize the image
-		const command = `magick  convert "${outputFilePath}" label:Wheel_of_Fortune -gravity Center -append "${outputFilePath}"`;
+		const command = `magick  convert "${outputFilePath}" -resize ${width} label:Wheel_of_Fortune -gravity Center -append "${outputFilePath}"`;
 
 		// Run the command using exec
 		exec(command, (error, stdout, stderr) => {

@@ -8,11 +8,15 @@ import { Error } from "../Reusables/Error";
 import { TimeoutComponent } from "../Reusables/TimeoutComponent";
 
 export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
+  console.log(modalChanged);
   const [loading, setLoading] = useState(false);
   const [couponName, setCouponName] = useState("");
   const [couponDescription, setCouponDescription] = useState("");
   const [couponMaxAllocation, setCouponMaxAllocation] = useState(0);
-  const [couponImage, setCouponImage] = useState("");
+  const [couponImage, setCouponImage] = useState(null);
+  const [imageInputValue, setImageInputValue] = useState(false);
+
+  console.log(couponImage);
 
   const [showCreated, setShowCreated] = useState(false);
 
@@ -70,6 +74,8 @@ export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
       setCouponName("");
       setCouponDescription("");
       setCouponMaxAllocation(0);
+      setCouponImage(null);
+      setImageInputValue(!imageInputValue);
 
       setShowCreated(true);
     } catch (e) {
@@ -86,6 +92,8 @@ export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
 
   useEffect(() => {
     setLoading(false);
+    setCouponImage(null);
+    setImageInputValue(!imageInputValue);
     setCouponName("");
     setCouponDescription("");
     setCouponMaxAllocation(0);
@@ -137,7 +145,10 @@ export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
               id="image"
               name="image"
               type="file"
-              onChange={(e) => setCouponImage(e.target.files[0])}
+              onChange={(e) => {
+                setCouponImage(e.target.files[0]);
+              }}
+              key={imageInputValue}
               required
             />
           </label>

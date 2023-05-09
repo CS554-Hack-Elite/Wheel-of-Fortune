@@ -160,6 +160,7 @@ router.route("/upload-proof").post(async (req, res) => {
 			result[element] = helpers.checkInput(element, result[element], element + " for the proof");
 		});
 		const updatedCustomerRow = await customerData.uploadProof(result);
+		await client.set("customer-detail-" + updatedCustomerRow.email, JSON.stringify(updatedCustomerRow));
 		return res.status(200).json({ customer: updatedCustomerRow });
 	} catch (e) {
 		console.log(e);

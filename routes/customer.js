@@ -168,6 +168,10 @@ router.route("/upload-proof").post(async (req, res) => {
       );
     });
     const updatedCustomerRow = await customerData.uploadProof(result);
+    await client.set(
+      "customer-detail-" + updatedCustomerRow.email,
+      JSON.stringify(updatedCustomerRow)
+    );
     return res.status(200).json({ customer: updatedCustomerRow });
   } catch (e) {
     console.log(e);

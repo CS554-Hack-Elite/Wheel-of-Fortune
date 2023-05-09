@@ -339,7 +339,7 @@ router.route("/update-proof").post(async (req, res) => {
 
     const updatedCustomerRow = await customerData.updateProof(result);
     await client.set(
-      "customer-detail-" + email,
+      "customer-detail-" + updatedCustomerRow.email,
       JSON.stringify(updatedCustomerRow)
     );
     return res.status(200).json({ customer: updatedCustomerRow });

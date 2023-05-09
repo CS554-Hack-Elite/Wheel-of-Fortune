@@ -7,6 +7,8 @@ import { exec } from "child_process";
 import redis from "redis";
 const client = redis.createClient();
 client.connect().then(() => {});
+import os from "os";
+const osName = os.platform();
 
 router.route("/get-customer").get(async (req, res) => {
 	try {
@@ -140,7 +142,12 @@ router.route("/upload-proof").post(async (req, res) => {
 		fs.writeFileSync(outputFilePath, imageData);
 
 		// Build the command to resize the image
-		const command = `magick  convert "${outputFilePath}" -resize ${width} label:Wheel_of_Fortune -gravity Center -append "${outputFilePath}"`;
+		let command = "";
+		if (osName === "win32") {
+			command = `magick  convert "${outputFilePath}" -resize ${width} label:Wheel_of_Fortune -gravity Center -append "${outputFilePath}"`;
+		} else {
+			command = `convert "${outputFilePath}" -resize ${width} label:Wheel_of_Fortune -gravity Center -append "${outputFilePath}"`;
+		}
 
 		// Run the command using exec
 		exec(command, (error, stdout, stderr) => {

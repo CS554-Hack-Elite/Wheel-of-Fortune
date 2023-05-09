@@ -82,7 +82,7 @@ export const CustomerProof = () => {
 							<img
 								src={require("../../../images/proof/" + proof.proof)}
 								className="w-full h-40 object-cover rounded-t-lg hover:cursor-pointer"
-								alt={proof.name}
+								alt="proof"
 								onClick={() => {
 									setReceiptView(true);
 									setReceiptViewSrc(require("../../../images/proof/" + proof.proof));
@@ -92,7 +92,7 @@ export const CustomerProof = () => {
 							<img
 								src="https://placehold.co/320@3x?text=Image+Unavailable&font=open-sans"
 								className="w-full h-40 object-cover rounded-t-lg"
-								alt={proof.name}
+								alt="proof"
 							/>
 						)}
 						<div className="flex justify-center pb-2 pt-2 text-xl">Uploaded for: {getBusinessName(proof.business_id)}</div>
@@ -125,7 +125,7 @@ export const CustomerProof = () => {
 					<div className="m-4 flex justify-center text-xl md:text-3xl lg:text-3xl xl:text-4xl">Upload a receipt</div>
 					<div className="formFields grid grid-cols-1">
 						<button
-							className="absolute top-0 right-0 m-4 py-2 px-4 bg-red-500 text-white hover:bg-red-600 active:bg-red-500 rounded-lg"
+							className="absolute top-0 right-0 m-4 py-2 px-4 bg-red-600 text-white hover:bg-red-500 active:bg-red-600 rounded-lg"
 							onClick={() => {
 								setUploadProof(false);
 							}}
@@ -156,7 +156,7 @@ export const CustomerProof = () => {
 									: null}
 							</select>
 						</label>
-						<label htmlFor="proofImage" className="text-xl col-span-1 m-4">
+						<label htmlFor="image" className="text-xl col-span-1 m-4">
 							Select Receipt:
 							<input
 								className="text-base text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 mx-4"

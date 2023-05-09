@@ -34,6 +34,17 @@ export function AuthProvider({ children }) {
     return signInWithPopup(auth, provider);
   }
 
+  function deleteUser() {
+    // const unsubscribe = auth.onAuthStateChanged((user) => {
+    //   console.log("Calling Delete");
+    //   if (user) {
+    //     user.delete().then(() => {
+    //       unsubscribe();
+    //     });
+    //   }
+    // });
+  }
+
   function logout() {
     return signOut(auth);
   }
@@ -53,6 +64,7 @@ export function AuthProvider({ children }) {
     register,
     googleLogin,
     logout,
+    deleteUser,
   };
 
   return (

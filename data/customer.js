@@ -16,6 +16,7 @@ const exportedMethods = {
   async getCustomerDetails() {
     return "CUSTOMER 1";
   },
+
   async getCustomerByEmail(email) {
     const errorObject = {
       status: 400,
@@ -129,8 +130,7 @@ const exportedMethods = {
     // await sgMail.send(msg);
 
     let objKeys = [];
-    result.proof = "abc";
-    objKeys = ["business_id", "proof", "email"];
+    objKeys = ["business_id", "email"];
     objKeys.forEach((element) => {
       result[element] = helpers.checkInput(
         element,

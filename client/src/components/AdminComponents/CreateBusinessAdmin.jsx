@@ -1,26 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../Reusables/Button";
 import { FormInput } from "../Reusables/FormInput";
 import helpers from "../../auth/validation.js";
 import axios from "axios";
 import { CreateModal } from "../Reusables/CreateModal";
 import { Error } from "../Reusables/Error";
+import { TimeoutComponent } from "../Reusables/TimeoutComponent";
 
-export const CreateBusinessAdmin = () => {
+export const CreateBusinessAdmin = ({ modalChanged }) => {
   const [name, setName] = useState("");
 
   const [businessName, setBusinessName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [businessImage, setBusinessImage] = useState("");
 
-  //TODO: button color change on disabled
   const [loading, setLoading] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [showCreated, setShowCreated] = useState(false);
+
   const createBusinessAdmin = async () => {
     const objKeys = ["name", "email", "password"];
 
+    //TODO: Handle image
     try {
       setLoading(true);
       const payload = {
@@ -39,20 +43,47 @@ export const CreateBusinessAdmin = () => {
         );
       });
 
-      console.log("data is valid");
-      console.log(payload);
-      await axios.post("/admin/register-business-admin", payload);
+      const formData = new FormData();
+      formData.append("name", payload.name);
+      formData.append("email", payload.email);
+      formData.append("password", payload.password);
+      formData.append("logo", businessImage);
+
+      const payloadHeader = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
+
+      await axios.post(
+        "/admin/register-business-admin",
+        formData,
+        payloadHeader
+      );
       setLoading(false);
+      setShowCreated(true);
     } catch (e) {
       console.log("error in data");
       console.log(e);
-
+      setLoading(false);
       setErrorModal(true);
-      setErrorMessage(e && e.error ? e.error : e.toString());
+      setErrorMessage(
+        e && e.response && e.response.data
+          ? e.response.data.message
+          : e.toString()
+      );
     }
-
-    console.log("created");
   };
+
+  useEffect(() => {
+    setLoading(false);
+    setName("");
+    setBusinessName("");
+    setEmail("");
+    setPassword("");
+    setErrorModal(false);
+    setErrorMessage("");
+  }, [modalChanged]);
 
   return (
     <div className="flex justify-center h-full">
@@ -86,19 +117,35 @@ export const CreateBusinessAdmin = () => {
         />
 
         <div className="relative mb-4 w-4/5">
-          <label for="file" className="leading-7 text-sm text-gray-600">
+          <label htmlFor="BusinessLogo" className="text-sm col-span-1">
             Business Logo
+            <input
+              className="text-base text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 mx-4"
+              id="image"
+              name="logo"
+              type="file"
+              onChange={(e) => setBusinessImage(e.target.files[0])}
+              required
+            />
           </label>
-          <input
-            type="file"
-            id="file"
-            name="file"
-            className="w-full bg-white rounded border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 leading-8 transition-colors duration-200 ease-in-out"
-            onChange={(e) => {}}
-          />
         </div>
 
-        <Button title="Create Admin" clickAction={createBusinessAdmin} />
+        {!loading ? (
+          <Button title="Create Admin" clickAction={createBusinessAdmin} />
+        ) : (
+          <Button
+            title="Creating...."
+            disabled={true}
+            color="gray"
+            clickAction={createBusinessAdmin}
+          />
+        )}
+
+        <TimeoutComponent show={showCreated} setShow={setShowCreated}>
+          <div className="text-green-700 text-lg mb-1 mt-5 font-medium title-font">
+            Business Created!!
+          </div>
+        </TimeoutComponent>
       </div>
     </div>
   );

@@ -4,26 +4,243 @@ import { Link, useNavigate } from "react-router-dom";
 import { CreateModal } from "../Reusables/CreateModal";
 import { CreateBusinessAdmin } from "./CreateBusinessAdmin";
 import { clearLocalTokens } from "../../auth/localTokenHandler";
+import axios from "axios";
+import { Loading } from "../Reusables/Loading";
+import { DeleteBusinessConfirmationModal } from "./DeleteBusinessConfirmationModal";
+import { Error } from "../Reusables/Error";
 
 export const AdminDashboard = () => {
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
 
-  const logoutAdmin = () => {
+  const [coupons, setCoupons] = useState([]);
+  const [businesses, setBusinesses] = useState([]);
+  const [customers, setCustomers] = useState([]);
+
+  const [selectedBusinessForDeletion, setSelectedBusinessForDeletion] =
+    useState({});
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+
+  const [loading, setLoading] = useState(true);
+  const [errorModal, setErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // individual states
+
+  const [couponsNotFetched, setCouponsNotFetched] = useState(true);
+  const [businessesNotFetched, setBusinessesNotFetched] = useState(true);
+  const [customersNotFetched, setCustomersNotFetched] = useState(true);
+
+  const getCouponData = async () => {
+    try {
+      // throw "qweqwe";
+      const couponData = await axios.get("/business/most-accessed-coupons/");
+      console.log(couponData);
+      setCoupons(couponData.data.ListOfCoupons);
+      setCouponsNotFetched(false);
+    } catch (e) {
+      setCouponsNotFetched(true);
+    }
+  };
+
+  const getBusinessData = async () => {
+    try {
+      // throw "qweqewwqe";
+      const businessData = await axios.get("/business/list/");
+      setBusinesses(businessData.data.businessData);
+      setBusinessesNotFetched(false);
+    } catch (e) {
+      setBusinessesNotFetched(true);
+    }
+  };
+
+  const getCustomerData = async () => {
+    try {
+      // throw "qewqwe";
+      const customerData = await axios.get("/business/customer/list");
+      setCustomers(customerData.data.ListOfCustomer);
+      setCustomersNotFetched(false);
+    } catch (e) {
+      setCustomersNotFetched(true);
+    }
+  };
+
+  const getData = async () => {
+    setLoading(true);
+    await getCouponData();
+    await getBusinessData();
+    await getCustomerData();
+    setLoading(false);
+    // try {
+    //   setLoading(true);
+
+    //   // const couponData = await axios.get("/business/coupons/");
+
+    //   // const businessData = await axios.get("/business/list/");
+
+    //   // const customerData = await axios.get("/business/customer/list");
+
+    //   // setCoupons(couponData.data.ListOfCoupons);
+    //   // setBusinesses(businessData.data.businessData);
+    //   // setCustomers(customerData.data.ListOfCustomer);
+    //   // setLoading(false);
+    // } catch (e) {
+    //   setLoading(false);
+    //   setErrorModal(true);
+    //   setErrorMessage(
+    //     e && e.response && e.response.data
+    //       ? e.response.data.message
+    //       : e.toString()
+    //   );
+    // }
+  };
+
+  const deleteBusiness = (business) => {
+    setSelectedBusinessForDeletion(business);
+    setOpenDeleteModal(true);
+  };
+
+  const checkImageExists = (image) => {
+    try {
+      require("../../../images/coupon_logo/" + image);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  const buildCouponCard = (coupon) => {
+    return (
+      <li className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
+        <div className="w-14 h-14">
+          {coupon.image && checkImageExists(coupon.image) ? (
+            <img
+              src={require("../../../images/coupon_logo/" + coupon.image)}
+              className="w-full h-14 object-cover rounded-lg hover:pointer"
+              alt={coupon.name}
+            />
+          ) : (
+            <img
+              src="https://placehold.co/320@3x?text=Image+Unavailable&font=open-sans"
+              className="w-full h-14 object-cover rounded-lg"
+              alt={coupon.name}
+            />
+          )}
+        </div>
+        <div className="pl-4">
+          <p className="text-gray-800 font-bold">{coupon.name} </p>
+          <p className="text-gray-400 text-sm">{coupon.description}</p>
+        </div>
+        <span className="lg:flex md:hidden ml-auto right-6 text-md font-medium">
+          <div className="px-3 py-2 bg-gray-600 text-white text-lg rounded-lg ">
+            Max Coupons: {coupon.max_allocation}
+          </div>
+        </span>
+      </li>
+    );
+  };
+
+  const renderCoupons = () => {
+    const allCoupons = [];
+
+    for (let coupon of coupons) {
+      allCoupons.push(buildCouponCard(coupon));
+    }
+
+    return allCoupons;
+  };
+
+  const checkBusinessExists = (image) => {
+    try {
+      require("../../../images/business_logo/" + image);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  const buildbusinessCard = (business) => {
+    console.log(business);
+    return (
+      <li className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
+        <div className="w-14 h-14">
+          {business.logo && checkBusinessExists(business.logo) ? (
+            <img
+              src={require("../../../images/business_logo/" + business.logo)}
+              className="w-full h-14 object-cover rounded-lg hover:pointer"
+              alt={business.name}
+            />
+          ) : (
+            <img
+              src="https://placehold.co/320@3x?text=Image+Unavailable&font=open-sans"
+              className="w-full h-14 object-cover rounded-lg"
+              alt={business.name}
+            />
+          )}
+        </div>
+        <div className="pl-4">
+          <p className="text-gray-800 font-bold">{business.name} </p>
+        </div>
+        <button
+          className="px-3 py-2 bg-red-600 ml-auto text-white text-lg rounded-lg hover:bg-red-700 active:bg-emerald-500"
+          onClick={() => {
+            deleteBusiness(business);
+          }}
+        >
+          Delete Business
+        </button>
+      </li>
+    );
+  };
+
+  const renderbusinesses = () => {
+    const allBusinesses = [];
+
+    for (let business of businesses) {
+      allBusinesses.push(buildbusinessCard(business));
+    }
+
+    return allBusinesses;
+  };
+
+  const logoutAdmin = async () => {
+    // TODO: send logout to server
+
+    await axios.get("/admin/logout");
     clearLocalTokens();
     navigate("/admin-login");
   };
 
   useEffect(() => {
     if (!localStorage.getItem("adminToken")) navigate("/admin-login");
+    getData();
   }, []);
+
+  useEffect(() => {
+    if (!openModal) getBusinessData();
+  }, [openModal]);
+
+  useEffect(() => {
+    if (!openDeleteModal) getBusinessData();
+  }, [openDeleteModal]);
+
+  if (loading) return <Loading />;
 
   return (
     <div class="flex">
       <CreateModal openModal={openModal} setOpenModal={setOpenModal}>
-        <CreateBusinessAdmin />{" "}
+        <CreateBusinessAdmin modalChanged={openModal} />{" "}
       </CreateModal>
-
+      <CreateModal
+        openModal={openDeleteModal}
+        setOpenModal={setOpenDeleteModal}
+      >
+        <DeleteBusinessConfirmationModal
+          business={selectedBusinessForDeletion}
+          modalChanged={openDeleteModal}
+          setOpenModal={setOpenDeleteModal}
+        />{" "}
+      </CreateModal>
       <div class="fixed w-32 h-screen p-4 bg-white flex flex-col justify-between">
         <div class="flex flex-col items-center">
           <div
@@ -44,7 +261,6 @@ export const AdminDashboard = () => {
               logoutAdmin();
             }}
           >
-            {/* <img src="public/img/logout.svg" style="width:20px" /> */}
             Logout
           </div>
         </div>
@@ -52,15 +268,15 @@ export const AdminDashboard = () => {
       <main class=" ml-32 w-full">
         <div class="grid lg:grid-cols-3 gap-5 p-4">
           <StastisticsCard
-            value="50"
+            value={couponsNotFetched ? "Not Found" : coupons.length}
             title="Number of Coupons"
           ></StastisticsCard>
           <StastisticsCard
-            value="50"
+            value={customersNotFetched ? "Not Found" : customers.length}
             title="Number of Customers"
           ></StastisticsCard>
           <StastisticsCard
-            value="50"
+            value={businessesNotFetched ? "Not Found" : businesses.length}
             title="Number of Businesses"
           ></StastisticsCard>
         </div>
@@ -71,35 +287,21 @@ export const AdminDashboard = () => {
               Top 10 Coupons
             </div>
             <ul>
-              {/* {{#each newInquiryList}}
-							<li class="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
-								<div class="bg-teal-100 rounded-lg p-5">
-									<img src="../public/img/solar.svg" class="text-purple-800 w-[40px]" />
-								</div>
-								<div class="pl-4">
-									<p class="text-gray-800 font-bold">{{subject}}</p>
-									<p class="text-gray-400 text-sm">{{message}}</p>
-								</div>
-								<span class="lg:flex md:hidden absolute right-6 text-md font-medium"><a href="/sales/generateaccount/{{_id}}"><button class="px-3 py-2 bg-emerald-600 text-white text-lg rounded-lg hover:bg-emerald-700 active:bg-emerald-500">Claim</button></a></span>
-							</li>
-						{{/each}} */}
+              {couponsNotFetched ? (
+                <div class="text-xl text-teal-600 p-2">Not Found</div>
+              ) : (
+                renderCoupons()
+              )}
             </ul>
           </div>
           <div class="md:col-span-2 p-4 lg:h-[80vh] h-[50vh] rounded-lg bg-white overflow-y-auto">
             <div class="text-3xl font-medium text-teal-600 p-2">Businesses</div>
             <ul>
-              {/* {{#each ongoingInquiryList}}
-							<li class="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 flex items-center">
-								<div class="bg-yellow-100 rounded-lg p-5">
-									<img src="../public/img/solar-panel.svg" class="text-purple-800 w-[40px]" />
-								</div>
-								<div class="pl-4">
-									<p class="text-gray-800 font-bold">{{subject}}</p>
-									<p class="text-gray-400 text-sm">{{message}}</p>
-								</div>
-								<p class="lg:flex md:hidden absolute right-6 text-md font-medium"><a href="/sales/inquirydetails/{{_id}}"><button class="px-3 py-2 bg-emerald-600 text-white text-lg rounded-lg hover:bg-emerald-700 active:bg-emerald-500">Details</button></a></p>
-							</li>
-						{{/each}} */}
+              {businessesNotFetched ? (
+                <div class="text-xl text-teal-600 p-2">Not Found</div>
+              ) : (
+                renderbusinesses()
+              )}
             </ul>
           </div>
         </div>

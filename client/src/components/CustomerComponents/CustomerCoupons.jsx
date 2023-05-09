@@ -8,7 +8,6 @@ import { buildToken } from "../../auth/tokenBuilder";
 import axios from "axios";
 
 export const CustomerCoupons = () => {
-	const [selfCoupons, setSelfCoupons] = useState([]);
 	const [errorModal, setErrorModal] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [loading, setLoading] = useState(false);
@@ -26,7 +25,7 @@ export const CustomerCoupons = () => {
 			} catch (e) {
 				setLoading(false);
 				setErrorModal(true);
-				setErrorMessage(e && e.error ? e.error : e.toString());
+				setErrorMessage(e && e.response && e.response.data ? e.response.data.message : e.toString());
 				console.log(e);
 			}
 		}
@@ -34,16 +33,38 @@ export const CustomerCoupons = () => {
 		fetchCustomerDetails();
 	}, []);
 
+	const checkImageExists = (image) => {
+		try {
+			require("../../../images/coupon_logo/" + image);
+			return true;
+		} catch (error) {
+			return false;
+		}
+	};
+
 	const handleCoupons = (coupons) => {
 		if (coupons && coupons.length > 0) {
 			return coupons.map((coupon) => {
 				return (
-					<div key={coupon._id} className="coupon col-span-1 bg-indigo-800 text-slate-200 rounded-lg my-4 overflow-x-auto">
-						<div className="flex justify-center pt-2 text-xl">{coupon.business_name}</div>
+					<div key={coupon._id} className="coupon col-span-1 bg-indigo-800 text-slate-200 rounded-lg my-4 hover:cursor-default overflow-x-auto">
+						{coupon.image && checkImageExists(coupon.image) ? (
+							<img
+								src={require("../../../images/coupon_logo/" + coupon.image)}
+								className="w-full h-40 object-cover rounded-t-lg hover:pointer"
+								alt={coupon.coupon_name}
+							/>
+						) : (
+							<img
+								src="https://placehold.co/320@3x?text=Image+Unavailable&font=open-sans"
+								className="w-full h-40 object-cover rounded-t-lg"
+								alt={coupon.coupon_name}
+							/>
+						)}
+						<div className="flex justify-center pt-2 text-xl">{coupon.name}</div>
 						<span>
 							<div className="px-4 py-2 text-lg">Offer: {coupon.coupon_name}</div>
 						</span>
-						<div className="w-full bg-gray-200 text-black rounded-b-lg">
+						<div className="w-full bg-gray-200 text-black rounded-b-lg hover:cursor-text">
 							<div className="p-4">{coupon.coupon_code}</div>
 						</div>
 					</div>
@@ -57,57 +78,6 @@ export const CustomerCoupons = () => {
 			);
 		}
 	};
-
-	let coupons = [
-		{
-			id: 1,
-			businessName: "Walmart",
-			discount: "10% off",
-			code: "COUPONHG345JHBDFG",
-		},
-		{
-			id: 2,
-			businessName: "Target",
-			discount: "20% off",
-			code: "COUPONHG345JHBSFG",
-		},
-		{
-			id: 3,
-			businessName: "Nike",
-			discount: "30% off",
-			code: "COUPONHG345JHBSFG",
-		},
-		{
-			id: 4,
-			businessName: "Adidas",
-			discount: "40% off",
-			code: "COUPONHG345JHBSFG",
-		},
-		{
-			id: 5,
-			businessName: "Samsung",
-			discount: "50% off",
-			code: "COUPONHG345JHBSFG",
-		},
-		{
-			id: 6,
-			businessName: "Gamestop",
-			discount: "60% off",
-			code: "COUPONHG345JHBSFG",
-		},
-		{
-			id: 7,
-			businessName: "Sony",
-			discount: "70% off",
-			code: "COUPONHG345JHBSFG",
-		},
-		{
-			id: 8,
-			businessName: "IKEA",
-			discount: "80% off",
-			code: "COUPONHG345JHBSFG",
-		},
-	];
 
 	if (loading) return <Loading />;
 
@@ -129,7 +99,7 @@ export const CustomerCoupons = () => {
 					<StastisticsCard value={customerDetails && customerDetails.points} title="Points" />
 					<StastisticsCard value={customerDetails && customerDetails.coupons ? customerDetails.coupons.length : "N/A"} title="Total Coupons Won" />
 				</div>
-				<div className="h-[70vh] md:h-[85vh] lg:h-[85vh] pt-4 px-4 pb-0 grid grid-cols-1 gap-4">
+				<div className="h-[70vh] md:h-[80vh] lg:h-[85vh] pt-4 px-4 pb-0 grid grid-cols-1 gap-4">
 					<div className="max-w-full col-span-1 p-4 h-full rounded-lg bg-white bg-opacity-40 overflow-auto">
 						<div className="flex justify-center text-3xl font-medium text-indigo-700 p-2">My Coupons</div>
 						<div className="couponsList w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4 p-8">

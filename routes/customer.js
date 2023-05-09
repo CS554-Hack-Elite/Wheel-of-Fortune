@@ -11,7 +11,14 @@ client.connect().then(() => {});
 router.route("/get-customer").get(async (req, res) => {
 	try {
 		let email = req.user && req.user.email ? req.user.email : "";
-		const user = await customerData.getCustomerByEmail(email);
+		if (!(await client.exists("customer-detail-" + email))) {
+			const user = await customerData.getCustomerByEmail(email);
+			await client.set("customer-detail-" + email, JSON.stringify(user));
+			return res.status(200).json(user);
+		} else {
+			let data = await client.get(`customer-detail-${email}`);
+			return res.status(200).json(JSON.parse(data));
+		}
 		res.status(200).json(user);
 	} catch (e) {
 		res.status(e.status ? e.status : 400).json({ message: e.message ? e.message : e });
@@ -73,24 +80,6 @@ router.route("/coupon-list").get(async (req, res) => {
 	}
 });
 
-router.route("/coupon-list").get(async (req, res) => {
-	try {
-		const errorObject = {
-			status: 400,
-		};
-		let email = req.user && req.user.email ? req.user.email : "";
-		if (!(await client.exists("customer-coupon-" + email))) {
-			const user = await customerData.getCustomerByEmail(email);
-			return res.status(200).json({ ListOfCoupons: user.coupons });
-		} else {
-			let data = await client.get(`customer-coupon-${email}`);
-			return res.status(200).json({ ListOfCoupons: JSON.parse(data) });
-		}
-	} catch (e) {
-		res.status(e.status ? e.status : 400).json({ message: e.message ? e.message : e });
-	}
-});
-
 router.route("/update-points").post(async (req, res) => {
 	try {
 		const errorObject = {
@@ -107,7 +96,7 @@ router.route("/update-points").post(async (req, res) => {
 
 		const updatedCustomerRow = await customerData.updatePoints(result);
 		client.zIncrBy("mostAccessed", 1, result.coupon_id);
-		await client.set(`customer-coupon-${updatedCustomerRow.email}`, JSON.stringify(updatedCustomerRow.coupons));
+		await client.set(`customer-detail-${updatedCustomerRow.email}`, JSON.stringify(updatedCustomerRow));
 		return res.status(200).json({ customer: updatedCustomerRow });
 	} catch (e) {
 		res.status(e.status ? e.status : 400).json({ message: e.message ? e.message : e });

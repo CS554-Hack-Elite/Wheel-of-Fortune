@@ -11,8 +11,6 @@ export const DeleteBusinessConfirmationModal = ({ business, setOpenModal }) => {
     try {
       await axios.delete("/business/delete/" + business._id);
 
-      console.log("deleted");
-
       setOpenModal(false);
     } catch (e) {
       console.log(e);

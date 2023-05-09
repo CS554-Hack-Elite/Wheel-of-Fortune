@@ -8,15 +8,12 @@ import { Error } from "../Reusables/Error";
 import { TimeoutComponent } from "../Reusables/TimeoutComponent";
 
 export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
-  console.log(modalChanged);
   const [loading, setLoading] = useState(false);
   const [couponName, setCouponName] = useState("");
   const [couponDescription, setCouponDescription] = useState("");
   const [couponMaxAllocation, setCouponMaxAllocation] = useState(0);
   const [couponImage, setCouponImage] = useState(null);
   const [imageInputValue, setImageInputValue] = useState(false);
-
-  console.log(couponImage);
 
   const [showCreated, setShowCreated] = useState(false);
 
@@ -59,14 +56,6 @@ export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
         },
       };
 
-      console.log("payload");
-      console.log(payload);
-
-      console.log("Cimage");
-      console.log(couponImage);
-
-      // console.log(formData);
-
       await axios.post("/business/generate_coupon", formData, payloadHeader);
 
       setLoading(false);
@@ -79,7 +68,6 @@ export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
 
       setShowCreated(true);
     } catch (e) {
-      console.log(e);
       setLoading(false);
       setErrorModal(true);
       setErrorMessage(
@@ -134,10 +122,6 @@ export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
         />
 
         <div className="relative mb-4 w-4/5">
-          {/* <label for="file" className="leading-7 text-sm text-gray-600">
-            Coupon Image
-          </label> */}
-
           <label htmlFor="couponImage" className="text-xl col-span-1 m-4">
             Coupon
             <input
@@ -152,18 +136,7 @@ export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
               required
             />
           </label>
-          {/* <input
-            type="file"
-            id="file"
-            name="file"
-            className="w-full bg-white rounded border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 leading-8 transition-colors duration-200 ease-in-out"
-            // onChange={(e) => {
-            //   changeAction(e.target.value);
-            // }}
-          /> */}
         </div>
-
-        {/* <Button title="Create Coupon" clickAction={createCoupon} /> */}
 
         {!loading ? (
           <Button title="Create Coupon" clickAction={createCoupon} />

@@ -18,8 +18,6 @@ export const BusinessAdminDashboard = () => {
   const parsedToken = JSON.parse(businessToken);
   const [business, setBusiness] = useState(parsedToken.businessAdmin);
 
-  // console.log(parsedToken);
-
   const [openModal, setOpenModal] = useState(false);
   const [pointsModal, setPointsModal] = useState(false);
   const [requests, setRequests] = useState([]);
@@ -32,22 +30,9 @@ export const BusinessAdminDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  // const [error, setError] = useState(false);
 
   const [requestsNotFound, setRequestsNotFound] = useState(true);
   const [couponsNotFound, setCouponsNotFound] = useState(true);
-
-  // const buildLocalToken = () => {
-  //   const businessToken = localStorage.getItem("businessAdminToken");
-  //   console.log(businessToken);
-  //   if (!businessToken) navigate("/admin-login");
-  //   else {
-  //     const parsedToken = JSON.parse(businessToken);
-  //     setBusiness(parsedToken.businessAdmin);
-  //   }
-  // };
-
-  // console.log(business);
 
   const buildProofs = (customers) => {
     const allProofs = [];
@@ -71,7 +56,6 @@ export const BusinessAdminDashboard = () => {
         "business/coupons/" + business.business_id
       );
       setCoupons(couponData.data.ListOfCoupons);
-      console.log(coupons);
       setCouponsNotFound(false);
     } catch (e) {
       setCouponsNotFound(true);
@@ -96,37 +80,6 @@ export const BusinessAdminDashboard = () => {
     await getCouponData();
     await getRequestData();
     setLoading(false);
-    // try {
-    //   setLoading(true);
-
-    //   const payload = {
-    //     business_id: business.businessAdmin.business_id,
-    //   };
-
-    //   const requestData = await axios.get(
-    //     "/business/get-proof/" + payload.business_id
-    //   );
-
-    //   const couponData = await axios.get(
-    //     "business/coupons/" + payload.business_id
-    //   );
-
-    //   console.log(couponData.data.ListOfCoupons);
-
-    //   setRequests(buildProofs(requestData.data.proof));
-    //   setCoupons(couponData.data.ListOfCoupons);
-
-    //   setLoading(false);
-    // } catch (e) {
-    //   setLoading(false);
-    //   setError(true);
-    //   // setErrorModal(true);
-    //   // setErrorMessage(
-    //   //   e && e.response && e.response.data
-    //   //     ? e.response.data.message
-    //   //     : e.toString()
-    //   // );
-    // }
   };
 
   const toggleCouponStatus = async (coupon) => {
@@ -210,7 +163,6 @@ export const BusinessAdminDashboard = () => {
   };
 
   const buildRequestCard = (request) => {
-    console.log(request);
     return (
       <li
         key={request._id}
@@ -228,7 +180,7 @@ export const BusinessAdminDashboard = () => {
             />
           ) : (
             <img
-              src="https://placehold.co/320@3x?N/A&font=open-sans"
+              src="https://placehold.co/320@3x?text=N/A&font=open-sans"
               className="w-full h-14 object-cover rounded-lg"
               alt={request.customer_name}
             />
@@ -307,7 +259,7 @@ export const BusinessAdminDashboard = () => {
             />
           ) : (
             <img
-              src="https://placehold.co/320@3x?N/A&font=open-sans"
+              src="https://placehold.co/320@3x?text=N/A&font=open-sans"
               className="w-full h-14 object-cover rounded-lg"
               alt={coupon.name}
             />
@@ -352,23 +304,6 @@ export const BusinessAdminDashboard = () => {
   useEffect(() => {
     if (!openModal) getCouponData();
   }, [openModal]);
-
-  // if (loading) return <Loading />;
-
-  // if (error)
-  //   return (
-  //     <div class="flex flex-col items-center justify-around ">
-  //       <Error message={errorMessage} />
-  //       <div
-  //         class="bg-gray-100 hover:bg-gray-200 cursor-pointer my-4 p-3 rounded-lg inline-block"
-  //         onClick={() => {
-  //           logoutAdmin();
-  //         }}
-  //       >
-  //         Logout
-  //       </div>
-  //     </div>
-  //   );
 
   return (
     <div>

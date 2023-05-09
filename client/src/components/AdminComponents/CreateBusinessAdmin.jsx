@@ -70,8 +70,6 @@ export const CreateBusinessAdmin = ({ modalChanged }) => {
       setPassword("");
       setShowCreated(true);
     } catch (e) {
-      console.log("error in data");
-      console.log(e);
       setLoading(false);
       setErrorModal(true);
       setErrorMessage(

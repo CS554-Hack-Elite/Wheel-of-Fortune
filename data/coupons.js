@@ -20,12 +20,7 @@ const exportedMethods = {
       status: 400,
     };
 
-    let objKeys = [
-      "name",
-      "description",
-      "max_allocation",
-      "business_id",
-    ];
+    let objKeys = ["name", "description", "max_allocation", "business_id"];
     objKeys.forEach((element) => {
       result[element] = helpers.checkInput(
         element,
@@ -36,7 +31,9 @@ const exportedMethods = {
     let business_id = result.business_id;
     console.log(business_id);
     const businessCollection = await business();
-    const businessRow = await businessCollection.findOne({ _id: new ObjectId(business_id) });
+    const businessRow = await businessCollection.findOne({
+      _id: new ObjectId(business_id),
+    });
 
     if (!businessRow) {
       errorObject.status = 404;
@@ -44,7 +41,10 @@ const exportedMethods = {
       throw errorObject;
     }
     const couponsCollection = await coupons();
-    let duplicateCoupon = await couponsCollection.findOne({ name: result.name, business_id: business_id });
+    let duplicateCoupon = await couponsCollection.findOne({
+      name: result.name,
+      business_id: business_id,
+    });
     if (duplicateCoupon != null) {
       errorObject.message = "Coupon with this name already exists.";
       throw errorObject;
@@ -95,7 +95,9 @@ const exportedMethods = {
     id = helpers.checkInput("business_id", id, "Invalid Business Id");
 
     const businessCollection = await business();
-    const businessRow = await businessCollection.findOne({ _id: new ObjectId(id) });
+    const businessRow = await businessCollection.findOne({
+      _id: new ObjectId(id),
+    });
 
     if (!businessRow) {
       errorObject.status = 404;
@@ -103,14 +105,21 @@ const exportedMethods = {
       throw errorObject;
     }
     const couponsCollection = await coupons();
-    const couponsList = await couponsCollection.find({ business_id: id }).toArray();
+    const couponsList = await couponsCollection
+      .find({ business_id: id })
+      .toArray();
 
     const couponsWithCounts = [];
 
     for (let i = 0; i < couponsList.length; i++) {
       const coupon = couponsList[i];
-      const unusedCouponCount = coupon.coupon_codes.filter(code => code.status === 1).length;
-      const couponWithCount = { ...coupon, unused_coupon_count: unusedCouponCount };
+      const unusedCouponCount = coupon.coupon_codes.filter(
+        (code) => code.status === 1
+      ).length;
+      const couponWithCount = {
+        ...coupon,
+        unused_coupon_count: unusedCouponCount,
+      };
       couponsWithCounts.push(couponWithCount);
     }
 
@@ -136,6 +145,7 @@ const exportedMethods = {
     });
 
     if (!couponRow) {
+      errorObject.status = 404;
       errorObject.message = "No coupon with this id found for business";
       throw errorObject;
     }
@@ -153,7 +163,7 @@ const exportedMethods = {
       if (!couponRow) {
         errorObject.message =
           "Coupon cannot be displayed as all codes are used";
-          throw errorObject;
+        throw errorObject;
       }
     }
 
@@ -214,6 +224,14 @@ const exportedMethods = {
     id = helpers.checkInput("coupon_id", id, "Invalid Coupon Id");
     const couponsCollection = await coupons();
     let coupon = null;
+    coupon = await couponsCollection.findOne({
+      _id: new ObjectId(id),
+    });
+    if (!coupon) {
+      errorObject.status = 404;
+      errorObject.message = "Coupon with this ID not found";
+      throw errorObject;
+    }
     if (displayCoupon) {
       coupon = await couponsCollection.findOne({
         _id: new ObjectId(id),
@@ -224,14 +242,12 @@ const exportedMethods = {
           },
         },
       });
-    } else {
-      coupon = await couponsCollection.findOne({
-        _id: new ObjectId(id),
-      });
-    }
-    if (!coupon) {
-      errorObject.message = "Invalid Coupon Id provided";
-      throw errorObject;
+
+      if (!coupon) {
+        errorObject.status = 400;
+        errorObject.message = "Coupon is not displayed";
+        throw errorObject;
+      }
     }
     return coupon;
   },

@@ -153,6 +153,16 @@ const exportedMethods = {
           } must be a valid number.`;
           throw errorObject;
         }
+
+        inputRegExp = /^[0-9]+$/;
+        valid = inputRegExp.test(val);
+        if (!valid) {
+          errorObject.message = `${
+            variableName || "Provided variable"
+          }   must be a valid Age.`;
+          throw errorObject;
+        }
+        val = parseInt(val);
         if (val < 13 || val > 120) {
           errorObject.message = `${
             variableName || "Provided variable"

@@ -4,9 +4,6 @@ const saltRounds = 10;
 import helpers from "../helpers/customerHelper.js";
 import { businessData, couponsData } from "./index.js";
 import { ObjectId } from "mongodb";
-import functions from "firebase-functions";
-import sgMail from "@sendgrid/mail";
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const exportedMethods = {
   /**
@@ -119,16 +116,6 @@ const exportedMethods = {
       status: 400,
     };
 
-    // const msg = {
-    //   to: "tanay.cybercom@gmail.com",
-    //   from: "tanay.cybercom@gmail.com",
-    //   subject: "Your Subject",
-    //   text: "HELLO",
-    //   html: `<p>HELLO</p>`,
-    // };
-
-    // await sgMail.send(msg);
-
     let objKeys = [];
     objKeys = ["business_id", "email"];
     objKeys.forEach((element) => {
@@ -222,7 +209,6 @@ const exportedMethods = {
     const errorObject = {
       status: 400,
     };
-    console.log(business_id);
     business_id = helpers.checkInput(
       "business_id",
       business_id,
@@ -280,7 +266,7 @@ const exportedMethods = {
     });
     let customerRow = await this.getCustomerByEmail(result.email);
     if (customerRow.points < 1) {
-      errorObject.status = 401;
+      errorObject.status = 400;
       errorObject.message = "Cannot spin the wheel, insufficient points";
       throw errorObject;
     }

@@ -7,6 +7,8 @@ import { exec } from "child_process";
 import redis from "redis";
 const client = redis.createClient();
 client.connect().then(() => {});
+import os from "os";
+const osName = os.platform();
 
 router.route("/get-customer").get(async (req, res) => {
 	try {
@@ -120,66 +122,54 @@ router.route("/coupons").get(async (req, res) => {
 });
 
 router.route("/upload-proof").post(async (req, res) => {
-  try {
-    const errorObject = {
-      status: 400,
-    };
-    if (!req.files || !req.files.proof) {
-      errorObject.message = "Please upload image for proof";
-      throw errorObject;
-    }
-    if (
-      !req.files.proof.mimetype ||
-      (req.files.proof.mimetype !== "image/png" &&
-        req.files.proof.mimetype !== "image/jpeg" &&
-        req.files.proof.mimetype !== "image/jpg")
-    ) {
-      errorObject.message = "Uploaded file must be jpeg, png or jpg";
-      throw errorObject;
-    }
-    let result = {};
-    let objKeys = [];
-    const imageData = req.files.proof.data;
-    const outputDirectory = "client/images/proof";
-    const outputFileName = Date.now() + "-" + req.files.proof.name;
-    const width = 200;
+	try {
+		const errorObject = {
+			status: 400,
+		};
+		if (!req.files || !req.files.proof) {
+			errorObject.message = "Please upload image for proof";
+			throw errorObject;
+		}
+		let result = {};
+		let objKeys = [];
+		const imageData = req.files.proof.data;
+		const outputDirectory = "client/images/proof";
+		const outputFileName = Date.now() + "-" + req.files.proof.name;
+		const width = 500;
 
-    const outputFilePath = `${outputDirectory}/${outputFileName}`;
-    fs.writeFileSync(outputFilePath, imageData);
+		const outputFilePath = `${outputDirectory}/${outputFileName}`;
+		fs.writeFileSync(outputFilePath, imageData);
 
-    const command = `magick  convert "${outputFilePath}" label:Wheel_of_Fortune -gravity Center -append "${outputFilePath}"`;
+		let command = "";
+		if (osName === "win32") {
+			command = `magick  convert "${outputFilePath}" -resize ${width} label:Wheel_of_Fortune -gravity Center -append "${outputFilePath}"`;
+		} else {
+			command = `convert "${outputFilePath}" -resize ${width} label:Wheel_of_Fortune -gravity Center -append "${outputFilePath}"`;
+		}
 
-    exec(command, (error, stdout, stderr) => {
-      if (error) {
-        errorObject.message = `exec error: ${error.toString()}`;
-        console.log(errorObject);
-      }
-    });
+		exec(command, (error, stdout, stderr) => {
+			if (error) {
+				errorObject.message = `exec error: ${error.toString()}`;
+				console.log(errorObject);
+			}
+		});
 
-    result = req.body;
-    result.proof = outputFileName;
-    let email = req.user && req.user.email ? req.user.email : "";
-    result.email = email;
-    objKeys = ["business_id", "email"];
+		result = req.body;
+		result.proof = outputFileName;
+		let email = req.user && req.user.email ? req.user.email : "";
+		result.email = email;
+		objKeys = ["business_id", "email"];
 
-    objKeys.forEach((element) => {
-      result[element] = helpers.checkInput(
-        element,
-        result[element],
-        element + " for the proof"
-      );
-    });
-    const updatedCustomerRow = await customerData.uploadProof(result);
-    await client.set(
-      "customer-detail-" + updatedCustomerRow.email,
-      JSON.stringify(updatedCustomerRow)
-    );
-    return res.status(200).json({ customer: updatedCustomerRow });
-  } catch (e) {
-    res
-      .status(e.status ? e.status : 400)
-      .json({ message: e.message ? e.message : e });
-  }
+		objKeys.forEach((element) => {
+			result[element] = helpers.checkInput(element, result[element], element + " for the proof");
+		});
+		const updatedCustomerRow = await customerData.uploadProof(result);
+		await client.set("customer-detail-" + updatedCustomerRow.email, JSON.stringify(updatedCustomerRow));
+		return res.status(200).json({ customer: updatedCustomerRow });
+	} catch (e) {
+		console.log(e);
+		res.status(e.status ? e.status : 400).json({ message: e.message ? e.message : e });
+	}
 });
 
 export default router;

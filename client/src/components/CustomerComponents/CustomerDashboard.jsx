@@ -60,7 +60,6 @@ export const CustomerDashboard = () => {
 
 	async function fetchCustomerDetails() {
 		try {
-			// setLoading(true);
 			const payloadHeader = await buildToken();
 			console.log("payload header", payloadHeader);
 			const response = await axios.get("/users/get-customer", payloadHeader);
@@ -70,7 +69,6 @@ export const CustomerDashboard = () => {
 				setAllowSpin(false);
 			}
 			setCustomerDetails(response.data);
-			// setLoading(false);
 		} catch (e) {
 			setLoading(false);
 			setErrorModal(true);

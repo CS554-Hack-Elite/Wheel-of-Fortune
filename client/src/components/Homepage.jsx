@@ -8,7 +8,7 @@ export const Homepage = () => {
 			<nav className="z-10 fixed top-0 w-full h-20 flex justify-normal bg-indigo-950 drop-shadow-md text-white">
 				<div className="flex-1">
 					<Link to="/home" aria-label="Home">
-						<button className="h-full w-24 ml-16 transition duration-200 hover:bg-indigo-800 hover:cursor-pointer active:bg-indigo-500">
+						<button className="h-full w-24 ml-8 transition duration-200 hover:bg-indigo-800 hover:cursor-pointer active:bg-indigo-500">
 							<span className="hidden">Home</span>
 							<IoHomeOutline className="w-full" size={25} />
 						</button>

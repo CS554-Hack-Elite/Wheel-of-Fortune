@@ -103,7 +103,7 @@ export const CreateBusinessAdmin = ({ modalChanged }) => {
         </div>
 
         <FormInput
-          title="Admin Name"
+          title="Business Name"
           type="text"
           value={name}
           changeAction={setName}

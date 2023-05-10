@@ -116,7 +116,7 @@ export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
         />
 
         <FormInput
-          title="Coupon Description"
+          title="Coupon Terms"
           type="text"
           value={couponDescription}
           changeAction={setCouponDescription}

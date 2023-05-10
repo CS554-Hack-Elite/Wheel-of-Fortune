@@ -32,7 +32,7 @@ export const Signup = () => {
       const payload = {
         name,
         email,
-        age: parseInt(age),
+        age: age,
         password,
         google_authenticated: 2,
       };

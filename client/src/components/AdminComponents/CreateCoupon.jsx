@@ -31,7 +31,6 @@ export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
     try {
       setLoading(true);
 
-      //TODO: Handle image
       const payload = {
         coupon_name: couponName,
         description: couponDescription,

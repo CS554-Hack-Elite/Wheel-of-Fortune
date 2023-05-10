@@ -114,15 +114,6 @@ const exportedMethods = {
           } must not exceed 15 characters and must atleast have 2 characters.`;
           throw errorObject;
         }
-
-        inputRegExp = /\d*[a-zA-Z][a-zA-Z0-9. ][!@#\$%\^&\*]*$/;
-        valid = inputRegExp.test(val);
-        if (!valid) {
-          errorObject.message = `${
-            variableName || "Provided variable"
-          }   must be a valid Name.`;
-          throw errorObject;
-        }
         break;
 
       case "image":

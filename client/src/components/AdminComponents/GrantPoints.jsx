@@ -20,12 +20,10 @@ export const GrantPoints = ({ requestDetails, setOpenModal }) => {
     try {
       setLoading(true);
 
-      console.log(requestDetails);
-
       const payload = {
         proof_id: requestDetails._id,
         status: status === "approve" ? 2 : 3,
-        points: status === "approve" ? parseInt(points) : 0,
+        points: status === "approve" ? points : 0,
         email: requestDetails.customer_email,
       };
 

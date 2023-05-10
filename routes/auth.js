@@ -9,7 +9,6 @@ router.route("/login").get(async (req, res) => {
     const decodeValue = await auth.verifyIdToken(token);
     if (decodeValue) {
       req.user = decodeValue;
-      console.log(decodeValue);
     }
   } catch (e) {
     res

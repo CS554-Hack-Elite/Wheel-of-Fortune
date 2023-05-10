@@ -81,9 +81,7 @@ const exportedMethods = {
         break;
       case "coupon_name":
         if (typeof val !== "string") {
-          errorObject.message = `${
-            variableName || "Provided variable"
-          } must be a string.`;
+          throw `${variableName || "Provided variable"} must be a string.`;
           throw errorObject;
         }
         val = val.trim();

@@ -165,9 +165,18 @@ const exportedMethods = {
       "proof._id": new ObjectId(result.proof_id),
     });
     if (!proofRow) {
-      errorObject.message = "Invalid Proof Id provided";
+      errorObject.status = 404;
+      errorObject.message = "Proof Id not Found";
       throw errorObject;
     }
+
+    if (proofRow.business_id !== result.business_id) {
+      errorObject.status = 403;
+      errorObject.message = "Cannot Update proof for other business";
+      throw errorObject;
+    }
+
+
     proofRow = await customerCollection.findOne({
       email: result.email,
       proof: {

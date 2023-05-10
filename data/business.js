@@ -60,7 +60,6 @@ const exportedMethods = {
     const errorObject = {
       status: 400,
     };
-    console.log(id);
     id = helpers.checkInput("business_id", id, "Invalid Business Id");
     const businessCollection = await business();
     const businessDoc = await businessCollection.findOne({

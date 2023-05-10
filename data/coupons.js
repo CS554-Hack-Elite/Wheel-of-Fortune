@@ -22,14 +22,23 @@ const exportedMethods = {
 
     let objKeys = ["name", "description", "max_allocation", "business_id"];
     objKeys.forEach((element) => {
-      result[element] = helpers.checkInput(
-        element,
-        result[element],
-        element + " for the coupons"
-      );
+      if (element !== "name") {
+        result[element] = helpers.checkInput(
+          element,
+          result[element],
+          element + " of the coupon",
+          true
+        );
+      } else {
+        result[element] = helpers.checkInput(
+          "coupon_name",
+          result[element],
+          element + " of the coupon",
+          true
+        );
+      }
     });
     let business_id = result.business_id;
-    console.log(business_id);
     const businessCollection = await business();
     const businessRow = await businessCollection.findOne({
       _id: new ObjectId(business_id),
@@ -61,7 +70,6 @@ const exportedMethods = {
       });
     }
 
-    //console.log(codes);
 
     const coupon = {
       _id: new ObjectId(),
@@ -201,14 +209,13 @@ const exportedMethods = {
       }
     }
 
-    // If the length of the list is greater than 10, randomly select 10 coupons
     if (couponsWithCodes.length > 10) {
       const randomCoupons = [];
-      const copyCoupons = couponsWithCodes.slice(); // create a copy of the couponsWithCodes array
+      const copyCoupons = couponsWithCodes.slice();
       while (randomCoupons.length < 10) {
         const randomIndex = Math.floor(Math.random() * copyCoupons.length);
         randomCoupons.push(copyCoupons[randomIndex]);
-        copyCoupons.splice(randomIndex, 1); // remove the selected coupon from the copyCoupons array
+        copyCoupons.splice(randomIndex, 1);
       }
       return randomCoupons;
     } else {

@@ -23,6 +23,6 @@ export const VerifyToken = async (req, res, next) => {
       return next();
     }
   } catch (e) {
-    return res.json({ message: "Firebase Authentication Error" });
+    return res.status(401).json({ message: "Firebase Authentication Error" });
   }
 };

@@ -25,14 +25,12 @@ export const CreateBusinessAdmin = ({ modalChanged }) => {
   const createBusinessAdmin = async () => {
     const objKeys = ["name", "email", "password"];
 
-    //TODO: Handle image
     try {
       setLoading(true);
       const payload = {
         name,
         email,
         password,
-        logo: "qweqwe",
       };
 
       objKeys.forEach((element) => {
@@ -128,7 +126,7 @@ export const CreateBusinessAdmin = ({ modalChanged }) => {
             Business Logo
             <input
               className="text-base text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 mx-4"
-              id="image"
+              id="BusinessLogo"
               name="logo"
               type="file"
               onChange={(e) => setBusinessImage(e.target.files[0])}

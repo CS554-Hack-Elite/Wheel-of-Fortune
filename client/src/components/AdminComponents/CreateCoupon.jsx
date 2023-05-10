@@ -134,7 +134,7 @@ export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
             Coupon
             <input
               className="text-base text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 mx-4"
-              id="image"
+              id="couponImage"
               name="image"
               type="file"
               onChange={(e) => {

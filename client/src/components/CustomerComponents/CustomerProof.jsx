@@ -101,7 +101,7 @@ export const CustomerProof = () => {
 							<span className="h-0.5 bg-gradient-to-r from-indigo-200 w-full"></span>
 						</span>
 						<span className="py-2">
-							<div className="px-4 py-2 text-s">Points Earned: {proof.points_earned ? proof.points_earned : "None"}</div>
+							<span className="px-4 py-2 text-s">Points Earned: {proof.points_earned ? proof.points_earned : "None"}</span>
 						</span>
 					</div>
 				);

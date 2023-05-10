@@ -5,31 +5,32 @@ import { Link } from "react-router-dom";
 export const Homepage = () => {
 	return (
 		<div>
-			<nav className="z-10 fixed top-0 w-full h-20 flex justify-normal bg-indigo-950 drop-shadow-md text-white">
-				<div className="flex-1">
-					<Link to="/home" aria-label="Home">
-						<button className="h-full w-24 ml-8 transition duration-200 hover:bg-indigo-800 hover:cursor-pointer active:bg-indigo-500">
-							<span className="hidden">Home</span>
-							<IoHomeOutline className="w-full" size={25} />
-						</button>
-					</Link>
-				</div>
-				<div className="text-lg">
-					<Link to="/signup" className="px-2">
-						<button className="h-full min-w-fit w-24 px-4 transition duration-200 hover:bg-indigo-800  hover:cursor-pointer active:bg-indigo-500">
+			<nav className="z-10 fixed top-0 w-full h-20 flex justify-evenly bg-indigo-950 drop-shadow-md text-white">
+				<div className="text-lg flex justify-between my-6">
+					<div>
+						<Link
+							to="/signup"
+							className="h-full min-w-fit w-24 p-4 mx-4 transition duration-200 hover:bg-indigo-800  hover:cursor-pointer active:bg-indigo-500 rounded-lg"
+						>
 							Sign Up
-						</button>
-					</Link>
-					<Link to="/login" className="pl-2 px-2">
-						<button className="h-full min-w-fit w-24 px-4 transition duration-200 hover:bg-indigo-800  hover:cursor-pointer active:bg-indigo-500">
+						</Link>
+					</div>
+					<div>
+						<Link
+							to="/login"
+							className="h-full min-w-fit w-24 p-4 mx-4 transition duration-200 hover:bg-indigo-800  hover:cursor-pointer active:bg-indigo-500 rounded-lg"
+						>
 							Log In
-						</button>
-					</Link>
-					<Link to="/admin-login" className="pl-2">
-						<button className="h-full min-w-fit px-4 transition duration-200 hover:bg-indigo-800  hover:cursor-pointer active:bg-indigo-500">
+						</Link>
+					</div>
+					<div>
+						<Link
+							to="/admin-login"
+							className="h-full min-w-fit p-4 mx-4 transition duration-200 hover:bg-indigo-800  hover:cursor-pointer active:bg-indigo-500 rounded-lg"
+						>
 							Admin Login
-						</button>
-					</Link>
+						</Link>
+					</div>
 				</div>
 			</nav>
 			<main className="h-screen">

@@ -62,7 +62,7 @@ export const CustomerCoupons = () => {
 						)}
 						<div className="flex justify-center pt-2 text-xl">{coupon.name}</div>
 						<span>
-							<div className="px-4 py-2 text-lg">Offer: {coupon.coupon_name}</div>
+							<span className="px-4 py-2 text-lg">Offer: {coupon.coupon_name}</span>
 						</span>
 						<div className="w-full bg-gray-200 text-black rounded-b-lg hover:cursor-text">
 							<div className="p-4">{coupon.coupon_code}</div>

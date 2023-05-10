@@ -54,6 +54,12 @@ export const Login = () => {
         setErrorMessage(
           "You entered the wrong password please try again / If you have logged in using a google account before click on log in via google"
         );
+      } else if (
+        e
+          .toString()
+          .includes("FirebaseError: Firebase: Error (auth/user-not-found).")
+      ) {
+        setErrorMessage("This account does not exist");
       } else {
         setErrorMessage(
           e && e.response && e.response.data

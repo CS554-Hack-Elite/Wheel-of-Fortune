@@ -226,7 +226,7 @@ const exportedMethods = {
         if (val < 0 || val > 5) {
           errorObject.message = `${
             variableName || "Provided variable"
-          }  must be between 0 and 6.`;
+          }  must be 1 to 5.`;
           throw errorObject;
         }
         inputRegExp = /^[0-9]+$/;
@@ -271,7 +271,15 @@ const exportedMethods = {
         if (val <= 0 || val > 50) {
           errorObject.message = `${
             variableName || "Provided variable"
-          } must be between 1 and 10.`;
+          } must be between 1 and 50.`;
+          throw errorObject;
+        }
+        inputRegExp = /^[0-9]+$/;
+        valid = inputRegExp.test(val);
+        if (!valid) {
+          errorObject.message = `${
+            variableName || "Provided variable"
+          }   must be an integer.`;
           throw errorObject;
         }
         break;

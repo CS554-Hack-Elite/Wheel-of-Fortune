@@ -20,7 +20,7 @@ export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
 	const [errorModal, setErrorModal] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 
-	const objKeys = ["name", "description", "max_allocation", "business_id"];
+	const objKeys = ["coupon_name", "description", "max_allocation", "business_id"];
 
 	const createCoupon = async () => {
 		try {
@@ -28,18 +28,22 @@ export const CreateCoupon = ({ modalChanged, businessAdmin }) => {
 
 			//TODO: Handle image
 			const payload = {
-				name: couponName,
+				coupon_name: couponName,
 				description: couponDescription,
-				max_allocation: parseInt(couponMaxAllocation),
+				max_allocation: couponMaxAllocation,
 				business_id: businessAdmin.business_id,
 			};
+
+			console.log(payload);
 
 			objKeys.forEach((element) => {
 				payload[element] = helpers.checkInput(element, payload[element], element + " of the coupon", true);
 			});
 
+			console.log(payload);
+
 			const formData = new FormData();
-			formData.append("name", payload.name);
+			formData.append("name", payload.coupon_name);
 			formData.append("description", payload.description);
 			formData.append("max_allocation", payload.max_allocation);
 			formData.append("business_id", payload.business_id);
